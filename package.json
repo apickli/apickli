@@ -1,0 +1,15 @@
+{
+  "name": "apicumber",
+  "version": "0.0.1",
+  "description": "Test framework for REST apis based on cucumber.js",
+  "contributors": [],
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+    "grunt": "latest",
+    "grunt-cucumber": "latest",
+    "JSONPath": "latest",
+    "request": "latest"
+  }
+}
