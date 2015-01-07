@@ -28,4 +28,3 @@ Or, for more detailed reporting while running test cases *Apickli* has Grunt sup
 
     $: grunt tests
     
-    
