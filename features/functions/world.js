@@ -39,60 +39,81 @@ var World = function World(callback) {
 
   // POST //////////
   this.post = function(path, requestBody, callback) {
-    var uri = path
-    request({url: uri, body: requestBody, method: 'POST',
-          headers: {'User-Agent': 'apickli'}},
+
+    var uri = path;
+    var headers = headers;
+
+    // if requester provided empty headers we set default
+    if (!headers){headers = {'User-Agent': 'apickli'}}
+
+    request({url: uri, headers: headers, body: requestBody, method: 'POST'},
         function(error, response) {
       if (error) {
         return callback(new Error('Error on POST request to ' + uri + ': ' +
           error.message))
       }
       self.lastResponse = response
-      callback(null, self.lastResponse.headers.location)
+      callback();
     })
   }
 
   // PUT ////////////
   this.put = function(path, requestBody, callback) {
-    var uri = path
-    request({url: uri, body: requestBody, method: 'PUT',
-          headers: {'User-Agent': 'apickli'}},
+    
+    var uri = path;
+    var headers = headers;
+
+    // if requester provided empty headers we set default
+    if (!headers){headers = {'User-Agent': 'apickli'}}
+
+    request({url: uri, headers: headers, body: requestBody, method: 'PUT'},
         function(error, response) {
       if (error) {
         return callback(new Error('Error on PUT request to ' + uri + ': ' +
             error.message))
       }
       self.lastResponse = response
-      callback(null, self.lastResponse.headers.locations)
+      callback();
     })
   }
 
   // DELETE ///////////
   this.delete = function(path, callback) {
-    var uri = path
-    request({url: uri, method: 'DELETE'},
+    
+    var uri = path;
+    var headers = headers;
+
+    // if requester provided empty headers we set default
+    if (!headers){headers = {'User-Agent': 'apickli'}}    
+
+    request({url: uri, headers: headers, method: 'DELETE'},
         function(error, response) {
       if (error) {
         return callback(new Error('Error on DELETE request to ' + uri + ': ' +
             error.message))
       }
       self.lastResponse = response
-      callback()
+      callback();
     })
   }
 
   // OPTIONS /////////
   this.options = function(path, callback) {
-    var uri = path
-    request({'uri': uri, method: 'OPTIONS',
-          headers: {'User-Agent': 'apickli'}},
+    
+    var uri = path;
+    var headers = headers;
+
+    // if requester provided empty headers we set default
+    if (!headers){headers = {'User-Agent': 'apickli'}}     
+
+    request({url: uri, headers: headers, method: 'OPTIONS'},
         function(error, response) {
       if (error) {
         return callback.fail(new Error('Error on OPTIONS request to ' + uri +
             ': ' + error.message))
       }
       self.lastResponse = response
-      callback()
+      callback();
     })
   }
 
@@ -105,7 +126,7 @@ var World = function World(callback) {
   // reused across multiple step definitions while building
   // API endpoint test harnesses.
   // Please propose your funcionality here and create a pull
-  // request if you want to add funcionality
+  // request if you want to add core funcionality
 
 
   // Validate that response exists
@@ -134,14 +155,12 @@ var World = function World(callback) {
     return lastResponse.headers
   }
 
-
   // Validate that response is ValidJson
   this.assertValidJson = function(lastResponse, callback) {
     var body = assertBody(lastResponse, callback)
-    if (!body) {
-      return null
-    }
+    if (!body) {return false}
     try {
+      // we use JSON.parse to validate JSON format
       return JSON.parse(body)
     } catch (e) {
       callback.fail('The body of the last response was not valid JSON.')
@@ -152,9 +171,7 @@ var World = function World(callback) {
   // Validate that response has expected string in it
   this.assertStringInResponse = function(lastResponse,string,callback) {
     var body = this.assertBody(lastResponse, callback)
-
     if (!body) {return false}
-
     try {
       if (body.indexOf(string) == -1) {
         return false
@@ -170,12 +187,9 @@ var World = function World(callback) {
   // Validate that response has expected header in it
   this.assertHeaderInResponse = function(lastResponse,string,callback) {
     var headers = this.assertHeaders(lastResponse, callback)
-
     if (!headers) {return false}
-
     try {
       if (!headers.hasOwnProperty(string)) {
-        console.log("not found");
         return false
       }
       return true
@@ -186,12 +200,9 @@ var World = function World(callback) {
     }
   }
 
-
   ////////////////////////////
   //* END HELPER FUNCTIONS *//
   ///////////////////////////
-
-
 
   callback()
 

@@ -11,11 +11,10 @@ var headers;
 
 
 // Step definitions
-var httpbinAPIWrapper = function () {
+var apickliWraper = function () {
 
   // overwrite default World constructor
   this.World = require('../functions/world.js').World;
-
 
   /* GIVEN */
 
@@ -33,10 +32,8 @@ var httpbinAPIWrapper = function () {
 
   /* THEN */
 
-  // Validate API response code
+  // Generic definition to validate http response code
   this.Then('the http response status should be $status', function(status, callback) {
-
-    // First will check if we have received response
     if (!this.assertResponse(this.lastResponse, callback)) { return }
     if (this.lastResponse.statusCode != status) {
       callback.fail('The http response did not have the expected ' +
@@ -47,7 +44,7 @@ var httpbinAPIWrapper = function () {
     }
   });
 
-  // Check if a certain property of the response is equal to something
+  // Generic definition to test if response body contains a string
   this.Then('the response message should contain "$string"', function(string, callback) {
 
     // this function also checks for valid response body
@@ -59,17 +56,15 @@ var httpbinAPIWrapper = function () {
     }
   });
 
-
+  // Generic definition for testing http response header contents
   this.Then('the response header should have "$string" element', function(string, callback) {
     if (!this.assertHeaderInResponse(this.lastResponse, string, callback)){
       callback.fail('Response header has no element: '+string+' present. Response headers: '+this.lastResponse.headers)
-
     } else {
       callback()
     }
   });
 
-
 }
 
-module.exports = httpbinAPIWrapper
+module.exports = apickliWraper
