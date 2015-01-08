@@ -1,98 +1,75 @@
-
 'use strict';
 
 var request = require('request');
 
+var headers = {};
+var lastResponse = null;
 
-var get = function(path, headers, callback) {
-
-    console.log('1');
-
-    var uri = path;
-    var headers = headers;
-
-    // if requester provided empty headers we set default
-    if (!headers) {
-        headers = {
-            'User-Agent': 'apickli'
-        }
-    }
-
-    console.log(uri);
-    console.log(headers);
-
+var get = function(url, headers, callback) {
     request.get(
         {
-            url: uri,
+            url: url,
             headers: headers
         },
         function(error, response) {
             if (error) {
-                return callback.fail(new Error('Error on GET request to ' + uri +
+                return callback.fail(new Error('Error on GET request to ' + url +
                     ': ' + error.message))
             }
 
-            callback();
-        })
+            callback(response);
+        }
+    );
 };
 
-// POST //////////
-var post = function(path, requestBody, callback) {
-
-    var uri = path;
-    var headers = headers;
-
-    // if requester provided empty headers we set default
-    if (!headers) {
-        headers = {
-            'User-Agent': 'apickli'
-        }
-    }
-
+var post = function(url, headers, body, callback) {
     request({
-            url: uri,
+            url: url,
             headers: headers,
-            body: requestBody,
+            body: body,
             method: 'POST'
         },
         function(error, response) {
             if (error) {
-                return callback(new Error('Error on POST request to ' + uri + ': ' +
-                    error.message))
+                return callback(new Error('Error on POST request to ' + url + ': ' +
+                    error.message));
             }
-
+            
             callback();
         })
 };
 
-// PUT ////////////
-var put = function(path, requestBody, callback) {
-
-    var uri = path;
-    var headers = headers;
-
-    // if requester provided empty headers we set default
-    if (!headers) {
-        headers = {
-            'User-Agent': 'apickli'
-        }
-    }
-
-    request({
-            url: uri,
-            headers: headers,
-            body: requestBody,
-            method: 'PUT'
-        },
-        function(error, response) {
-            if (error) {
-                return callback(new Error('Error on PUT request to ' + uri + ': ' +
-                    error.message))
-            }
-
-            callback();
-        })
+var getResponseBodyContentType = function(body) {
+    return 'json'; //TODO
 };
+
+// var put = function(path, requestBody, callback) {
+
+//     var uri = path;
+//     var headers = headers;
+
+//     // if requester provided empty headers we set default
+//     if (!headers) {
+//         headers = {
+//             'User-Agent': 'apickli'
+//         }
+//     }
+
+//     request({
+//             url: uri,
+//             headers: headers,
+//             body: requestBody,
+//             method: 'PUT'
+//         },
+//         function(error, response) {
+//             if (error) {
+//                 return callback(new Error('Error on PUT request to ' + uri + ': ' +
+//                     error.message))
+//             }
+
+//             callback();
+//         })
+// };
 
 // DELETE ///////////
 // var delete = function(path, callback) {
@@ -236,3 +213,4 @@ var assertHeaderInResponse = function(lastResponse, string, callback) {
 };
 
 exports.get = get;
+exports.getResponseBodyContentType = getResponseBodyContentType;

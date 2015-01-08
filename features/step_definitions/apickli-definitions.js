@@ -1,20 +1,48 @@
 'use strict';
 
-var jsonPath = require('JSONPath').eval;
+var jsonPath = require('JSONPath');
 var apickliFunctions = require('../functions/apickli-functions.js');
+
+var headers = {};
+var lastResponse = null;
 
 var apickliStepDefinitionsWrapper = function() {
 
-    //WHEN I {GET|POST to|PUT|DELETE} {/customers/1234}
+	this.Before(function(callback) {
+		headers = {};
+		lastResponse = null;
+		callback();
+	});
+
+    this.Given('I set $headerName header to $headerValue', function(headerName, headerValue, callback) {
+    	headers[headerName] = headerValue;
+    	callback();
+    });
+
     this.When('I GET $resource', function(resource, callback) {
-            var url = 'http://httpbin.org';
-            url = url + '/' + resource;
-            apickliFunctions.get(url, null, callback);
+        var url = 'http://httpbin.org';
+        url = url + '/' + resource;
+        apickliFunctions.get(url, headers, function(response) {
+        	lastResponse = response;
+        	callback();
+        });
+    });
+
+    this.Then('response body path $path should be $value', function(path, value, callback) {
+    	var bodyJsonObject = JSON.parse(lastResponse.body);
+
+    	if (apickliFunctions.getResponseBodyContentType(lastResponse.body) === 'json') {
+    		var realValue = jsonPath.eval(bodyJsonObject, path);
+    		if (realValue == value) {
+    			callback();
+    		} else {
+    			callback.fail('response body path ' + path + ' isn\'t ' + value);
+    		}
+    	}
     });
 };
 
 module.exports = apickliStepDefinitionsWrapper;
-
 
 ////////////////////////////////////////////// 
 // Setup variables and data related         //
