@@ -1,6 +1,7 @@
 'use strict';
 
 var jsonPath = require('JSONPath');
+var libxmljs = require('libxmljs');
 var apickliFunctions = require('../functions/apickli-functions.js');
 
 var headers = {};
@@ -29,10 +30,20 @@ var apickliStepDefinitionsWrapper = function() {
     });
 
     this.Then('response body path $path should be $value', function(path, value, callback) {
-    	var bodyJsonObject = JSON.parse(lastResponse.body);
+    	var contentType = apickliFunctions.getResponseBodyContentType(lastResponse.body);
 
-    	if (apickliFunctions.getResponseBodyContentType(lastResponse.body) === 'json') {
+    	if (contentType === 'json') {
+    		var bodyJsonObject = JSON.parse(lastResponse.body);
     		var realValue = jsonPath.eval(bodyJsonObject, path);
+    		if (realValue == value) {
+    			callback();
+    		} else {
+    			callback.fail('response body path ' + path + ' isn\'t ' + value);
+    		}
+    	} else if (contentType === 'xml') {
+    		var xml = libxmljs.parseXml(lastResponse.body);
+    		var realValue = xml.get(path).text();
+    		console.log(realValue);
     		if (realValue == value) {
     			callback();
     		} else {

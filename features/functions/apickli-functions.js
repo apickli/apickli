@@ -1,6 +1,7 @@
 'use strict';
 
 var request = require('request');
+var libxmljs = require('libxmljs');
 
 var headers = {};
 var lastResponse = null;
@@ -34,13 +35,24 @@ var post = function(url, headers, body, callback) {
                 return callback(new Error('Error on POST request to ' + url + ': ' +
                     error.message));
             }
-            
+
             callback();
         })
 };
 
 var getResponseBodyContentType = function(body) {
-    return 'json'; //TODO
+    try{
+        JSON.parse(body);
+        return 'json';
+    } catch(e) {
+        try{
+            libxmljs.parseXml(body);
+            return 'xml';
+        } catch(e) {
+            console.log(e);
+            return null;
+        }
+    }
 };
 
 // var put = function(path, requestBody, callback) {

@@ -6,3 +6,7 @@ Feature:
         Given I set User-Agent header to apickli
         When I GET /get
         Then response body path $.headers.User-Agent should be apickli
+
+    Scenario: Parsing response xml body
+        When I GET /xml
+        Then response body path /slideshow/slide[1]/title should be Wake up to WonderWidgets!
