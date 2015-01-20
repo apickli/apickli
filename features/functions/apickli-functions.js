@@ -36,7 +36,7 @@ var post = function(url, headers, body, callback) {
                     error.message));
             }
 
-            callback();
+            callback(response);
         })
 };
 
@@ -139,28 +139,9 @@ var options = function(path, callback) {
 // These functions are created to be generic and
 // reused across multiple step definitions while building
 // API endpoint test harnesses.
-// Please propose your funcionality here and create a pull
-// request if you want to add core funcionality
+// Please propose your functionality here and create a pull
+// request if you want to add core functionality
 
-
-// Validate that response exists
-var assertResponse = function(lastResponse, callback) {
-    if (!lastResponse) {
-        callback.fail('No requests are made yet!')
-    }
-    return true
-}
-
-// Validate that response has body and return its value
-var assertBody = function(lastResponse, callback) {
-    if (!assertResponse(lastResponse, callback)) {
-        return false
-    }
-    if (!lastResponse.body) {
-        callback.fail('The response to the last request had no body.')
-    }
-    return lastResponse.body
-}
 
 // Validate that response has headers and return their value
 var assertHeaders = function(lastResponse, callback) {
@@ -189,19 +170,21 @@ var assertValidJson = function(lastResponse, callback) {
 }
 
 // Validate that response has expected string in it
-var assertStringInResponse = function(lastResponse, string, callback) {
-    var body = assertBody(lastResponse, callback)
-    if (!body) {
-        return false
-    }
-    try {
-        if (body.indexOf(string) == -1) {
+var assertStringInResponse = function(lastResponse, string) {
+    if (lastResponse.body){
+        var body = lastResponse.body;
+
+        try {
+            if (body.indexOf(string) == -1) {
+                return false
+            }
+            return true
+
+        } catch (e) {
+            console.log('JavaScript error: ' + e);
             return false
         }
-        return true
-
-    } catch (e) {
-        callback.fail('JavaScript error: ' + e)
+    } else {
         return false
     }
 }
@@ -224,5 +207,9 @@ var assertHeaderInResponse = function(lastResponse, string, callback) {
     }
 };
 
+
+
 exports.get = get;
+exports.post = post;
 exports.getResponseBodyContentType = getResponseBodyContentType;
+exports.assertStringInResponse = assertStringInResponse;

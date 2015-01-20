@@ -5,6 +5,7 @@ var libxmljs = require('libxmljs');
 var apickliFunctions = require('../functions/apickli-functions.js');
 
 var headers = {};
+var body = {};
 var lastResponse = null;
 
 var apickliStepDefinitionsWrapper = function() {
@@ -20,6 +21,11 @@ var apickliStepDefinitionsWrapper = function() {
     	callback();
     });
 
+	this.Given('I set body to $bodyValue', function(bodyValue, callback) {
+		body = bodyValue;
+		callback();
+	});
+
     this.When('I GET $resource', function(resource, callback) {
         var url = 'http://httpbin.org';
         url = url + '/' + resource;
@@ -29,28 +35,62 @@ var apickliStepDefinitionsWrapper = function() {
         });
     });
 
-    this.Then('response body path $path should be $value', function(path, value, callback) {
-    	var contentType = apickliFunctions.getResponseBodyContentType(lastResponse.body);
+	this.When('I POST $resource', function(resource, callback) {
+		var url = 'http://httpbin.org';
+		url = url + '/' + resource;
 
-    	if (contentType === 'json') {
-    		var bodyJsonObject = JSON.parse(lastResponse.body);
-    		var realValue = jsonPath.eval(bodyJsonObject, path);
-    		if (realValue == value) {
-    			callback();
-    		} else {
-    			callback.fail('response body path ' + path + ' isn\'t ' + value);
-    		}
-    	} else if (contentType === 'xml') {
-    		var xml = libxmljs.parseXml(lastResponse.body);
-    		var realValue = xml.get(path).text();
-    		console.log(realValue);
-    		if (realValue == value) {
-    			callback();
-    		} else {
-    			callback.fail('response body path ' + path + ' isn\'t ' + value);
-    		}
-    	}
-    });
+		apickliFunctions.post(url, headers, body, function(response) {
+			lastResponse = response;
+			callback();
+		});
+	});
+
+	this.Then('response body path $path should be $value', function(path, value, callback) {
+
+		var contentType = apickliFunctions.getResponseBodyContentType(lastResponse.body);
+
+		if (contentType === 'json') {
+			var bodyJsonObject = JSON.parse(lastResponse.body);
+			var realValue = jsonPath.eval(bodyJsonObject, path);
+			if (realValue == value) {
+				callback();
+			} else {
+				callback.fail('response body path ' + path + ' isn\'t ' + value);
+			}
+		} else if (contentType === 'xml') {
+			var xml = libxmljs.parseXml(lastResponse.body);
+			var realValue = xml.get(path).text();
+			console.log(realValue);
+			if (realValue == value) {
+				callback();
+			} else {
+				callback.fail('response body path ' + path + ' isn\'t ' + value);
+			}
+		}
+	});
+
+	this.Then('response body should contain $value', function(value, callback) {
+
+		var contentType = apickliFunctions.getResponseBodyContentType(lastResponse.body);
+
+		if (contentType === 'json') {
+			if (apickliFunctions.assertStringInResponse(lastResponse,value)) {
+				callback();
+
+			} else {
+				callback.fail('response body doesn\'t contain: ' + value);
+			}
+
+		} else if (contentType === 'xml') {
+			if (apickliFunctions.assertStringInResponse(lastResponse.body,value)) {
+				callback();
+
+			} else {
+				callback.fail('response body doesn\'t contain: ' + value);
+			}
+		}
+	});
+
 };
 
 module.exports = apickliStepDefinitionsWrapper;

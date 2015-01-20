@@ -7,6 +7,11 @@ Feature:
         When I GET /get
         Then response body path $.headers.User-Agent should be apickli
 
+    Scenario: Setting body payload in POST request
+        Given I set body to {"key":"hello-world"}
+        When I POST /post
+        Then response body should contain hello-world
+
     Scenario: Parsing response xml body
         When I GET /xml
         Then response body path /slideshow/slide[1]/title should be Wake up to WonderWidgets!
