@@ -26,6 +26,13 @@ var apickliStepDefinitionsWrapper = function() {
 		callback();
 	});
 
+    this.Given('I have basic auth username and password $userpass', function(userpass, callback) {
+        var base64String = new Buffer(userpass).toString('base64');
+        headers['Authorization'] = base64String;
+        callback();
+    });
+
+
     this.When('I GET $resource', function(resource, callback) {
         var url = 'http://httpbin.org';
         url = url + '/' + resource;
@@ -40,7 +47,7 @@ var apickliStepDefinitionsWrapper = function() {
 		url = url + '/' + resource;
 
 		apickliFunctions.post(url, headers, body, function(response) {
-			lastResponse = response;
+            lastResponse = response;
 			callback();
 		});
 	});

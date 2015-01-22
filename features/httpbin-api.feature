@@ -12,6 +12,11 @@ Feature:
         When I POST /post
         Then response body should contain hello-world
 
+    Scenario: Sending request with basic auth authentication
+      Given I have basic auth username and password username:password
+      When I POST /post
+      Then response body should contain dXNlcm5hbWU6cGFzc3dvcmQ=
+
     Scenario: Parsing response xml body
         When I GET /xml
         Then response body path /slideshow/slide[1]/title should be Wake up to WonderWidgets!
