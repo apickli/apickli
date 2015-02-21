@@ -65,6 +65,22 @@ var apickliStepDefinitionsWrapper = function() {
 			callback.fail('response body doesn\'t contain: ' + value);
 		}
 	});
+
+	this.Then(/^response header (.*) should exist$/, function(header, callback) {
+		if (httpClient.getResponse().headers[header]) {
+			callback();
+		} else {
+			callback.fail('response header ' + header + ' doesn\'t exist in response');
+		}
+	});
+
+	this.Then(/^response header (.*) should not exist$/, function(header, callback) {
+		if (httpClient.getResponse().headers[header]) {
+			callback.fail('response header ' + header + ' exists in response');
+		} else {
+			callback();
+		}
+	});
 };
 
 module.exports = apickliStepDefinitionsWrapper;
