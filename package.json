@@ -1,8 +1,7 @@
 {
-    "name": "apicumber",
+    "name": "apickli",
     "version": "0.0.1",
     "description": "Test framework for REST apis based on cucumber.js",
-    "contributors": [],
     "scripts": {
         "test": "grunt"
     },
