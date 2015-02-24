@@ -98,6 +98,27 @@ var apickliStepDefinitionsWrapper = function() {
 		}
 	});
 
+	this.Then(/^response header (.*) should be (.*)$/, function(name, value, callback) {
+		var realValue = httpClient.getResponse().headers[name.toLowerCase()];
+		var regex = new RegExp(value);
+		if (regex.test(realValue)) {
+			callback();
+		} else {
+			callback.fail('response header ' + name + ' isn\'t ' + value + ', it\'s ' + realValue);
+		}
+	});
+
+	this.Then(/^response header (.*) should not be (.*)$/, function(name, value, callback) {
+		var realValue = httpClient.getResponse().headers[name.toLowerCase()];
+		var regex = new RegExp(value);
+		if (!regex.test(realValue)) {
+			callback();
+		} else {
+			callback.fail('response header ' + name + ' is ' + value);
+		}
+	});
+	
+
 };
 
 module.exports = apickliStepDefinitionsWrapper;
