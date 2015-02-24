@@ -14,7 +14,7 @@ Main goal of *Apickli* project is to make the building of funcional tests for AP
 
 To run examples, clone the *Apickli* to your local machine:
     
-    $: git clone https://github.com/sauliuz/apick.li.git
+    $: git clone https://github.com/apickli/apickli.git
     
 Install all dependencies:
 
