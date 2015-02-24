@@ -36,3 +36,9 @@ Feature:
 		Then response header Content-Type should be application/xml
 		And response header Content-Type should be [a-z]/xml
 		And response header Connection should not be boo 
+
+	Scenario: Response body text assertions
+		When I GET /xml
+		Then response body should contain WonderWidgets
+		And response body should contain Wonder[Wdgist]
+		And response body should not contain boo

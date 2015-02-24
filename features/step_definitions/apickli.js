@@ -117,8 +117,24 @@ var apickliStepDefinitionsWrapper = function() {
 			callback.fail('response header ' + name + ' is ' + value);
 		}
 	});
-	
 
+	this.Then(/^response body should contain (.*)$/, function(value, callback) {
+		var regex = new RegExp(value);
+		if (regex.test(httpClient.getResponse().body)) {
+			callback();
+		} else {
+			callback.fail('response body doesn\'t contain ' + value);
+		}
+	});
+
+	this.Then(/^response body should not contain (.*)$/, function(value, callback) {
+		var regex = new RegExp(value);
+		if (!regex.test(httpClient.getResponse().body)) {
+			callback();
+		} else {
+			callback.fail('response body contains ' + value);
+		}
+	});
 };
 
 module.exports = apickliStepDefinitionsWrapper;
