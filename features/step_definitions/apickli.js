@@ -54,7 +54,7 @@ var apickliStepDefinitionsWrapper = function() {
 		if (evalValue == value) {
 			callback();
 		} else {
-			callback.fail('response body path ' + path + ' isn\t ' + value);
+			callback.fail('response body path ' + path + ' isn\'t ' + value);
 		}
 	});
 
@@ -98,7 +98,7 @@ var apickliStepDefinitionsWrapper = function() {
 		}
 	});
 
-	this.Then(/^response header (.*) should be (.*)$/, function(name, value, callback) {
+	this.Then(/^response header (.*) should match (.*)$/, function(name, value, callback) {
 		var realValue = httpClient.getResponse().headers[name.toLowerCase()];
 		var regex = new RegExp(value);
 		if (regex.test(realValue)) {
@@ -108,7 +108,7 @@ var apickliStepDefinitionsWrapper = function() {
 		}
 	});
 
-	this.Then(/^response header (.*) should not be (.*)$/, function(name, value, callback) {
+	this.Then(/^response header (.*) should not match (.*)$/, function(name, value, callback) {
 		var realValue = httpClient.getResponse().headers[name.toLowerCase()];
 		var regex = new RegExp(value);
 		if (!regex.test(realValue)) {
@@ -135,7 +135,30 @@ var apickliStepDefinitionsWrapper = function() {
 			callback.fail('response body contains ' + value);
 		}
 	});
+
+	this.Then(/^response body path (.*) should match (.*)$/, function(path, value, callback) {
+		var regex = new RegExp(value);
+		var evalValue = util.evalPath(path, httpClient.getResponse().body);
+
+		if (regex.test(evalValue)) {
+			callback();
+		} else {
+			callback.fail('response body path ' + evalValue + ' doesn\'t match ' + value);
+		}
+	});
+
+	this.Then(/^response body path (.*) should not match (.*)$/, function(path, value, callback) {
+		var regex = new RegExp(value);
+		var evalValue = util.evalPath(path, httpClient.getResponse().body);
+
+		if (!regex.test(evalValue)) {
+			callback();
+		} else {
+			callback.fail('response body path value ' + evalValue + ' matches ' + value);
+		}
+	});
 };
+
 
 module.exports = apickliStepDefinitionsWrapper;
 

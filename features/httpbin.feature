@@ -33,12 +33,22 @@ Feature:
 
 	Scenario: Response header value assertions
 		When I GET /xml
-		Then response header Content-Type should be application/xml
-		And response header Content-Type should be [a-z]/xml
-		And response header Connection should not be boo 
+		Then response header Content-Type should match application/xml
+		And response header Content-Type should match [a-z]/xml
+		And response header Connection should not match boo 
 
 	Scenario: Response body text assertions
 		When I GET /xml
 		Then response body should contain WonderWidgets
 		And response body should contain Wonder[Wdgist]
 		And response body should not contain boo
+
+	Scenario: Response body xpath assertions
+		When I GET /xml
+		Then response body path /slideshow/slide[2]/title should match [a-z]+
+		Then response body path /slideshow/slide[2]/title should not match \d+
+
+	Scenario: Response body jsonpath assertions
+		When I GET /get
+		Then response body path $.headers.User-Agent should match [a-z]+
+		Then response body path $.headers.User-Agent should not match \d+
