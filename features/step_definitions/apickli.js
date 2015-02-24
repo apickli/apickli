@@ -81,6 +81,23 @@ var apickliStepDefinitionsWrapper = function() {
 			callback();
 		}
 	});
+
+	this.Then(/^response code should be (\d+)$/, function(responseCode, callback) {
+		if (httpClient.getResponse().statusCode == responseCode) {
+			callback();
+		} else {
+			callback.fail('response code isn\'t ' + responseCode + ', it\'s ' + httpClient.getResponse().statusCode);
+		}
+	});
+
+	this.Then(/^response code should not be (\d+)$/, function(responseCode, callback) {
+		if (httpClient.getResponse().statusCode != responseCode) {
+			callback();
+		} else {
+			callback.fail('response code is ' + responseCode);
+		}
+	});
+
 };
 
 module.exports = apickliStepDefinitionsWrapper;

@@ -25,3 +25,8 @@ Feature:
 		When I GET /xml
 		Then response header server should exist 
 		And response header boo should not exist
+
+	Scenario: Response code checks
+		When I GET /xml
+		Then response code should be 200
+		And response code should not be 404
