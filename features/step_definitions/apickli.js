@@ -48,23 +48,23 @@ var apickliStepDefinitionsWrapper = function() {
 		});
 	});
 
-	this.Then(/^response body path (.*) should be (.*)$/, function(path, value, callback) {
-		var evalValue = util.evalPath(path, httpClient.getResponse().body);
+	//this.Then(/^response body path (.*) should be (.*)$/, function(path, value, callback) {
+	//	var evalValue = util.evalPath(path, httpClient.getResponse().body);
 
-		if (evalValue == value) {
-			callback();
-		} else {
-			callback.fail('response body path ' + path + ' isn\'t ' + value);
-		}
-	});
+	//	if (evalValue == value) {
+	//		callback();
+	//	} else {
+	//		callback.fail('response body path ' + path + ' isn\'t ' + value);
+	//	}
+	//});
 
-	this.Then(/^response body should contain (.*)$/, function(value, callback) {
-		if (util.assertStringContains(httpClient.getResponse().body, value)) {
-			callback();
-		} else {
-			callback.fail('response body doesn\'t contain: ' + value);
-		}
-	});
+	//this.Then(/^response body should contain (.*)$/, function(value, callback) {
+	//	if (util.assertStringContains(httpClient.getResponse().body, value)) {
+	//		callback();
+	//	} else {
+	//		callback.fail('response body doesn\'t contain: ' + value);
+	//	}
+	//});
 
 	this.Then(/^response header (.*) should exist$/, function(header, callback) {
 		if (httpClient.getResponse().headers[header]) {
@@ -79,6 +79,14 @@ var apickliStepDefinitionsWrapper = function() {
 			callback.fail('response header ' + header + ' exists in response');
 		} else {
 			callback();
+		}
+	});
+
+	this.Then(/^response body should be valid (xml|json)$/, function(contentType, callback) {
+		if (util.getContentType(httpClient.getResponse().body)) {
+			callback();
+		} else {
+			callback.fail('response body is not valid ' + contentType);
 		}
 	});
 
@@ -136,7 +144,7 @@ var apickliStepDefinitionsWrapper = function() {
 		}
 	});
 
-	this.Then(/^response body path (.*) should match (.*)$/, function(path, value, callback) {
+	this.Then(/^response body path (.*) should be (.*)$/, function(path, value, callback) {
 		var regex = new RegExp(value);
 		var evalValue = util.evalPath(path, httpClient.getResponse().body);
 
@@ -147,7 +155,7 @@ var apickliStepDefinitionsWrapper = function() {
 		}
 	});
 
-	this.Then(/^response body path (.*) should not match (.*)$/, function(path, value, callback) {
+	this.Then(/^response body path (.*) should not be (.*)$/, function(path, value, callback) {
 		var regex = new RegExp(value);
 		var evalValue = util.evalPath(path, httpClient.getResponse().body);
 

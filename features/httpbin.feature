@@ -21,6 +21,14 @@ Feature:
 		When I GET /xml
 		Then response body path /slideshow/slide[1]/title should be Wake up to WonderWidgets!	
 
+	Scenario: Response body content type assertions (xml)
+		When I GET /xml
+		Then response body should be valid xml
+
+	Scenario: Response body content type assertions (json)
+		When I GET /get
+		Then response body should be valid json
+
 	Scenario: Checking headers in response
 		When I GET /xml
 		Then response header server should exist 
@@ -45,10 +53,10 @@ Feature:
 
 	Scenario: Response body xpath assertions
 		When I GET /xml
-		Then response body path /slideshow/slide[2]/title should match [a-z]+
-		Then response body path /slideshow/slide[2]/title should not match \d+
+		Then response body path /slideshow/slide[2]/title should be [a-z]+
+		Then response body path /slideshow/slide[2]/title should not be \d+
 
 	Scenario: Response body jsonpath assertions
 		When I GET /get
-		Then response body path $.headers.User-Agent should match [a-z]+
-		Then response body path $.headers.User-Agent should not match \d+
+		Then response body path $.headers.User-Agent should be [a-z]+
+		Then response body path $.headers.User-Agent should not be \d+
