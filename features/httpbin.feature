@@ -41,9 +41,9 @@ Feature:
 
 	Scenario: Response header value assertions
 		When I GET /xml
-		Then response header Content-Type should match application/xml
-		And response header Content-Type should match [a-z]/xml
-		And response header Connection should not match boo 
+		Then response header Content-Type should be application/xml
+		And response header Content-Type should be [a-z]/xml
+		And response header Connection should not be boo 
 
 	Scenario: Response body text assertions
 		When I GET /xml

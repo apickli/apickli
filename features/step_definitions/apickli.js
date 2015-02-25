@@ -106,7 +106,7 @@ var apickliStepDefinitionsWrapper = function() {
 		}
 	});
 
-	this.Then(/^response header (.*) should match (.*)$/, function(name, value, callback) {
+	this.Then(/^response header (.*) should be (.*)$/, function(name, value, callback) {
 		var realValue = httpClient.getResponse().headers[name.toLowerCase()];
 		var regex = new RegExp(value);
 		if (regex.test(realValue)) {
@@ -116,7 +116,7 @@ var apickliStepDefinitionsWrapper = function() {
 		}
 	});
 
-	this.Then(/^response header (.*) should not match (.*)$/, function(name, value, callback) {
+	this.Then(/^response header (.*) should not be (.*)$/, function(name, value, callback) {
 		var realValue = httpClient.getResponse().headers[name.toLowerCase()];
 		var regex = new RegExp(value);
 		if (!regex.test(realValue)) {
