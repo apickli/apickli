@@ -60,3 +60,17 @@ Feature:
 		When I GET /get
 		Then response body path $.headers.User-Agent should be [a-z]+
 		Then response body path $.headers.User-Agent should not be \d+
+
+	Scenario: setting header value as variable
+		When I GET /get
+		Then I store the value of Content-Length response header as agent
+
+	Scenario: setting body path as variable (xml)
+		When I GET /xml
+		Then I store the value of body path /slideshow/slide[2]/title as title
+
+	Scenario: setting body path as variable (json)
+		When I GET /get
+		Then I store the value of body path $.headers.User-Agent as agent
+
+

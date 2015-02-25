@@ -7,6 +7,7 @@ var domain = 'http://httpbin.org';
 var headers = {};
 var httpResponse = {};
 var requestBody = '';
+var variableStorage = {};
 
 function HttpClient() {};
 function Util() {};
