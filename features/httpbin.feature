@@ -72,5 +72,3 @@ Feature:
 	Scenario: setting body path as variable (json)
 		When I GET /get
 		Then I store the value of body path $.headers.User-Agent as agent
-
-

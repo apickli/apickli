@@ -2,14 +2,15 @@ var request = require('request');
 var jsonPath = require('JSONPath');
 var libxmljs = require('libxmljs');
 
-var domain = 'http://httpbin.org';
-
 var headers = {};
 var httpResponse = {};
 var requestBody = '';
 var variableStorage = {};
 
-function HttpClient() {};
+function HttpClient(scheme, domain) {
+	this.domain = scheme + '://' + domain;
+};
+
 function Util() {};
 
 HttpClient.prototype.addHeader = function(name, value) {
@@ -27,7 +28,7 @@ HttpClient.prototype.setRequestBody = function(body) {
 HttpClient.prototype.get = function(resource, callback) {
     request.get(
         {
-            url: domain + resource,
+            url: this.domain + resource,
             headers: headers
         },
         function(error, response) {
@@ -43,7 +44,7 @@ HttpClient.prototype.get = function(resource, callback) {
 
 HttpClient.prototype.post = function(resource, callback) {
     request({
-            url: domain + resource,
+            url: this.domain + resource,
             headers: headers,
             body: requestBody,
             method: 'POST'

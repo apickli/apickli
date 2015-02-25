@@ -1,14 +1,14 @@
 'use strict';
 
 var apickli = require('../support/apickli.js');
-//var httpClient;
+
 var util = new apickli.Util();
 
-var apickliStepDefinitionsWrapper = function() {
+module.exports = function() {
 
 	// cleanup before every scenario
 	this.Before(function(callback) {
-		this.httpClient = new apickli.HttpClient();
+		this.httpClient = new apickli.HttpClient('http', 'httpbin.org');
 		this.savedVariables = {};
 		callback();
 	});
@@ -162,5 +162,3 @@ var apickliStepDefinitionsWrapper = function() {
 		callback();
 	});
 };
-
-module.exports = apickliStepDefinitionsWrapper;
