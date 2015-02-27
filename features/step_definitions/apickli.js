@@ -15,7 +15,7 @@ module.exports = function() {
 
 	this.Given(/^I set (.*) header to (.*)$/, function(headerName, headerValue, callback) {
 		this.httpClient.addHeader(headerName, headerValue);
-    	callback();
+		callback();
 	});
 
 	this.Given(/^I set body to (.*)$/, function(bodyValue, callback) {
@@ -23,13 +23,13 @@ module.exports = function() {
 		callback();
 	});
 
-    this.Given(/^I have basic authentication credentials (.*) and (.*)$/, function(username, password, callback) {
-        var base64String = new Buffer(username + ':' + password).toString('base64');
+	this.Given(/^I have basic authentication credentials (.*) and (.*)$/, function(username, password, callback) {
+		var base64String = new Buffer(username + ':' + password).toString('base64');
 		this.httpClient.addHeader('Authorization', base64String);
-        callback();
-    });
+		callback();
+	});
 
-    this.When(/^I GET (.*)$/, function(resource, callback) {
+	this.When(/^I GET (.*)$/, function(resource, callback) {
 		this.httpClient.get(resource, function(error, response) {
 			if (error) {
 				return callback.fail(error);
@@ -37,7 +37,7 @@ module.exports = function() {
 
 			callback();
 		});
-    });
+	});
 
 	this.When('I POST $resource', function(resource, callback) {
 		this.httpClient.post(resource, function(error, response) {

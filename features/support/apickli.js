@@ -26,38 +26,35 @@ HttpClient.prototype.setRequestBody = function(body) {
 };
 
 HttpClient.prototype.get = function(resource, callback) {
-    request.get(
-        {
-            url: this.domain + resource,
-            headers: headers
-        },
-        function(error, response) {
-            if (error) {
-                return callback(error);
-            }
+	request.get({
+		url: this.domain + resource,
+		headers: headers
+	},
+	function(error, response) {
+		if (error) {
+			return callback(error);
+		}
 
-			httpResponse = response;
-            callback(null, response);
-        }
-	);
+		httpResponse = response;
+		callback(null, response);
+	});
 };
 
 HttpClient.prototype.post = function(resource, callback) {
-    request({
-            url: this.domain + resource,
-            headers: headers,
-            body: requestBody,
-            method: 'POST'
-        },
-        function(error, response) {
-            if (error) {
-                return callback(error);
-            }
+	request({
+		url: this.domain + resource,
+		headers: headers,
+		body: requestBody,
+		method: 'POST'
+	},
+	function(error, response) {
+		if (error) {
+			return callback(error);
+		}
 
-			httpResponse = response;
-            callback(null, response);
-        }
-	);
+		httpResponse = response;
+		callback(null, response);
+	});
 };
 
 HttpClient.prototype.put = function(resource, callback) {
@@ -95,17 +92,17 @@ HttpClient.prototype.delete = function(resource, callback) {
 };
 
 Util.prototype.getContentType = function(content) {
-    try{
-        JSON.parse(content);
-        return 'json';
-    } catch(e) {
-        try{
-            libxmljs.parseXml(content);
-            return 'xml';
-        } catch(e) {
-            return null;
-        }
-    }
+	try{
+		JSON.parse(content);
+		return 'json';
+	} catch(e) {
+		try{
+			libxmljs.parseXml(content);
+			return 'xml';
+		} catch(e) {
+			return null;
+		}
+	}
 };
 
 Util.prototype.evalPath = function(path, content) {
@@ -126,12 +123,12 @@ Util.prototype.evalPath = function(path, content) {
 };
 
 Util.prototype.assertStringContains = function(content, string) {
-    if (content){
+	if (content){
 		if (content.indexOf(string) == -1) {
 			return false
 		}
 		return true
-    } 	
+	} 	
 	return false;
 }
 

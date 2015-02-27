@@ -1,25 +1,25 @@
 Feature:
-    Httpbin.org exposes various resources for HTTP request testing
-    As Httpbin client I want to verify that all API resources are working as they should
+	Httpbin.org exposes various resources for HTTP request testing
+	As Httpbin client I want to verify that all API resources are working as they should
 
-    Scenario: Setting headers in GET request
-        Given I set User-Agent header to apickli
-        When I GET /get
+	Scenario: Setting headers in GET request
+		Given I set User-Agent header to apickli
+		When I GET /get
 		Then response body path $.headers.User-Agent should be apickli
 
 	Scenario: Setting body payload in POST request
-        Given I set body to {"key":"hello-world"}
-        When I POST /post
+		Given I set body to {"key":"hello-world"}
+		When I POST /post
 		Then response body should contain hello-world
 
 	Scenario: Setting body payload in PUT request
-        Given I set body to {"key":"hello-world"}
-        When I PUT /put
+		Given I set body to {"key":"hello-world"}
+		When I PUT /put
 		Then response body should contain hello-world
 
 	Scenario: Setting body payload in DELETE request
-        Given I set body to {"key":"hello-world"}
-        When I DELETE /delete
+		Given I set body to {"key":"hello-world"}
+		When I DELETE /delete
 		Then response body should contain hello-world
 
 	Scenario: Sending request with basic auth authentication
