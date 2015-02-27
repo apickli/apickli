@@ -60,6 +60,40 @@ HttpClient.prototype.post = function(resource, callback) {
 	);
 };
 
+HttpClient.prototype.put = function(resource, callback) {
+	request({
+		url: this.domain + resource,
+		headers: headers,
+		body: requestBody,
+		method: 'PUT'
+	},
+	function(error, response) {
+		if (error) {
+			return callback(error);
+		}
+
+		httpResponse = response;
+		callback(null, response);
+	});
+};
+
+HttpClient.prototype.delete = function(resource, callback) {
+	request({
+		url: this.domain + resource,
+		headers: headers,
+		body: requestBody,
+		method: 'DELETE'
+	},
+	function(error, response) {
+		if (error) {
+			return callback(error);
+		}
+
+		httpResponse = response;
+		callback(null, response);
+	});
+};
+
 Util.prototype.getContentType = function(content) {
     try{
         JSON.parse(content);

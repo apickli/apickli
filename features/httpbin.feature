@@ -10,7 +10,17 @@ Feature:
 	Scenario: Setting body payload in POST request
         Given I set body to {"key":"hello-world"}
         When I POST /post
-        Then response body should contain hello-world
+		Then response body should contain hello-world
+
+	Scenario: Setting body payload in PUT request
+        Given I set body to {"key":"hello-world"}
+        When I PUT /put
+		Then response body should contain hello-world
+
+	Scenario: Setting body payload in DELETE request
+        Given I set body to {"key":"hello-world"}
+        When I DELETE /delete
+		Then response body should contain hello-world
 
 	Scenario: Sending request with basic auth authentication
 		Given I have basic authentication credentials username and password

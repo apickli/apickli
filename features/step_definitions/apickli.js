@@ -49,6 +49,26 @@ module.exports = function() {
 		});
 	});
 
+	this.When('I PUT $resource', function(resource, callback) {
+		this.httpClient.put(resource, function(error, response) {
+			if (error) {
+				return callback.fail(error);
+			}
+
+			callback();
+		});
+	});
+
+	this.When('I DELETE $resource', function(resource, callback) {
+		this.httpClient.delete(resource, function(error, response) {
+			if (error) {
+				return callback.fail(error);
+			}
+
+			callback();
+		});
+	});
+
 	this.Then(/^response header (.*) should exist$/, function(header, callback) {
 		if (this.httpClient.getResponse().headers[header]) {
 			callback();
