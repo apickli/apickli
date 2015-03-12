@@ -1,10 +1,12 @@
 'use strict';
 
+var fs = require('fs');
+
 var apickli = require('../support/apickli.js');
 var util = new apickli.Util();
 
 module.exports = function() {
-
+	
 	this.Given(/^I set (.*) header to (.*)$/, function(headerName, headerValue, callback) {
 		this.httpClient.addHeader(headerName, headerValue);
 		callback();
@@ -13,6 +15,18 @@ module.exports = function() {
 	this.Given(/^I set body to (.*)$/, function(bodyValue, callback) {
 		this.httpClient.setRequestBody(bodyValue);
 		callback();
+	});
+
+	this.Given(/^I pipe contents of file (.*) to body$/, function(file, callback) {
+		var t = this;
+		fs.readFile(file, 'utf8', function(err, data) {
+			if (err) {
+				callback.fail(err);
+			}
+
+			t.httpClient.setRequestBody(data);
+			callback();
+		});
 	});
 
 	this.Given(/^I have basic authentication credentials (.*) and (.*)$/, function(username, password, callback) {

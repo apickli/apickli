@@ -22,6 +22,11 @@ Feature:
 		When I DELETE /delete
 		Then response body should contain hello-world
 
+	Scenario: Setting body payload from file
+		Given I pipe contents of file ./features/fixtures/requestbody.xml to body
+		When I POST /post
+		Then response body should contain "data": "<a>b</a>"
+
 	Scenario: Sending request with basic auth authentication
 		Given I have basic authentication credentials username and password
 		When I POST /post
