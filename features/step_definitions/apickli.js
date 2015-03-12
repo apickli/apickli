@@ -1,17 +1,9 @@
 'use strict';
 
 var apickli = require('../support/apickli.js');
-
 var util = new apickli.Util();
 
 module.exports = function() {
-
-	// cleanup before every scenario
-	this.Before(function(callback) {
-		this.httpClient = new apickli.HttpClient('http', 'httpbin.org');
-		this.savedVariables = {};
-		callback();
-	});
 
 	this.Given(/^I set (.*) header to (.*)$/, function(headerName, headerValue, callback) {
 		this.httpClient.addHeader(headerName, headerValue);
