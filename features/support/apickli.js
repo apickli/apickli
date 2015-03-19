@@ -1,3 +1,5 @@
+'use strict';
+
 var request = require('request');
 var jsonPath = require('JSONPath');
 var libxmljs = require('libxmljs');
@@ -8,9 +10,9 @@ var requestBody = '';
 
 function HttpClient(scheme, domain) {
 	this.domain = scheme + '://' + domain;
-};
+}
 
-function Util() {};
+function Util() {}
 
 HttpClient.prototype.addHeader = function(name, value) {
 	headers[name] = value;
@@ -110,12 +112,10 @@ Util.prototype.evalPath = function(path, content) {
 	switch (contentType) {
 		case 'json':
 			var contentJson = JSON.parse(content);
-			var value = jsonPath.eval(contentJson, path);
-			return value;
+			return jsonPath.eval(contentJson, path);
 		case 'xml':
 			var xml = libxmljs.parseXml(content);
-			var value = xml.get(path).text();
-			return value;
+			return xml.get(path).text();
 		default:
 			return null;
 	}
@@ -124,12 +124,14 @@ Util.prototype.evalPath = function(path, content) {
 Util.prototype.assertStringContains = function(content, string) {
 	if (content){
 		if (content.indexOf(string) == -1) {
-			return false
+			return false;
 		}
-		return true
+		return true;
 	} 	
 	return false;
-}
+};
+
+Util.prototype.featureVariables = {};
 
 exports.Util = Util;
 exports.HttpClient = HttpClient;

@@ -1,3 +1,4 @@
+/* jslint node: true */
 'use strict';
 
 var fs = require('fs');
@@ -5,22 +6,14 @@ var fs = require('fs');
 var apickli = require('../support/apickli.js');
 var util = new apickli.Util();
 
-var featureVariables = {};
-
 module.exports = function() {
-	
-	// executes before each feature
-	this.BeforeFeature(function (event, callback) {
-		featureVariables = {};
-		callback();
-	});
 
 	// executes before each scenario
 	this.Before(function(callback) {
 		this.scenarioVariables = {};
 		callback();
 	});
-	
+
 	this.Given(/^I set (.*) header to (.*)$/, function(headerName, headerValue, callback) {
 		this.httpClient.addHeader(headerName, headerValue);
 		callback();
@@ -190,33 +183,23 @@ module.exports = function() {
 		}
 	});
 
-	this.Then(/^I store the value of (.*) response header as (.*) in (feature|scenario) scope$/, function(name, variable, scope, callback) {
+	this.When(/^I store the value of (.*) response header as (.*) in scenario scope$/, function(name, variable, callback) {
 		var value = this.httpClient.getResponse().headers[name.toLowerCase()];
-		if (scope === 'feature') {
-			featureVariables[variable] = value;
-		} else if (scope === 'scenario') {
-			this.scenarioVariables[variable] = value;
-		}
+		this.scenarioVariables[variable] = value;
 
 		callback();
 	});
 
-	this.Then(/^I store the value of body path (.*) as (.*) in (feature|scenario) scope$/, function(path, variable, scope, callback) {
+	this.When(/^I store the value of body path (.*) as (.*) in scenario scope$/, function(path, variable, callback) {
 		var value = util.evalPath(path, this.httpClient.getResponse().body);
-		if (scope === 'feature') {
-			featureVariables[variable] = value;
-		} else if (scope === 'scenario') {
-			this.scenarioVariables[variable] = value;
-		}
+		this.scenarioVariables[variable] = value;
 		
 		callback();
 	});
 
-	this.Then(/^value of (feature|scenario) variable (.*) should be (.*)$/, function(scope, variableName, variableValue, callback) {
-		if ((scope === 'feature') && (String(featureVariables[variableName]) !== variableValue)) {
-			callback.fail('value of ' + scope + ' variable ' + variableName + ' isn\'t equal to ' + variableValue + ', it\'s ' + featureVariables[variableName]);
-		} else if ((scope === 'scenario') && (String(this.scenarioVariables[variableName]) !== variableValue)) {
-			callback.fail('value of ' + scope + ' variable ' + variableName + ' isn\'t equal to ' + variableValue + ', it\'s ' + this.scenarioVariables[variableName]);
+	this.Then(/^value of scenario variable (.*) should be (.*)$/, function(variableName, variableValue, callback) {
+		if (String(this.scenarioVariables[variableName]) !== variableValue) {
+			callback.fail('value of variable ' + variableName + ' isn\'t equal to ' + variableValue + ', it\'s ' + this.scenarioVariables[variableName]);
 		}
 
 		callback();
