@@ -5,7 +5,6 @@ var libxmljs = require('libxmljs');
 var headers = {};
 var httpResponse = {};
 var requestBody = '';
-var variableStorage = {};
 
 function HttpClient(scheme, domain) {
 	this.domain = scheme + '://' + domain;

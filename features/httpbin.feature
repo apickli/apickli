@@ -78,12 +78,21 @@ Feature:
 
 	Scenario: setting header value as variable
 		When I GET /get
-		Then I store the value of Content-Length response header as agent
+		Then I store the value of Content-Length response header as agent in scenario scope
+		Then value of scenario variable agent should be 209
 
 	Scenario: setting body path as variable (xml)
 		When I GET /xml
-		Then I store the value of body path /slideshow/slide[2]/title as title
+		Then I store the value of body path /slideshow/slide[2]/title as title in scenario scope
+		Then I store the value of body path /slideshow/slide[2]/title as title in feature scope
+		Then value of scenario variable title should be Overview
+		Then value of feature variable title should be Overview 
+
+	Scenario: checking values of scenario and feature variables
+		Then value of scenario variable title should be undefined
+		Then value of feature variable title should be Overview
 
 	Scenario: setting body path as variable (json)
 		When I GET /get
-		Then I store the value of body path $.headers.User-Agent as agent
+		Then I store the value of body path $.headers.User-Agent as agent in scenario scope
+		Then value of scenario variable agent should be apickli
