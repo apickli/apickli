@@ -1,3 +1,4 @@
+/* jslint node: true */
 'use strict';
 
 var request = require('request');
@@ -122,12 +123,10 @@ Util.prototype.evalPath = function(path, content) {
 };
 
 Util.prototype.assertStringContains = function(content, string) {
-	if (content){
-		if (content.indexOf(string) == -1) {
-			return false;
-		}
+	if ((content) && (content.indexOf(string) > -1)) {
 		return true;
-	} 	
+	} 
+
 	return false;
 };
 

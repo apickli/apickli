@@ -78,8 +78,8 @@ Feature:
 
 	Scenario: setting header value as variable
 		When I GET /get
-		Then I store the value of Content-Length response header as agent in scenario scope
-		Then value of scenario variable agent should be 209
+		Then I store the value of Server response header as agent in scenario scope
+		Then value of scenario variable agent should be nginx
 
 	Scenario: setting body path as variable (xml)
 		When I GET /xml
