@@ -4,30 +4,47 @@
 var request = require('request');
 var jsonPath = require('JSONPath');
 var libxmljs = require('libxmljs');
+var fs = require('fs');
 
+var domain;
 var headers = {};
 var httpResponse = {};
 var requestBody = '';
+var scenarioVariables = {};
 
-function HttpClient(scheme, domain) {
+function apickli(scheme, domain) {
 	this.domain = scheme + '://' + domain;
+	this.headers = {};
+	httpResponse = {};
+	requestBody = '';
+	scenarioVariables = {};
 }
 
-function Util() {}
-
-HttpClient.prototype.addHeader = function(name, value) {
+apickli.prototype.addRequestHeader = function(name, value) {
 	headers[name] = value;
 };
 
-HttpClient.prototype.getResponse = function() {
+apickli.prototype.getResponseObject = function() {
 	return httpResponse;
 };
 
-HttpClient.prototype.setRequestBody = function(body) {
+apickli.prototype.setRequestBody = function(body) {
 	requestBody = body;
 };
 
-HttpClient.prototype.get = function(resource, callback) {
+apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
+	var me = this;
+	fs.readFile(file, 'utf8', function(err, data) {
+		if (err) {
+			callback(err);
+		}
+
+		me.setRequestBody(data);
+		callback();
+	});
+};
+
+apickli.prototype.get = function(resource, callback) { // callback(error, response)
 	request.get({
 		url: this.domain + resource,
 		headers: headers
@@ -42,7 +59,7 @@ HttpClient.prototype.get = function(resource, callback) {
 	});
 };
 
-HttpClient.prototype.post = function(resource, callback) {
+apickli.prototype.post = function(resource, callback) { // callback(error, response)
 	request({
 		url: this.domain + resource,
 		headers: headers,
@@ -59,7 +76,7 @@ HttpClient.prototype.post = function(resource, callback) {
 	});
 };
 
-HttpClient.prototype.put = function(resource, callback) {
+apickli.prototype.put = function(resource, callback) { // callback(error, response)
 	request({
 		url: this.domain + resource,
 		headers: headers,
@@ -76,7 +93,7 @@ HttpClient.prototype.put = function(resource, callback) {
 	});
 };
 
-HttpClient.prototype.delete = function(resource, callback) {
+apickli.prototype.delete = function(resource, callback) { // callback(error, response)
 	request({
 		url: this.domain + resource,
 		headers: headers,
@@ -93,7 +110,63 @@ HttpClient.prototype.delete = function(resource, callback) {
 	});
 };
 
-Util.prototype.getContentType = function(content) {
+apickli.prototype.addHttpBasicAuthenticationHeader = function(username, password) {
+	var b64EncodedValue = base64Encode(username + ':' + password);
+	this.addRequestHeader('Authentication', b64EncodedValue);
+};
+
+apickli.prototype.assertResponseCode = function(responseCode) {
+	var realResponseCode = this.getResponseObject().statusCode;
+	return (realResponseCode == responseCode);
+};
+
+apickli.prototype.assertResponseContainsHeader = function(header, callback) {
+	if (this.getResponseObject().headers[header.toLowerCase()]) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+apickli.prototype.assertHeaderValue = function (header, expression) {
+	var realHeaderValue = this.getResponseObject().headers[header.toLowerCase()];
+	var regex = new RegExp(expression);
+	return (regex.test(realHeaderValue));
+};
+
+apickli.prototype.evaluatePathInResponseBody = function(path, regexp) {
+	var regExpObject = new RegExp(regexp);
+	var evalValue = evaluatePath(path, this.getResponseObject().body);
+	return (regExpObject.test(evalValue));
+};
+
+apickli.prototype.assertResponseBodyContainsExpression = function(expression) {
+	var regex = new RegExp(expression);
+	return (regex.test(this.getResponseObject().body));
+};
+
+apickli.prototype.assertResponseBodyContentType = function(contentType) {
+	var realContentType = getContentType(this.getResponseObject().body);
+	return (realContentType === contentType);
+};
+
+apickli.prototype.storeValueOfHeaderInScenarioScope = function(header, variableName) {
+	var value = this.getResponseObject().headers[header.toLowerCase()];
+	scenarioVariables[variableName] = value;
+};
+
+apickli.prototype.storeValueOfResponseBodyPathInScenarioScope = function(path, variableName) {
+	var value = evaluatePath(path, this.getResponseObject().body);
+	scenarioVariables[variableName] = value;
+};
+
+apickli.prototype.assertScenarioVariableValue = function(variable, value) {
+	return (String(scenarioVariables[variable]) === value);
+};
+
+exports.apickli = apickli;
+
+var getContentType = function(content) {
 	try{
 		JSON.parse(content);
 		return 'json';
@@ -107,8 +180,8 @@ Util.prototype.getContentType = function(content) {
 	}
 };
 
-Util.prototype.evalPath = function(path, content) {
-	var contentType = this.getContentType(content);
+var evaluatePath = function(path, content) {
+	var contentType = getContentType(content);
 
 	switch (contentType) {
 		case 'json':
@@ -122,15 +195,6 @@ Util.prototype.evalPath = function(path, content) {
 	}
 };
 
-Util.prototype.assertStringContains = function(content, string) {
-	if ((content) && (content.indexOf(string) > -1)) {
-		return true;
-	} 
-
-	return false;
+var base64Encode = function(str) {
+	return new Buffer(str).toString('base64');
 };
-
-Util.prototype.featureVariables = {};
-
-exports.Util = Util;
-exports.HttpClient = HttpClient;

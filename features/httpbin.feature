@@ -34,7 +34,7 @@ Feature:
 
 	Scenario: Parsing response xml body
 		When I GET /xml
-		Then response body path /slideshow/slide[1]/title should be Wake up to WonderWidgets!	
+		Then response body path /slideshow/slide[1]/title should be Wake up to WonderWidgets!
 
 	Scenario: Response body content type assertions (xml)
 		When I GET /xml
@@ -58,7 +58,7 @@ Feature:
 		When I GET /xml
 		Then response header Content-Type should be application/xml
 		And response header Content-Type should be [a-z]/xml
-		And response header Connection should not be boo 
+		And response header Connection should not be boo
 
 	Scenario: Response body text assertions
 		When I GET /xml
@@ -78,7 +78,7 @@ Feature:
 
 	Scenario: setting header value as variable
 		When I GET /get
-		Then I store the value of Server response header as agent in scenario scope
+		Then I store the value of response header Server as agent in scenario scope
 		Then value of scenario variable agent should be nginx
 
 	Scenario: setting body path as variable (xml)
@@ -86,10 +86,10 @@ Feature:
 		And I store the value of body path /slideshow/slide[2]/title as title in scenario scope
 		Then value of scenario variable title should be Overview
 
-	Scenario: checking values of scenario and feature variables
-		Then value of scenario variable title should be undefined
-
 	Scenario: setting body path as variable (json)
 		When I GET /get
 		And I store the value of body path $.headers.User-Agent as agent in scenario scope
 		Then value of scenario variable agent should be apickli
+
+	Scenario: checking values of scenario variables
+		Then value of scenario variable title should be undefined

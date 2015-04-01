@@ -1,51 +1,39 @@
 /* jslint node: true */
 'use strict';
 
-var fs = require('fs');
-
 var apickli = require('../support/apickli.js');
-var util = new apickli.Util();
 
 module.exports = function() {
 
-	// executes before each scenario
-	this.Before(function(callback) {
-		this.scenarioVariables = {};
-		callback();
-	});
-
 	this.Given(/^I set (.*) header to (.*)$/, function(headerName, headerValue, callback) {
-		this.httpClient.addHeader(headerName, headerValue);
+		this.apickli.addRequestHeader(headerName, headerValue);
 		callback();
 	});
 
 	this.Given(/^I set body to (.*)$/, function(bodyValue, callback) {
-		this.httpClient.setRequestBody(bodyValue);
+		this.apickli.setRequestBody(bodyValue);
 		callback();
 	});
 
 	this.Given(/^I pipe contents of file (.*) to body$/, function(file, callback) {
-		var t = this;
-		fs.readFile(file, 'utf8', function(err, data) {
-			if (err) {
-				callback.fail(err);
+		this.apickli.pipeFileContentsToRequestBody(file, function(error) {
+			if (error) {
+				callback.fail(error);
 			}
 
-			t.httpClient.setRequestBody(data);
 			callback();
 		});
 	});
 
 	this.Given(/^I have basic authentication credentials (.*) and (.*)$/, function(username, password, callback) {
-		var base64String = new Buffer(username + ':' + password).toString('base64');
-		this.httpClient.addHeader('Authorization', base64String);
+		this.apickli.addHttpBasicAuthenticationHeader(username, password);
 		callback();
 	});
 
 	this.When(/^I GET (.*)$/, function(resource, callback) {
-		this.httpClient.get(resource, function(error, response) {
+		this.apickli.get(resource, function(error, response) {
 			if (error) {
-				return callback.fail(error);
+				callback.fail(error);
 			}
 
 			callback();
@@ -53,9 +41,9 @@ module.exports = function() {
 	});
 
 	this.When('I POST $resource', function(resource, callback) {
-		this.httpClient.post(resource, function(error, response) {
+		this.apickli.post(resource, function(error, response) {
 			if (error) {
-				return callback.fail(error);
+				callback.fail(error);
 			}
 
 			callback();
@@ -63,9 +51,9 @@ module.exports = function() {
 	});
 
 	this.When('I PUT $resource', function(resource, callback) {
-		this.httpClient.put(resource, function(error, response) {
+		this.apickli.put(resource, function(error, response) {
 			if (error) {
-				return callback.fail(error);
+				callback.fail(error);
 			}
 
 			callback();
@@ -73,9 +61,9 @@ module.exports = function() {
 	});
 
 	this.When('I DELETE $resource', function(resource, callback) {
-		this.httpClient.delete(resource, function(error, response) {
+		this.apickli.delete(resource, function(error, response) {
 			if (error) {
-				return callback.fail(error);
+				callback.fail(error);
 			}
 
 			callback();
@@ -83,15 +71,15 @@ module.exports = function() {
 	});
 
 	this.Then(/^response header (.*) should exist$/, function(header, callback) {
-		if (this.httpClient.getResponse().headers[header]) {
+		if (this.apickli.assertResponseContainsHeader(header)) {
 			callback();
 		} else {
-			callback.fail('response header ' + header + ' doesn\'t exist in response');
+			callback.fail('response header ' + header + ' does not exists in response');
 		}
 	});
 
 	this.Then(/^response header (.*) should not exist$/, function(header, callback) {
-		if (this.httpClient.getResponse().headers[header]) {
+		if (this.apickli.assertResponseContainsHeader(header)) {
 			callback.fail('response header ' + header + ' exists in response');
 		} else {
 			callback();
@@ -99,7 +87,7 @@ module.exports = function() {
 	});
 
 	this.Then(/^response body should be valid (xml|json)$/, function(contentType, callback) {
-		if (util.getContentType(this.httpClient.getResponse().body)) {
+		if (this.apickli.assertResponseBodyContentType(contentType)) {
 			callback();
 		} else {
 			callback.fail('response body is not valid ' + contentType);
@@ -107,101 +95,84 @@ module.exports = function() {
 	});
 
 	this.Then(/^response code should be (\d+)$/, function(responseCode, callback) {
-		var realStatusCode = this.httpClient.getResponse().statusCode;
-		if (realStatusCode == responseCode) {
+		if (this.apickli.assertResponseCode(responseCode)) {
 			callback();
 		} else {
-			callback.fail('response code isn\'t ' + responseCode + ', it\'s ' + realStatusCode);
+			callback.fail('response code is not ' + responseCode);
 		}
 	});
 
 	this.Then(/^response code should not be (\d+)$/, function(responseCode, callback) {
-		if (this.httpClient.getResponse().statusCode != responseCode) {
-			callback();
-		} else {
+		if (this.apickli.assertResponseCode(responseCode)) {
 			callback.fail('response code is ' + responseCode);
+		} else {
+			callback();
 		}
 	});
 
-	this.Then(/^response header (.*) should be (.*)$/, function(name, value, callback) {
-		var realValue = this.httpClient.getResponse().headers[name.toLowerCase()];
-		var regex = new RegExp(value);
-		if (regex.test(realValue)) {
+	this.Then(/^response header (.*) should be (.*)$/, function(header, expression, callback) {
+		if (this.apickli.assertHeaderValue(header, expression)) {
 			callback();
 		} else {
-			callback.fail('response header ' + name + ' isn\'t ' + value + ', it\'s ' + realValue);
+			callback.fail('response header ' + header + ' is not ' + expression);
 		}
 	});
 
-	this.Then(/^response header (.*) should not be (.*)$/, function(name, value, callback) {
-		var realValue = this.httpClient.getResponse().headers[name.toLowerCase()];
-		var regex = new RegExp(value);
-		if (!regex.test(realValue)) {
-			callback();
+	this.Then(/^response header (.*) should not be (.*)$/, function(header, expression, callback) {
+		if (this.apickli.assertHeaderValue(header, expression)) {
+			callback.fail('response header ' + header + ' is ' + expression);
 		} else {
-			callback.fail('response header ' + name + ' is ' + value);
+			callback();
 		}
 	});
 
-	this.Then(/^response body should contain (.*)$/, function(value, callback) {
-		var regex = new RegExp(value);
-		if (regex.test(this.httpClient.getResponse().body)) {
+	this.Then(/^response body should contain (.*)$/, function(expression, callback) {
+		if (this.apickli.assertResponseBodyContainsExpression(expression)) {
 			callback();
 		} else {
-			callback.fail('response body doesn\'t contain ' + value);
+			callback.fail('response body doesn\'t contain ' + expression);
 		}
 	});
 
-	this.Then(/^response body should not contain (.*)$/, function(value, callback) {
-		var regex = new RegExp(value);
-		if (!regex.test(this.httpClient.getResponse().body)) {
-			callback();
+	this.Then(/^response body should not contain (.*)$/, function(expression, callback) {
+		if (this.apickli.assertResponseBodyContainsExpression(expression)) {
+			callback.fail('response body contains ' + expression);
 		} else {
-			callback.fail('response body contains ' + value);
+			callback();
 		}
 	});
 
 	this.Then(/^response body path (.*) should be (.*)$/, function(path, value, callback) {
-		var regex = new RegExp(value);
-		var evalValue = util.evalPath(path, this.httpClient.getResponse().body);
-
-		if (regex.test(evalValue)) {
+		if (this.apickli.evaluatePathInResponseBody(path, value)) {
 			callback();
 		} else {
-			callback.fail('response body path ' + evalValue + ' doesn\'t match ' + value);
+			callback.fail('response body path ' + path + ' doesn\'t match ' + value);
 		}
 	});
 
 	this.Then(/^response body path (.*) should not be (.*)$/, function(path, value, callback) {
-		var regex = new RegExp(value);
-		var evalValue = util.evalPath(path, this.httpClient.getResponse().body);
-
-		if (!regex.test(evalValue)) {
-			callback();
+		if (this.apickli.evaluatePathInResponseBody(path, value)) {
+			callback.fail('response body path ' + path + ' matches ' + value);
 		} else {
-			callback.fail('response body path value ' + evalValue + ' matches ' + value);
+			callback();
 		}
 	});
 
-	this.When(/^I store the value of (.*) response header as (.*) in scenario scope$/, function(name, variable, callback) {
-		var value = this.httpClient.getResponse().headers[name.toLowerCase()];
-		this.scenarioVariables[variable] = value;
-
+	this.When(/^I store the value of response header (.*) as (.*) in scenario scope$/, function(name, variable, callback) {
+		this.apickli.storeValueOfHeaderInScenarioScope(name, variable);
 		callback();
 	});
 
 	this.When(/^I store the value of body path (.*) as (.*) in scenario scope$/, function(path, variable, callback) {
-		var value = util.evalPath(path, this.httpClient.getResponse().body);
-		this.scenarioVariables[variable] = value;
-		
+		this.apickli.storeValueOfResponseBodyPathInScenarioScope(path, variable);
 		callback();
 	});
 
 	this.Then(/^value of scenario variable (.*) should be (.*)$/, function(variableName, variableValue, callback) {
-		if (String(this.scenarioVariables[variableName]) !== variableValue) {
-			callback.fail('value of variable ' + variableName + ' isn\'t equal to ' + variableValue + ', it\'s ' + this.scenarioVariables[variableName]);
+		if (this.apickli.assertScenarioVariableValue(variableName, variableValue)) {
+			callback();
+		} else {
+			callback.fail('value of variable ' + variableName + ' isn\'t equal to ' + variableValue);
 		}
-
-		callback();
 	});
 };

@@ -4,9 +4,11 @@
 var apickli = require('../support/apickli.js');
 
 module.exports = function() {
+
 	// cleanup before every scenario
 	this.Before(function(callback) {
-		this.httpClient = new apickli.HttpClient('http', 'httpbin.org');
+		this.apickli = new apickli.apickli('http', 'httpbin.org');
 		callback();
 	});
+
 };
