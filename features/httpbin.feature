@@ -72,6 +72,7 @@ Feature:
 		Then response body path /slideshow/slide[2]/title should not be \d+
 
 	Scenario: Response body jsonpath assertions
+		Given I set User-Agent header to apickli
 		When I GET /get
 		Then response body path $.headers.User-Agent should be [a-z]+
 		Then response body path $.headers.User-Agent should not be \d+
@@ -87,6 +88,7 @@ Feature:
 		Then value of scenario variable title should be Overview
 
 	Scenario: setting body path as variable (json)
+		Given I set User-Agent header to apickli
 		When I GET /get
 		And I store the value of body path $.headers.User-Agent as agent in scenario scope
 		Then value of scenario variable agent should be apickli

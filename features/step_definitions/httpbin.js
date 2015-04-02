@@ -7,7 +7,7 @@ module.exports = function() {
 
 	// cleanup before every scenario
 	this.Before(function(callback) {
-		this.apickli = new apickli.apickli('http', 'httpbin.org');
+		this.apickli = new apickli.Apickli('http', 'httpbin.org');
 		callback();
 	});
 
