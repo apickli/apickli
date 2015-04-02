@@ -1,10 +1,26 @@
 {
     "name": "apickli",
-    "version": "0.0.1",
-    "description": "Test framework for REST apis based on cucumber.js",
+    "version": "0.1.0",
+    "description": "Collection of utility functions and a gerkhin framework for REST API integration testing based on cucumber.js",
     "scripts": {
         "test": "grunt"
     },
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/apickli/apickli.git"
+	},
+	"keywords": [
+		"cucumber.js",
+		"integration",
+		"rest",
+		"api"
+	],
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://github.com/apickli/apickli/blob/master/LICENSE"
+		}
+	],
     "dependencies": {
         "JSONPath": "latest",
         "grunt": "latest",
