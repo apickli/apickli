@@ -24,8 +24,21 @@ Your API end 2 end test project directory has to match the structure expected by
     -------------- httpbin.js
     ---- config.json
     
-Specify apickli in your *config.json* update the project
+Features directory contains Cucumber feature files written in Gherkin. Step_definitions contains the JavaScript implementation of Gherkin test cases. Check out the GitHub repository for example implementations covering most used scenarions in API end 2 end testing cases.
+
+Update the project dependencies:
 
     $ npm install
-
     
+The following will run all the Cucumber.js test cases (in the project directory)
+
+    $ cucumber.js features/httpbin.feature
+    
+Or you can use task runner like **Grunt.js** to run the tests. Check the [Apickli example on GitHub](https://github.com/apickli/apickli/blob/master/Gruntfile.js) for Grunt configuration: 
+
+    $ grunt tests
+        
+### Contributing
+
+If you have any comments or suggestions, feel free to raise [Issues on GitHub](https://github.com/apickli/apickli/issues) or fork the project and issue a pull request with suggested improvements.
+
