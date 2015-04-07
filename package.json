@@ -1,6 +1,6 @@
 {
     "name": "apickli",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Collection of utility functions and a gerkhin framework for REST API integration testing based on cucumber.js",
 	"main": "apickli.js",
     "scripts": {
