@@ -1,20 +1,20 @@
 # apickli - API integration testing framework
 
-**Apickli** is a Node.js package and REST API integration testing framework based on cucumber.js and Gherkin.
+**Apickli** is a REST API integration testing framework based on cucumber.js.
 
 It provides a gherkin framework and a collection of utility functions to make API testing easy and less time consuming.
 
-**Apickli** is available as an *npm* package via [Node Package Manager repository](https://www.npmjs.com/package/apickli)
+**Apickli** is also available as an  via [NPM package](https://www.npmjs.com/package/apickli).
 
 [Cucumber.js](https://github.com/cucumber/cucumber-js) is JavaScript & Node.js implementation of Behaviour Driven Development test framework - [Cucumber](http://cukes.info/). Cucumber.js is using [Gherkin](http://cukes.info/gherkin.html) language for describing the test scenarios in [BDD](http://en.wikipedia.org/wiki/Behavior-driven_development) manner.  
 
 ## How to start - a simple tutorial
 
-**Apickli** depends on cucumber.js being installed on your system. You can do this by installing cucumber.js globaly:
+**Apickli** depends on cucumber.js being installed on your system. You can do this by installing cucumber.js globally:
 
     $: npm install -g cucumber
 
-Let's start a new integration testing folder for an API called *myapi*. The folder structure will need to match the structure expected by cucumber-js:
+Let's start a new integration testing project for an API called *myapi*. The folder structure will need to match the structure expected by cucumber.js:
 
     test/
     ---- features/
@@ -23,9 +23,9 @@ Let's start a new integration testing folder for an API called *myapi*. The fold
     -------------- myapi.js
     ---- package.json
     
-Features directory contains Cucumber feature files written in Gherkin. Step_definitions contains the JavaScript implementation of Gherkin test cases. Check out the GitHub repository for example implementations covering most used testing scenarios.
+Features directory contains cucumber feature files written in gherkin syntax. step_definitions contains the JavaScript implementation of gherkin test cases. Check out the GitHub repository for example implementations covering most used testing scenarios.
 
-This can be an example package.json file:
+This can be an example package.json file for our project:
 
 ```
 {
@@ -38,11 +38,11 @@ This can be an example package.json file:
 }
 ```
 
-Now we can get all project dependencies installed: 
+Now we can get the project dependencies installed: 
 
     $ npm install
     
-We can now start defining our scenarios for the test. For this tutorial, we will be borrowing sections from the example scenario in apickli source. 
+We can now start defining our scenarios for the test. For this tutorial, we will be borrowing sections from the example scenarios in apickli source code. 
 
 Let's start with the scenario file called *myapi.feature*. Full scenario definition with various other functions can be found here: https://github.com/apickli/apickli/blob/master/features/httpbin.feature
 
@@ -170,7 +170,41 @@ Feature:
 
 Done, without errors.
 ``` 
+## Gherkin Expressions
+The following gherkin expressions are implemented in httpbin.feature and httpbin.js example scenario definitions in apickli source code:
+
+```
+GIVEN:
+	I set (.*) header to (.*)
+	I set body to (.*)
+	I pipe contents of file (.*) to body
+	I have basic authentication credentials (.*) and (.*)
+	
+WHEN:
+	I GET $resource
+	I POST $resource
+	I PUT $resource
+	I DELETE $resource
+	
+THEN:
+	response header (.*) should exist
+	response header (.*) should not exist
+	response body should be valid (xml|json)
+	response code should be (\d+)
+	response code should not be (\d+)
+	response header (.*) should be (.*)
+	response header (.*) should not be (.*)
+	response body should contain (.*)
+	response body should not contain (.*)
+	response body path (.*) should be (.*)
+	response body path (.*) should not be (.*)
+	I store the value of response header (.*) as (.*) in scenario scope
+	I store the value of body path (.*) as (.*) in scenario scope
+	value of scenario variable (.*) should be (.*)
+```
+
+The simplest way to adopt these expressions is to copy https://github.com/apickli/apickli/blob/master/features/step_definitions/httpbin.js into your own project folder and change its name to something like apickli.js.
         
-### Contributing
+## Contributing
 
 If you have any comments or suggestions, feel free to raise [an issue](https://github.com/apickli/apickli/issues) or fork the project and issue a pull request with suggested improvements.
