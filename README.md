@@ -4,7 +4,7 @@
 
 It provides a gherkin framework and a collection of utility functions to make API testing easy and less time consuming.
 
-**Apickli** is also available as an  via [NPM package](https://www.npmjs.com/package/apickli).
+**Apickli** is also available as an [NPM package](https://www.npmjs.com/package/apickli).
 
 [Cucumber.js](https://github.com/cucumber/cucumber-js) is JavaScript & Node.js implementation of Behaviour Driven Development test framework - [Cucumber](http://cukes.info/). Cucumber.js is using [Gherkin](http://cukes.info/gherkin.html) language for describing the test scenarios in [BDD](http://en.wikipedia.org/wiki/Behavior-driven_development) manner.  
 
@@ -108,9 +108,9 @@ The following will run our scenario (in the project directory):
 	
 ## Grunt integration
     
-You can use [Grunt](http://gruntjs.com/) task runner to run the tests. In order to do that, you will need to add two more dependencies to our project:
+You can also use [Grunt](http://gruntjs.com/) task runner to run the tests. 
 
-Add a Gruntfile.js to the project root:
+Start by adding a Gruntfile.js to the project root:
 
 ```
 'use strict';
@@ -203,7 +203,7 @@ THEN:
 	value of scenario variable (.*) should be (.*)
 ```
 
-The simplest way to adopt these expressions is to copy https://github.com/apickli/apickli/blob/master/features/step_definitions/httpbin.js into your own project folder and change its name to something like apickli.js.
+The simplest way to adopt these expressions is to copy https://github.com/apickli/apickli/blob/master/features/step_definitions/httpbin.js into your own project folder (step_definitions folder) and change the file name to something like apickli.js.
         
 ## Contributing
 
