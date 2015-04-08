@@ -14,6 +14,14 @@ It provides a gherkin framework and a collection of utility functions to make AP
 
     $: npm install -g cucumber
 
+### Copy example project
+
+You can copy existing `example-project` directory in this code repositary which has scelethon test project created with tests against `httpbin.org`
+
+### Start new project
+
+Below steps will help you to begin with API end 2 end integration tests.
+
 Let's start a new integration testing project for an API called *myapi*. The folder structure will need to match the structure expected by cucumber.js:
 
     test/
