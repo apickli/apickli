@@ -1,1 +1,1 @@
-../../../source/apickli/apickli-gherkin.js
+../../node_modules/apickli/apickli-gherkin.js
