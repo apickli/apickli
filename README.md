@@ -16,11 +16,11 @@ It provides a gherkin framework and a collection of utility functions to make AP
 
 ### Copy example project
 
-You can copy existing `example-project` directory in this code repositary which has scelethon test project created with tests against `httpbin.org`
+You can copy existing [example-project](example-project) directory in this code repository which has skeleton test project created with tests against `httpbin.org`
 
 ### Start new project
 
-Below steps will help you to begin with API end 2 end integration tests.
+Below steps will help you start a new test project from scratch.
 
 Let's start a new integration testing project for an API called *myapi*. The folder structure will need to match the structure expected by cucumber.js:
 
@@ -50,9 +50,9 @@ Now we can get the project dependencies installed:
 
     $ npm install
     
-We can now start defining our scenarios for the test. For this tutorial, we will be borrowing sections from the example scenarios in apickli source code. 
+We can now start defining our scenarios for the test. For this tutorial, we will be borrowing sections from the [example project](example-project/) in apickli source code. 
 
-Let's start with the scenario file called *myapi.feature*. Full scenario definition with various other functions can be found here: https://github.com/apickli/apickli/blob/master/features/httpbin.feature
+Let's start with the scenario file called *myapi.feature*. Full scenario definition with various other functions can be found here: [example-project/features/httpbin.feature](example-project/features/httpbin.feature)
 
 ```
 Feature:
@@ -64,7 +64,9 @@ Feature:
 		When I GET /get
 		Then response body path $.headers.User-Agent should be apickli
 ```
-We now need the corresponding step definition file, called *myapi.js*. We will be borrowing the relevant sections from apickli source code again. Full functionality can be found here: https://github.com/apickli/apickli/blob/master/features/step_definitions/httpbin.js
+We now need the corresponding step definitions that implements the steps in our scenario. Apickli has a collection of steps already implemented - ready to be included in your project. You can find and include it in your project from [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js). Refer to [Gherkin Expressions](#gherkin-expressions) section below to see a list of steps implemented by apickli.
+
+Now we need a step definition file specific for this project, let's call it *myapi.js*:
 
 ```
 /* jslint node: true */
@@ -73,39 +75,13 @@ We now need the corresponding step definition file, called *myapi.js*. We will b
 var apickli = require('apickli');
 
 module.exports = function() {
-
 	// cleanup before every scenario
 	this.Before(function(callback) {
 		this.apickli = new apickli.Apickli('http', 'httpbin.org');
 		callback();
 	});
-
-	this.Given(/^I set (.*) header to (.*)$/, function(headerName, headerValue, callback) {
-		this.apickli.addRequestHeader(headerName, headerValue);
-		callback();
-	});
-
-	this.When(/^I GET (.*)$/, function(resource, callback) {
-		this.apickli.get(resource, function(error, response) {
-			if (error) {
-				callback.fail(error);
-			}
-
-			callback();
-		});
-	});
-
-	this.Then(/^response body path (.*) should be (.*)$/, function(path, value, callback) {
-		if (this.apickli.evaluatePathInResponseBody(path, value)) {
-			callback();
-		} else {
-			callback.fail('response body path ' + path + ' doesn\'t match ' + value);
-		}
-	});
 };
 ```
-
-
 The following will run our scenario (in the project directory):
 
     $ cucumber-js features/httpbin.feature
@@ -179,7 +155,7 @@ Feature:
 Done, without errors.
 ``` 
 ## Gherkin Expressions
-The following gherkin expressions are implemented in httpbin.feature and httpbin.js example scenario definitions in apickli source code:
+The following gherkin expressions are implemented in apickli source code [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js):
 
 ```
 GIVEN:
@@ -211,7 +187,7 @@ THEN:
 	value of scenario variable (.*) should be (.*)
 ```
 
-The simplest way to adopt these expressions is to copy https://github.com/apickli/apickli/blob/master/features/step_definitions/httpbin.js into your own project folder (step_definitions folder) and change the file name to something like apickli.js.
+The simplest way to adopt these expressions is to copy [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js) into your own project's step_definitions folder.
         
 ## Contributing
 
