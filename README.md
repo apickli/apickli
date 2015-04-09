@@ -64,7 +64,9 @@ Feature:
 		When I GET /get
 		Then response body path $.headers.User-Agent should be apickli
 ```
-We now need the corresponding step definitions that implements the steps in our scenario. Apickli has a collection of steps already implemented - ready to be included in your project. You can find and include it in your project from [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js). Refer to [Gherkin Expressions](#gherkin-expressions) section below to see a list of steps implemented by apickli.
+We now need the corresponding step definitions that implement the steps in our scenario. Apickli has a collection of steps already implemented - ready to be included in your project: [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js). It is included in the NPM package so you can symlink to it from under your local node_modules/apickli folder - see [example-project/features/step_definitions/apickli-gherkin.js](example-project/features/step_definitions/apickli-gherkin.js) for symlink. 
+
+Refer to [Gherkin Expressions](#gherkin-expressions) section below to see a list of steps implemented by apickli-gherkin.
 
 Now we need a step definition file specific for this project, let's call it *myapi.js*:
 
@@ -187,7 +189,9 @@ THEN:
 	value of scenario variable (.*) should be (.*)
 ```
 
-The simplest way to adopt these expressions is to copy [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js) into your own project's step_definitions folder.
+The simplest way to adopt these expressions is to create a symlink from node_modules/apickli/apickli-gherkin.js to features/step_definitions/apickli-gherkin.js
+
+	$ ln -s node_modules/apickli/apickli-gherkin.js features/step_definitions/apickli-gherkin.js
         
 ## Contributing
 
