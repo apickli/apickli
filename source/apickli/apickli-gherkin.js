@@ -1,15 +1,7 @@
 /* jslint node: true */
 'use strict';
 
-var apickli = require('../support/apickli.js');
-
 module.exports = function() {
-
-	// cleanup before every scenario
-	this.Before(function(callback) {
-		this.apickli = new apickli.Apickli('http', 'httpbin.org');
-		callback();
-	});
 
 	this.Given(/^I set (.*) header to (.*)$/, function(headerName, headerValue, callback) {
 		this.apickli.addRequestHeader(headerName, headerValue);

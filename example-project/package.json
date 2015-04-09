@@ -1,0 +1,13 @@
+{
+    "name": "httpbin-test",
+    "version": "1.0.0",
+    "description": "Integration testing for myapi with httpbin.org",
+    "scripts": {
+        "test": "grunt tests"
+    },
+    "dependencies": {
+        "apickli":"latest",
+        "grunt": "latest",
+        "grunt-cucumber": "latest"
+    }
+}
