@@ -8,6 +8,8 @@
     "dependencies": {
         "apickli":"latest",
         "grunt": "latest",
-        "grunt-cucumber": "latest"
+        "grunt-cucumber": "latest",
+		"gulp": "latest",
+		"gulp-cucumber": "latest"
     }
 }

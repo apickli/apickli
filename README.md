@@ -22,6 +22,7 @@ You can copy existing [example-project](example-project) directory in this code 
 
 Below steps will help you start a new test project from scratch.
 
+### 1. Folder structure
 Let's start a new integration testing project for an API called *myapi*. The folder structure will need to match the structure expected by cucumber.js:
 
     test/
@@ -33,6 +34,7 @@ Let's start a new integration testing project for an API called *myapi*. The fol
     
 Features directory contains cucumber feature files written in gherkin syntax. step_definitions contains the JavaScript implementation of gherkin test cases. Check out the GitHub repository for example implementations covering most used testing scenarios.
 
+### 2. Package.json
 This can be an example package.json file for our project:
 
 ```
@@ -46,10 +48,12 @@ This can be an example package.json file for our project:
 }
 ```
 
+### 3. Install dependencies
 Now we can get the project dependencies installed: 
 
     $ npm install
     
+### 4. Scenario definitions
 We can now start defining our scenarios for the test. For this tutorial, we will be borrowing sections from the [example project](example-project/) in apickli source code. 
 
 Let's start with the scenario file called *myapi.feature*. Full scenario definition with various other functions can be found here: [example-project/features/httpbin.feature](example-project/features/httpbin.feature)
@@ -64,10 +68,13 @@ Feature:
 		When I GET /get
 		Then response body path $.headers.User-Agent should be apickli
 ```
+
+### 5. Get apickli-gherkin steps
 We now need the corresponding step definitions that implement the steps in our scenario. Apickli has a collection of steps already implemented - ready to be included in your project: [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js). It is included in the NPM package so you can symlink to it from under your local node_modules/apickli folder - see [example-project/features/step_definitions/apickli-gherkin.js](example-project/features/step_definitions/apickli-gherkin.js) for symlink. 
 
 Refer to [Gherkin Expressions](#gherkin-expressions) section below to see a list of steps implemented by apickli-gherkin.
 
+### 6. Step_definitions for this project
 Now we need a step definition file specific for this project, let's call it *myapi.js*:
 
 ```
@@ -84,6 +91,8 @@ module.exports = function() {
 	});
 };
 ```
+
+### 7. Run tests with cucumber.js
 The following will run our scenario (in the project directory):
 
     $ cucumber-js features/httpbin.feature
@@ -96,7 +105,7 @@ The following will run our scenario (in the project directory):
     
 You can also use [Grunt](http://gruntjs.com/) task runner to run the tests. 
 
-Start by adding a Gruntfile.js to the project root:
+### 1. Start by adding a Gruntfile.js to the project root:
 
 ```
 'use strict';
@@ -117,7 +126,7 @@ module.exports = function(grunt) {
 }
 ```
 
-Add grunt and grunt-cucumber dependencies to package.json:
+### 2. Add grunt and grunt-cucumber dependencies to package.json:
 
 ```
 	...
@@ -129,12 +138,12 @@ Add grunt and grunt-cucumber dependencies to package.json:
 	...
 ```
 
-Install the new dependencies:
+### 3. Install the new dependencies:
 
 ```
 npm install
 ```
-Now you can run the same tests using grunt:
+### 4. Now you can run the same tests using grunt:
 
 ```
 $ grunt tests
@@ -156,6 +165,47 @@ Feature:
 
 Done, without errors.
 ``` 
+## Gulp Integration
+You can also use [Gulp](http://gulpjs.com/) to run the tests.
+
+### 1. Start by adding a Gulpfile.js to the project root:
+
+```
+var gulp = require('gulp');
+var cucumber = require('gulp-cucumber');
+ 
+gulp.task('test', function() {
+    return gulp.src('features/*')
+			.pipe(cucumber({
+				'steps': 'features/step_definitions/*.js',
+				'format': 'pretty'
+			}));
+});
+```
+### 2. Add gulp and gulp-cucumber dependencies to package.json:
+
+```
+...
+	"gulp": "latest",
+	"gulp-cucumber": "latest"
+...
+```
+### 3. Install local dependencies
+```
+npm install
+```
+
+### 4. Install gulp
+```
+$ npm install -g gulp
+```
+See [https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md).
+
+### 5. Run tests using gulp
+```
+$ gulp test
+``` 
+
 ## Gherkin Expressions
 The following gherkin expressions are implemented in apickli source code [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js):
 
