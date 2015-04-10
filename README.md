@@ -12,7 +12,9 @@ It provides a gherkin framework and a collection of utility functions to make AP
 
 **Apickli** depends on cucumber.js being installed on your system. You can do this by installing cucumber.js globally:
 
-    $: npm install -g cucumber
+```sh
+$ npm install -g cucumber
+```
 
 ### Copy example project
 
@@ -37,7 +39,7 @@ Features directory contains cucumber feature files written in gherkin syntax. st
 #### 2. Package.json
 This can be an example package.json file for our project:
 
-```
+```json
 {
 	"name": "myapi-test",
 	"version": "1.0.0",
@@ -51,7 +53,9 @@ This can be an example package.json file for our project:
 #### 3. Install dependencies
 Now we can get the project dependencies installed: 
 
-    $ npm install
+```sh
+$ npm install
+```
     
 #### 4. Scenario definitions
 We can now start defining our scenarios for the test. For this tutorial, we will be borrowing sections from the [example project](example-project/) in apickli source code. 
@@ -77,7 +81,7 @@ Refer to [Gherkin Expressions](#gherkin-expressions) section below to see a list
 #### 6. Step_definitions for this project
 Now we need a step definition file specific for this project, let's call it *myapi.js*:
 
-```
+```js
 /* jslint node: true */
 'use strict';
 
@@ -95,11 +99,13 @@ module.exports = function() {
 #### 7. Run tests with cucumber.js
 The following will run our scenario (in the project directory):
 
-    $ cucumber-js features/httpbin.feature
-    ....
+```sh
+$ cucumber-js features/httpbin.feature
+....
 
-	1 scenario (1 passed)
-	3 steps (3 passed)
+1 scenario (1 passed)
+3 steps (3 passed)
+```
 	
 ## Grunt integration
     
@@ -107,7 +113,7 @@ You can also use [Grunt](http://gruntjs.com/) task runner to run the tests.
 
 ### 1. Start by adding a Gruntfile.js to the project root:
 
-```
+```js
 'use strict';
 
 module.exports = function(grunt) {
@@ -128,7 +134,7 @@ module.exports = function(grunt) {
 
 ### 2. Add grunt and grunt-cucumber dependencies to package.json:
 
-```
+```json
 	...
 	"dependencies": {
 		"apickli": "latest",
@@ -140,12 +146,13 @@ module.exports = function(grunt) {
 
 ### 3. Install the new dependencies:
 
-```
+```sh
 npm install
 ```
+
 ### 4. Now you can run the same tests using grunt:
 
-```
+```sh
 $ grunt tests
 Running "cucumberjs:src" (cucumberjs) task
 
@@ -170,7 +177,7 @@ You can also use [Gulp](http://gulpjs.com/) to run the tests.
 
 ### 1. Start by adding a Gulpfile.js to the project root:
 
-```
+```js
 var gulp = require('gulp');
 var cucumber = require('gulp-cucumber');
  
@@ -184,25 +191,28 @@ gulp.task('test', function() {
 ```
 ### 2. Add gulp and gulp-cucumber dependencies to package.json:
 
-```
+```json
 ...
 	"gulp": "latest",
 	"gulp-cucumber": "latest"
 ...
 ```
 ### 3. Install local dependencies
-```
-npm install
+
+```sh
+$ npm install
 ```
 
-### 4. Install gulp
-```
+### 4. Install gulp globally
+
+```sh
 $ npm install -g gulp
 ```
+
 See [https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md).
 
 ### 5. Run tests using gulp
-```
+```sh
 $ gulp test
 ``` 
 
@@ -241,7 +251,9 @@ THEN:
 
 The simplest way to adopt these expressions is to create a symlink from node_modules/apickli/apickli-gherkin.js to features/step_definitions/apickli-gherkin.js
 
-	$ ln -s node_modules/apickli/apickli-gherkin.js features/step_definitions/apickli-gherkin.js
+```sh
+$ ln -s node_modules/apickli/apickli-gherkin.js features/step_definitions/apickli-gherkin.js
+```
         
 ## Contributing
 
