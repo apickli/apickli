@@ -1,5 +1,7 @@
 # apickli - API integration testing framework
 
+![NPM version](https://badge.fury.io/js/apickli.svg)
+
 **Apickli** is a REST API integration testing framework based on cucumber.js.
 
 It provides a gherkin framework and a collection of utility functions to make API testing easy and less time consuming.
