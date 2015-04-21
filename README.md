@@ -1,4 +1,4 @@
-# apickli - API integration testing framework
+# apickli - REST API integration testing framework with cucumber.js
 
 ![NPM version](https://badge.fury.io/js/apickli.svg)
 
