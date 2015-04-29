@@ -38,7 +38,7 @@ module.exports = function() {
 		});
 	});
 
-	this.When('I POST $resource', function(resource, callback) {
+	this.When('I POST to $resource', function(resource, callback) {
 		this.apickli.post(resource, function(error, response) {
 			if (error) {
 				callback.fail(error);

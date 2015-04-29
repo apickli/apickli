@@ -9,7 +9,7 @@ Feature:
 
 	Scenario: Setting body payload in POST request
 		Given I set body to {"key":"hello-world"}
-		When I POST /post
+		When I POST to /post
 		Then response body should contain hello-world
 
 	Scenario: Setting body payload in PUT request
@@ -24,12 +24,12 @@ Feature:
 
 	Scenario: Setting body payload from file
 		Given I pipe contents of file ./features/fixtures/requestbody.xml to body
-		When I POST /post
+		When I POST to /post
 		Then response body should contain "data": "<a>b</a>"
 
 	Scenario: Sending request with basic auth authentication
 		Given I have basic authentication credentials username and password
-		When I POST /post
+		When I POST to /post
 		Then response body should contain dXNlcm5hbWU6cGFzc3dvcmQ=
 
 	Scenario: Parsing response xml body

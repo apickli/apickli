@@ -4,7 +4,7 @@
 console.log('Using apickli from NPM');
 var apickli = require('apickli');
 
-if ((!apickli) || (process.env.TARGET === 'local')) {
+if ((!apickli) || (process.env.TARGET == 'local')) {
 	console.log('Using local apickli for testing');
 	apickli = require('../../../apickli/apickli.js');
 }
