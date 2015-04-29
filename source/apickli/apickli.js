@@ -6,6 +6,8 @@ var jsonPath = require('JSONPath');
 var libxmljs = require('libxmljs');
 var fs = require('fs');
 
+var accessToken;
+
 function Apickli(scheme, domain) {
 	this.domain = scheme + '://' + domain;
 	this.headers = {};
@@ -132,7 +134,7 @@ Apickli.prototype.assertHeaderValue = function (header, expression) {
 	return (regex.test(realHeaderValue));
 };
 
-Apickli.prototype.evaluatePathInResponseBody = function(path, regexp) {
+Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, regexp) {
 	var regExpObject = new RegExp(regexp);
 	var evalValue = evaluatePath(path, this.getResponseObject().body);
 	return (regExpObject.test(evalValue));
@@ -146,6 +148,18 @@ Apickli.prototype.assertResponseBodyContainsExpression = function(expression) {
 Apickli.prototype.assertResponseBodyContentType = function(contentType) {
 	var realContentType = getContentType(this.getResponseObject().body);
 	return (realContentType === contentType);
+};
+
+Apickli.prototype.evaluatePathInResponseBody = function(path) {
+	return evaluatePath(path, this.getResponseObject().body);
+};
+
+Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
+	accessToken = evaluatePath(path, this.getResponseObject().body);
+};
+
+Apickli.prototype.setBearerToken = function() {
+	this.addRequestHeader('Authorization', 'Bearer ' + accessToken);
 };
 
 Apickli.prototype.storeValueOfHeaderInScenarioScope = function(header, variableName) {

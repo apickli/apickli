@@ -69,18 +69,28 @@ Feature:
 	Scenario: Response body xpath assertions
 		When I GET /xml
 		Then response body path /slideshow/slide[2]/title should be [a-z]+
-		Then response body path /slideshow/slide[2]/title should not be \d+
+		And response body path /slideshow/slide[2]/title should not be \d+
 
 	Scenario: Response body jsonpath assertions
 		Given I set User-Agent header to apickli
 		When I GET /get
 		Then response body path $.headers.User-Agent should be [a-z]+
-		Then response body path $.headers.User-Agent should not be \d+
+		And response body path $.headers.User-Agent should not be \d+
+
+	Scenario: Access token retrieval from response body (authorization code grant, password, client credentials)
+		Given I set Token header to token123
+		When I GET /get
+		Then I store the value of body path $.headers.Token as access token
+
+	Scenario: Using access token
+		Given I set bearer token
+		When I GET /get
+		Then response body path $.headers.Authorization should be Bearer token123
 
 	Scenario: setting header value as variable
 		When I GET /get
 		Then I store the value of response header Server as agent in scenario scope
-		Then value of scenario variable agent should be nginx
+		And value of scenario variable agent should be nginx
 
 	Scenario: setting body path as variable (xml)
 		When I GET /xml
