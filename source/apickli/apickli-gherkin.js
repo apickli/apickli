@@ -166,6 +166,16 @@ module.exports = function() {
 		callback();
 	});
 
+	this.Then(/^I store the value of response header(.*) as (.*) in global scope$/, function(headerName, variableName, callback) {
+		this.apickli.storeValueOfHeaderInGlobalScope(headerName, variableName);
+		callback();
+	});
+
+	this.Then(/^I store the value of body path (.*) as (.*) in global scope$/, function(path, variableName, callback) {
+		this.apickli.storeValueOfResponseBodyPathInGlobalScope(path, variableName);
+		callback();
+	});
+
 	this.When(/^I store the value of response header (.*) as (.*) in scenario scope$/, function(name, variable, callback) {
 		this.apickli.storeValueOfHeaderInScenarioScope(name, variable);
 		callback();

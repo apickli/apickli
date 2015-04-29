@@ -7,6 +7,7 @@ var libxmljs = require('libxmljs');
 var fs = require('fs');
 
 var accessToken;
+var globalVariables = {};
 
 function Apickli(scheme, domain) {
 	this.domain = scheme + '://' + domain;
@@ -174,6 +175,24 @@ Apickli.prototype.storeValueOfResponseBodyPathInScenarioScope = function(path, v
 
 Apickli.prototype.assertScenarioVariableValue = function(variable, value) {
 	return (String(this.scenarioVariables[variable]) === value);
+};
+
+Apickli.prototype.storeValueOfHeaderInGlobalScope = function(headerName, variableName) {
+	var value = this.getResponseObject().headers[headerName.toLowerCase()];
+	this.setGlobalVariable(variableName, value);
+};
+
+Apickli.prototype.storeValueOfResponseBodyPathInGlobalScope = function(path, variableName) {
+	var value = evaluatePath(path, this.getResponseObject().body);
+	this.setGlobalVariable(variableName, value);
+};
+
+Apickli.prototype.setGlobalVariable = function(name, value) {
+	globalVariables[name] = value;
+};
+
+Apickli.prototype.getGlobalVariable = function(name) {
+	return globalVariables[name];
 };
 
 exports.Apickli = Apickli;
