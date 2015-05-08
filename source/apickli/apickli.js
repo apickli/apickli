@@ -6,6 +6,9 @@ var jsonPath = require('JSONPath');
 var libxmljs = require('libxmljs');
 var fs = require('fs');
 
+var accessToken;
+var globalVariables = {};
+
 function Apickli(scheme, domain) {
 	this.domain = scheme + '://' + domain;
 	this.headers = {};
@@ -132,7 +135,7 @@ Apickli.prototype.assertHeaderValue = function (header, expression) {
 	return (regex.test(realHeaderValue));
 };
 
-Apickli.prototype.evaluatePathInResponseBody = function(path, regexp) {
+Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, regexp) {
 	var regExpObject = new RegExp(regexp);
 	var evalValue = evaluatePath(path, this.getResponseObject().body);
 	return (regExpObject.test(evalValue));
@@ -148,6 +151,18 @@ Apickli.prototype.assertResponseBodyContentType = function(contentType) {
 	return (realContentType === contentType);
 };
 
+Apickli.prototype.evaluatePathInResponseBody = function(path) {
+	return evaluatePath(path, this.getResponseObject().body);
+};
+
+Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
+	accessToken = evaluatePath(path, this.getResponseObject().body);
+};
+
+Apickli.prototype.setBearerToken = function() {
+	this.addRequestHeader('Authorization', 'Bearer ' + accessToken);
+};
+
 Apickli.prototype.storeValueOfHeaderInScenarioScope = function(header, variableName) {
 	var value = this.getResponseObject().headers[header.toLowerCase()];
 	this.scenarioVariables[variableName] = value;
@@ -160,6 +175,24 @@ Apickli.prototype.storeValueOfResponseBodyPathInScenarioScope = function(path, v
 
 Apickli.prototype.assertScenarioVariableValue = function(variable, value) {
 	return (String(this.scenarioVariables[variable]) === value);
+};
+
+Apickli.prototype.storeValueOfHeaderInGlobalScope = function(headerName, variableName) {
+	var value = this.getResponseObject().headers[headerName.toLowerCase()];
+	this.setGlobalVariable(variableName, value);
+};
+
+Apickli.prototype.storeValueOfResponseBodyPathInGlobalScope = function(path, variableName) {
+	var value = evaluatePath(path, this.getResponseObject().body);
+	this.setGlobalVariable(variableName, value);
+};
+
+Apickli.prototype.setGlobalVariable = function(name, value) {
+	globalVariables[name] = value;
+};
+
+Apickli.prototype.getGlobalVariable = function(name) {
+	return globalVariables[name];
 };
 
 exports.Apickli = Apickli;

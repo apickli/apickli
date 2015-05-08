@@ -9,7 +9,7 @@ Feature:
 
 	Scenario: Setting body payload in POST request
 		Given I set body to {"key":"hello-world"}
-		When I POST /post
+		When I POST to /post
 		Then response body should contain hello-world
 
 	Scenario: Setting body payload in PUT request
@@ -24,12 +24,12 @@ Feature:
 
 	Scenario: Setting body payload from file
 		Given I pipe contents of file ./features/fixtures/requestbody.xml to body
-		When I POST /post
+		When I POST to /post
 		Then response body should contain "data": "<a>b</a>"
 
 	Scenario: Sending request with basic auth authentication
 		Given I have basic authentication credentials username and password
-		When I POST /post
+		When I POST to /post
 		Then response body should contain dXNlcm5hbWU6cGFzc3dvcmQ=
 
 	Scenario: Parsing response xml body
@@ -69,18 +69,42 @@ Feature:
 	Scenario: Response body xpath assertions
 		When I GET /xml
 		Then response body path /slideshow/slide[2]/title should be [a-z]+
-		Then response body path /slideshow/slide[2]/title should not be \d+
+		And response body path /slideshow/slide[2]/title should not be \d+
 
 	Scenario: Response body jsonpath assertions
 		Given I set User-Agent header to apickli
 		When I GET /get
 		Then response body path $.headers.User-Agent should be [a-z]+
-		Then response body path $.headers.User-Agent should not be \d+
+		And response body path $.headers.User-Agent should not be \d+
+
+	Scenario: Access token retrieval from response body (authorization code grant, password, client credentials)
+		Given I set Token header to token123
+		When I GET /get
+		Then I store the value of body path $.headers.Token as access token
+
+	Scenario: Using access token
+		Given I set bearer token
+		When I GET /get
+		Then response body path $.headers.Authorization should be Bearer token123
+
+	Scenario: Quota testing - first request
+		Given I set X-Quota-Remaining header to 10
+		When I GET /get
+		Then I store the value of body path $.headers.X-Quota-Remaining as remaining1 in global scope
+
+	Scenario: Quota testing - second request
+		Given I set X-Quota-Remaining header to 9
+		When I GET /get
+		Then I store the value of body path $.headers.X-Quota-Remaining as remaining2 in global scope
+
+	Scenario: Quota testing - assertion
+		When I subtract remaining2 from remaining1
+		Then result should be 1
 
 	Scenario: setting header value as variable
 		When I GET /get
 		Then I store the value of response header Server as agent in scenario scope
-		Then value of scenario variable agent should be nginx
+		And value of scenario variable agent should be nginx
 
 	Scenario: setting body path as variable (xml)
 		When I GET /xml

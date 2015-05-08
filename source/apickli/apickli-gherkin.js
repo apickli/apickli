@@ -38,7 +38,7 @@ module.exports = function() {
 		});
 	});
 
-	this.When('I POST $resource', function(resource, callback) {
+	this.When('I POST to $resource', function(resource, callback) {
 		this.apickli.post(resource, function(error, response) {
 			if (error) {
 				callback.fail(error);
@@ -141,7 +141,7 @@ module.exports = function() {
 	});
 
 	this.Then(/^response body path (.*) should be (.*)$/, function(path, value, callback) {
-		if (this.apickli.evaluatePathInResponseBody(path, value)) {
+		if (this.apickli.assertPathInResponseBodyMatchesExpression(path, value)) {
 			callback();
 		} else {
 			callback.fail('response body path ' + path + ' doesn\'t match ' + value);
@@ -149,11 +149,31 @@ module.exports = function() {
 	});
 
 	this.Then(/^response body path (.*) should not be (.*)$/, function(path, value, callback) {
-		if (this.apickli.evaluatePathInResponseBody(path, value)) {
+		if (this.apickli.assertPathInResponseBodyMatchesExpression(path, value)) {
 			callback.fail('response body path ' + path + ' matches ' + value);
 		} else {
 			callback();
 		}
+	});
+
+	this.Then(/^I store the value of body path (.*) as access token$/, function(path, callback) {
+		this.apickli.setAccessTokenFromResponseBodyPath(path);
+		callback();
+	});
+
+	this.When(/^I set bearer token$/, function(callback) {
+		this.apickli.setBearerToken();
+		callback();
+	});
+
+	this.Then(/^I store the value of response header(.*) as (.*) in global scope$/, function(headerName, variableName, callback) {
+		this.apickli.storeValueOfHeaderInGlobalScope(headerName, variableName);
+		callback();
+	});
+
+	this.Then(/^I store the value of body path (.*) as (.*) in global scope$/, function(path, variableName, callback) {
+		this.apickli.storeValueOfResponseBodyPathInGlobalScope(path, variableName);
+		callback();
 	});
 
 	this.When(/^I store the value of response header (.*) as (.*) in scenario scope$/, function(name, variable, callback) {
