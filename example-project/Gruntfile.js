@@ -1,8 +1,7 @@
 // $ grunt test
 
-'use strict';
-
 module.exports = function(grunt) {
+	'use strict';
 	grunt.initConfig({
 		cucumberjs: {
 			src: 'features',
@@ -15,4 +14,4 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks('grunt-cucumber');
 	grunt.registerTask('test', ['cucumberjs']);
-}
+};
