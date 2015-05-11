@@ -111,9 +111,9 @@ Apickli.prototype.delete = function(resource, callback) { // callback(error, res
 	});
 };
 
-Apickli.prototype.addHttpBasicAuthenticationHeader = function(username, password) {
+Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password) {
 	var b64EncodedValue = base64Encode(username + ':' + password);
-	this.addRequestHeader('Authentication', b64EncodedValue);
+	this.addRequestHeader('Authorization', 'Basic ' + b64EncodedValue);
 };
 
 Apickli.prototype.assertResponseCode = function(responseCode) {

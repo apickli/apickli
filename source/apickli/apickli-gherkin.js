@@ -24,7 +24,7 @@ module.exports = function() {
 	});
 
 	this.Given(/^I have basic authentication credentials (.*) and (.*)$/, function(username, password, callback) {
-		this.apickli.addHttpBasicAuthenticationHeader(username, password);
+		this.apickli.addHttpBasicAuthorizationHeader(username, password);
 		callback();
 	});
 
