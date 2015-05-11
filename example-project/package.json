@@ -1,15 +1,17 @@
 {
-    "name": "httpbin-test",
-    "version": "1.0.0",
-    "description": "Integration testing for myapi with httpbin.org",
-    "scripts": {
-        "test": "grunt tests"
-    },
-    "dependencies": {
-        "apickli":"latest",
-        "grunt": "latest",
-        "grunt-cucumber": "latest",
-		"gulp": "latest",
-		"gulp-cucumber": "latest"
-    }
+  "name": "httpbin-test",
+  "version": "1.0.0",
+  "description": "Integration testing for myapi with httpbin.org",
+  "scripts": {
+    "test": "grunt tests"
+  },
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cucumber": "^0.3.0",
+    "gulp": "^3.8.11",
+    "gulp-cucumber": "^0.0.9"
+  },
+  "devDependencies": {
+    "apickli": "^1.0.0"
+  }
 }

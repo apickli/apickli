@@ -1,6 +1,6 @@
 {
     "name": "apickli",
-    "version": "0.2.0",
+    "version": "1.0.0",
     "description": "Collection of utility functions and a gerkhin framework for REST API integration testing based on cucumber.js",
 	"main": "apickli.js",
 	"repository": {
@@ -20,10 +20,10 @@
 		}
 	],
     "dependencies": {
-        "JSONPath": "latest",
-        "grunt": "latest",
-        "grunt-cucumber": "latest",
-        "request": "latest",
-        "libxmljs": "latest"
+        "JSONPath": "^0.10.0",
+        "grunt": "^0.4.5",
+        "grunt-cucumber": "^0.3.0",
+        "request": "^2.55.0",
+        "libxmljs": "^0.14.0"
     }
 }
