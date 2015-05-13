@@ -229,10 +229,11 @@ GIVEN:
 	I set body to (.*)
 	I pipe contents of file (.*) to body
 	I have basic authentication credentials (.*) and (.*)
+	I set bearer token
 	
 WHEN:
 	I GET $resource
-	I POST $resource
+	I POST to $resource
 	I PUT $resource
 	I DELETE $resource
 	
@@ -248,9 +249,12 @@ THEN:
 	response body should not contain (.*)
 	response body path (.*) should be (.*)
 	response body path (.*) should not be (.*)
+	I store the value of body path (.*) as access token
 	I store the value of response header (.*) as (.*) in scenario scope
 	I store the value of body path (.*) as (.*) in scenario scope
 	value of scenario variable (.*) should be (.*)
+	I store the value of response header (.*) as (.*) in global scope
+	I store the value of body path (.*) as (.*) in global scope
 ```
 
 The simplest way to adopt these expressions is to create a symlink from node_modules/apickli/apickli-gherkin.js to features/step_definitions/apickli-gherkin.js
