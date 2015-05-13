@@ -1,1 +1,0 @@
-../../../apickli/apickli-gherkin.js

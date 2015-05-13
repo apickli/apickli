@@ -4,10 +4,10 @@ module.exports = function(grunt) {
 	'use strict';
 	grunt.initConfig({
 		cucumberjs: {
-			src: 'features',
+			src: 'test/features',
 			options: {
 				format: 'pretty',
-				steps: 'features/step_definitions'
+				steps: 'test/features/step_definitions'
 			}
 		}
 	});

@@ -1,1 +1,0 @@
-../../../example-project/features/httpbin.feature
