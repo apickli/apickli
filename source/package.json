@@ -1,0 +1,33 @@
+{
+  "name": "apickli",
+  "version": "1.0.0",
+  "description": "Collection of utility functions and a gherkin framework for REST API integration testing based on cucumber.js",
+  "main": "apickli.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apickli/apickli.git"
+  },
+  "keywords": [
+    "cucumber.js",
+    "integration",
+    "rest",
+    "api"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/apickli/apickli/blob/master/LICENSE"
+    }
+  ],
+  "dependencies": {
+    "JSONPath": "^0.10.0",
+    "request": "^2.55.0",
+    "libxmljs": "^0.14.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-cucumber": "0.0.9",
+    "gulp-jshint": "^1.10.0",
+    "jshint-stylish": "^1.0.2"
+  }
+}
