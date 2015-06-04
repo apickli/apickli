@@ -3,11 +3,14 @@
 
 var request = require('request');
 var jsonPath = require('JSONPath');
-var libxmljs = require('libxmljs');
+var select = require('xpath.js');
+var dom = require('xmldom').DOMParser;
 var fs = require('fs');
 
 var accessToken;
 var globalVariables = {};
+
+var ATTRIBUTE = 2;
 
 function Apickli(scheme, domain) {
 	this.domain = scheme + '://' + domain;
@@ -203,7 +206,7 @@ var getContentType = function(content) {
 		return 'json';
 	} catch(e) {
 		try{
-			libxmljs.parseXml(content);
+			new dom().parseFromString(content);	
 			return 'xml';
 		} catch(e) {
 			return null;
@@ -219,8 +222,13 @@ var evaluatePath = function(path, content) {
 			var contentJson = JSON.parse(content);
 			return jsonPath.eval(contentJson, path);
 		case 'xml':
-			var xml = libxmljs.parseXml(content);
-			return xml.get(path).text();
+			var xmlDocument = new dom().parseFromString(content);
+			var node = select(xmlDocument, path)[0];
+			if (node.nodeType === ATTRIBUTE) {
+				return node.value;
+			}
+
+			return node.firstChild.data; // element or comment
 		default:
 			return null;
 	}
