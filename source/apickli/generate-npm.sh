@@ -10,4 +10,4 @@ cp ../../README.md ./npm/README.md
 cd ./npm
 npm publish 
 
-rm -rf ./npm
+rm -rf ../npm
