@@ -68,6 +68,16 @@ module.exports = function() {
 		});
 	});
 
+	this.When('I PATCH $resource', function(resource, callback) {
+		this.apickli.patch(resource, function(error, response) {
+			if (error) {
+				callback.fail(error);
+			}
+
+			callback();
+		});
+	});
+
 	this.Then(/^response header (.*) should exist$/, function(header, callback) {
 		if (this.apickli.assertResponseContainsHeader(header)) {
 			callback();
