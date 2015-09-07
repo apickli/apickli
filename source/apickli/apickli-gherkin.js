@@ -200,7 +200,15 @@ module.exports = function() {
 		if (this.apickli.assertScenarioVariableValue(variableName, variableValue)) {
 			callback();
 		} else {
-			callback.fail('value of variable ' + variableName + ' isn\'t equal to ' + variableValue);
+			callback.fail('value of scenario variable ' + variableName + ' isn\'t equal to ' + variableValue);
+		}
+	});
+
+	this.Then(/^value of global variable (.*) should be (.*)$/, function(variableName, variableValue, callback) {
+		if (this.apickli.assertGlobalVariableValue(variableName, variableValue)) {
+			callback();
+		} else {
+			callback.fail('value of global variable ' + variableName + ' isn\'t equal to ' + variableValue);
 		}
 	});
 };
