@@ -46,7 +46,7 @@ Feature:
 
 	Scenario: Checking headers in response
 		When I GET /xml
-		Then response header server should exist 
+		Then response header server should exist
 		And response header boo should not exist
 
 	Scenario: Response code checks
@@ -119,3 +119,32 @@ Feature:
 
 	Scenario: checking values of scenario variables
 		Then value of scenario variable title should be undefined
+
+	Scenario: using unknown variable in request path
+		When I GET /get?fizz=`UNKNOWN_VARIABLE`
+		Then I store the value of body path $.args.fizz as value2 in global scope
+		Then value of global variable value2 should be `UNKNOWN_VARIABLE`
+
+	Scenario: using global variable in request path
+		When I GET /get?foo=bar
+		Then I store the value of body path $.args.foo as value1 in global scope
+		When I GET /get?fizz=`value1`
+		Then I store the value of body path $.args.fizz as value2 in global scope
+		Then value of global variable value2 should be bar
+
+	Scenario: using scenario variable in request path
+		When I GET /get?foo=bar
+		Then I store the value of body path $.args.foo as value3 in scenario scope
+		When I GET /get?fizz=`value3`
+		Then I store the value of body path $.args.fizz as value4 in scenario scope
+		Then value of scenario variable value4 should be bar
+
+	Scenario: using scenario variable and global variables in request path
+		When I GET /get?arg1=foo&arg2=bar
+		Then I store the value of body path $.args.arg1 as value5 in scenario scope
+		Then I store the value of body path $.args.arg2 as value6 in global scope
+		When I GET /get?arg1=`value5`&arg2=`value6`
+		Then I store the value of body path $.args.arg1 as value7 in scenario scope
+		Then I store the value of body path $.args.arg2 as value8 in global scope
+		Then value of scenario variable value7 should be foo
+		Then value of global variable value8 should be bar

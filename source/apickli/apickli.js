@@ -45,6 +45,7 @@ Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
 };
 
 Apickli.prototype.get = function(resource, callback) { // callback(error, response)
+	resource = replaceVariables(resource, this.scenarioVariables);
 	var self = this;
 	request.get({
 		url: this.domain + resource,
@@ -54,13 +55,14 @@ Apickli.prototype.get = function(resource, callback) { // callback(error, respon
 		if (error) {
 			return callback(error);
 		}
-		
+
 		self.httpResponse = response;
 		callback(null, response);
 	});
 };
 
 Apickli.prototype.post = function(resource, callback) { // callback(error, response)
+	resource = replaceVariables(resource, this.scenarioVariables);
 	var self = this;
 	request({
 		url: this.domain + resource,
@@ -79,6 +81,7 @@ Apickli.prototype.post = function(resource, callback) { // callback(error, respo
 };
 
 Apickli.prototype.put = function(resource, callback) { // callback(error, response)
+	resource = replaceVariables(resource, this.scenarioVariables);
 	var self = this;
 	request({
 		url: this.domain + resource,
@@ -97,6 +100,7 @@ Apickli.prototype.put = function(resource, callback) { // callback(error, respon
 };
 
 Apickli.prototype.delete = function(resource, callback) { // callback(error, response)
+	resource = replaceVariables(resource, this.scenarioVariables);
 	var self = this;
 	request({
 		url: this.domain + resource,
@@ -115,6 +119,7 @@ Apickli.prototype.delete = function(resource, callback) { // callback(error, res
 };
 
 Apickli.prototype.patch = function(resource, callback) { // callback(error, response)
+	resource = replaceVariables(resource, this.scenarioVariables);
 	var self = this;
 	request({
 		url: this.domain + resource,
@@ -198,6 +203,10 @@ Apickli.prototype.assertScenarioVariableValue = function(variable, value) {
 	return (String(this.scenarioVariables[variable]) === value);
 };
 
+Apickli.prototype.assertGlobalVariableValue = function(variable, value) {
+	return (String(globalVariables[variable]) === value);
+};
+
 Apickli.prototype.storeValueOfHeaderInGlobalScope = function(headerName, variableName) {
 	var value = this.getResponseObject().headers[headerName.toLowerCase()];
 	this.setGlobalVariable(variableName, value);
@@ -218,13 +227,54 @@ Apickli.prototype.getGlobalVariable = function(name) {
 
 exports.Apickli = Apickli;
 
+
+/**
+ * Replaces variable identifiers in the resource string
+ * with their value in scenario variables if it exists.
+ * Otherwise looks for the value in global variables.
+ * Returns the modified string
+ * The variable identifiers must be delimited with backticks
+ */
+var replaceVariables = function(resource, scenarioVariables) {
+	resource = replaceScopeVariables(resource, scenarioVariables);
+	resource = replaceScopeVariables(resource, globalVariables);
+	return resource;
+};
+
+/**
+ * Replaces variable identifiers in the resource string
+ * with their value in scope if it exists
+ * Returns the modified string
+ * The variable identifiers must be delimited with backticks
+ * offset defines the index of the char from which the varaibles are to be searched
+ * It's optional.
+ */
+var replaceScopeVariables = function(resource, scope, offset) {
+  if (offset === undefined) {
+    offset = 0;
+  }
+  var startIndex = resource.indexOf("`", offset);
+  if (startIndex >= 0) {
+    var endIndex = resource.indexOf("`", startIndex + 1);
+    if (endIndex >= startIndex) {
+      var variableName = resource.substr(startIndex + 1, endIndex - startIndex - 1);
+      if (scope.hasOwnProperty(variableName)) {
+        var variableValue = scope[variableName];
+        resource = resource.substr(0, startIndex) + variableValue + resource.substr(endIndex + 1);
+      }
+      resource = replaceScopeVariables(resource, scope, endIndex + 1);
+    }
+  }
+  return resource;
+};
+
 var getContentType = function(content) {
 	try{
 		JSON.parse(content);
 		return 'json';
 	} catch(e) {
 		try{
-			new dom().parseFromString(content);	
+			new dom().parseFromString(content);
 			return 'xml';
 		} catch(e) {
 			return null;
