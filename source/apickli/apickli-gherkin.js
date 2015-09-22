@@ -23,6 +23,11 @@ module.exports = function() {
 		});
 	});
 
+	this.Given(/^I set query parameters to$/, function(queryParameters, callback) {
+		this.apickli.setQueryParameters(queryParameters.hashes());
+		callback();
+	});
+
 	this.Given(/^I have basic authentication credentials (.*) and (.*)$/, function(username, password, callback) {
 		this.apickli.addHttpBasicAuthorizationHeader(username, password);
 		callback();

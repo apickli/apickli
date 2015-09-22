@@ -119,3 +119,12 @@ Feature:
 
 	Scenario: checking values of scenario variables
 		Then value of scenario variable title should be undefined
+
+	Scenario: checking values of query parameter
+		Given I set query parameters to 
+		|parameter|value|
+		|argument1|1|
+		|argument2|test|
+		When I GET /get
+		Then response body path $.args.argument1 should be 1
+		And response body path $.args.argument2 should be test

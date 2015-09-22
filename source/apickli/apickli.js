@@ -18,6 +18,7 @@ function Apickli(scheme, domain) {
 	this.httpResponse = {};
 	this.requestBody = '';
 	this.scenarioVariables = {};
+	this.queryParameters = [];
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
@@ -30,6 +31,10 @@ Apickli.prototype.getResponseObject = function() {
 
 Apickli.prototype.setRequestBody = function(body) {
 	this.requestBody = body;
+};
+
+Apickli.prototype.setQueryParameters = function(queryParameters) {
+	this.queryParameters = queryParameters;
 };
 
 Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
@@ -46,8 +51,17 @@ Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
 
 Apickli.prototype.get = function(resource, callback) { // callback(error, response)
 	var self = this;
+	var urlQueryParameters = "";
+
+	var keys = Object.keys( this.queryParameters );
+	if (keys.length > 0) {
+		urlQueryParameters = "?" + this.queryParameters[0].parameter + "=" + this.queryParameters[0].value;
+		for( var i = 1,length = keys.length; i < length; i++ ) {
+			urlQueryParameters = urlQueryParameters + "&" + this.queryParameters[ i ].parameter + "=" + this.queryParameters[ i ].value;
+		}
+	}
 	request.get({
-		url: this.domain + resource,
+		url: this.domain + resource + urlQueryParameters,
 		headers: this.headers
 	},
 	function(error, response) {
