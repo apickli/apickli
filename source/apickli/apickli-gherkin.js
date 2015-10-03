@@ -8,6 +8,16 @@ module.exports = function() {
 		callback();
 	});
 
+	this.Given(/^I set (.*) header to scenario variable (.*)$/, function(headerName, variableName, callback) {
+		this.apickli.addRequestHeaderFromScenarioVariable(headerName, variableName);
+		callback();
+	});
+
+	this.Given(/^I set (.*) header to global variable (.*)$/, function(headerName, variableName, callback) {
+		this.apickli.addRequestHeaderFromGlobalVariable(headerName, variableName);
+		callback();
+	});
+
 	this.Given(/^I set body to (.*)$/, function(bodyValue, callback) {
 		this.apickli.setRequestBody(bodyValue);
 		callback();

@@ -24,6 +24,14 @@ Apickli.prototype.addRequestHeader = function(name, value) {
 	this.headers[name] = value;
 };
 
+Apickli.prototype.addRequestHeaderFromScenarioVariable = function(name, variable) {
+	this.headers[name] = this.scenarioVariables(variable);
+};
+
+Apickli.prototype.addRequestHeaderFromGlobalVariable = function(name, variable) {
+	this.headers[name] = globalVariables(variable);
+};
+
 Apickli.prototype.getResponseObject = function() {
 	return this.httpResponse;
 };
