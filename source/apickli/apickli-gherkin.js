@@ -152,10 +152,12 @@ module.exports = function() {
 	});
 
 	this.Then(/^the JSON should be$/, function(expression, callback) {
-		if (this.apickli.assertResponseBodyIsExpression(expression)) {
+		try {
+			this.apickli.assertResponseBodyIsJSON(expression)
 			callback();
-		} else {
-			callback.fail('the JSON should be ' + expression);
+		}
+		catch(exception) {
+			callback.fail(exception);
 		}
 	});
 

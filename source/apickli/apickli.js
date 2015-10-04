@@ -175,10 +175,13 @@ Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, reg
 	return (regExpObject.test(evalValue));
 };
 
-Apickli.prototype.assertResponseBodyIsExpression = function(expression) {
+Apickli.prototype.assertResponseBodyIsJSON = function(expression) {
 	var real = JSON.parse(this.getResponseObject().body).json;
 	var result = areEqual(real, JSON.parse(expression));
-	return result;
+	if (!result) {
+		throw('actual response body is\n' + JSON.stringify(real, null, 2));
+	}
+	return true;
 };
 
 Apickli.prototype.assertResponseBodyContainsExpression = function(expression) {
