@@ -175,6 +175,12 @@ Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, reg
 	return (regExpObject.test(evalValue));
 };
 
+Apickli.prototype.assertResponseBodyIsExpression = function(expression) {
+	var real = JSON.parse(this.getResponseObject().body).json;
+	var result = areEqual(real, JSON.parse(expression));
+	return result;
+};
+
 Apickli.prototype.assertResponseBodyContainsExpression = function(expression) {
 	var regex = new RegExp(expression);
 	return (regex.test(this.getResponseObject().body));
@@ -313,3 +319,25 @@ var evaluatePath = function(path, content) {
 var base64Encode = function(str) {
 	return new Buffer(str).toString('base64');
 };
+
+/**
+ * Makes a deep comparison of two objects
+ * Returns true when they are equal, false otherwise
+ * This function is intended to compare objects created from JSON string only
+ * So it may not handle properly comparison of other types of objects
+ */
+var areEqual = function(real, expected) {
+	  for ( var property in expected ) {
+	    if ( ! real.hasOwnProperty( property ) ) return false;
+	      // allows to compare expected[ property ] and real[ property ] when set to undefined
+	    if ( expected[ property ] === real[ property ] ) continue;
+	      // if they have the same strict value or identity then they are equal
+
+	    if ( typeof( expected[ property ] ) !== "object" ) return false;
+	      // Numbers, Strings, Functions, Booleans must be strictly equal
+
+	    if ( !areEqual( expected[ property ],  real[ property ] ) ) return false;
+	      // Objects and Arrays must be tested recursively
+	  }
+		return true;
+}

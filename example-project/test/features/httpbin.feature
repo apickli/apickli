@@ -148,3 +148,18 @@ Feature:
 		Then I store the value of body path $.args.arg2 as value8 in global scope
 		Then value of scenario variable value7 should be foo
 		Then value of global variable value8 should be bar
+
+	Scenario: comparing response body to JSON
+		Given I set body to { "firstnames": ["John", "Robert"], "lastname": "Doe", "foo": { "bar": true, "age": 30 }}
+		When I POST to /post
+		Then the JSON should be
+		"""
+		{
+			"lastname": "Doe",
+			"firstnames": ["John", "Robert"],
+			"foo": {
+					"bar": true,
+					"age": 30
+				}
+	  }
+		"""

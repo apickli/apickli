@@ -1,6 +1,5 @@
 /* jslint node: true */
 'use strict';
-
 module.exports = function() {
 
 	this.Given(/^I set (.*) header to (.*)$/, function(headerName, headerValue, callback) {
@@ -149,6 +148,14 @@ module.exports = function() {
 			callback();
 		} else {
 			callback.fail('response body doesn\'t contain ' + expression);
+		}
+	});
+
+	this.Then(/^the JSON should be$/, function(expression, callback) {
+		if (this.apickli.assertResponseBodyIsExpression(expression)) {
+			callback();
+		} else {
+			callback.fail('the JSON should be ' + expression);
 		}
 	});
 
