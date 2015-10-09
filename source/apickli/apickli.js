@@ -18,7 +18,15 @@ function Apickli(scheme, domain) {
 	this.httpResponse = {};
 	this.requestBody = '';
 	this.scenarioVariables = {};
+	this.realValue = null;
 }
+
+/**
+ * Provides the value that was compared to the expected one
+ */
+Apickli.prototype.getRealValue = function() {
+	return this.realValue;
+};
 
 Apickli.prototype.addRequestHeader = function(name, value) {
 	this.headers[name] = value;
@@ -151,11 +159,12 @@ Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password)
 };
 
 Apickli.prototype.assertResponseCode = function(responseCode) {
-	var realResponseCode = this.getResponseObject().statusCode;
-	return (realResponseCode == responseCode);
+	this.realValue = this.getResponseObject();
+	return (this.getResponseObject().statusCode == responseCode);
 };
 
 Apickli.prototype.assertResponseContainsHeader = function(header, callback) {
+	this.realValue = this.getResponseObject().headers;
 	if (this.getResponseObject().headers[header.toLowerCase()]) {
 		return true;
 	} else {
@@ -164,34 +173,38 @@ Apickli.prototype.assertResponseContainsHeader = function(header, callback) {
 };
 
 Apickli.prototype.assertHeaderValue = function (header, expression) {
-	var realHeaderValue = this.getResponseObject().headers[header.toLowerCase()];
+	this.realValue = this.getResponseObject().headers[header.toLowerCase()];
 	var regex = new RegExp(expression);
-	return (regex.test(realHeaderValue));
+	return (regex.test(this.realValue));
 };
 
 Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, regexp) {
 	var regExpObject = new RegExp(regexp);
-	var evalValue = evaluatePath(path, this.getResponseObject().body);
-	return (regExpObject.test(evalValue));
+	this.realValue = this.getResponseObject().body;
+	try {
+		var evalValue = evaluatePath(path, this.realValue);
+		return (regExpObject.test(evalValue));
+	}
+	catch (exception) {
+		return false; // json parsing failed
+	}
 };
 
 Apickli.prototype.assertResponseBodyIsJSON = function(expression) {
 	var real = JSON.parse(this.getResponseObject().body).json;
-	var result = areEqual(real, JSON.parse(expression));
-	if (!result) {
-		throw('actual response body is\n' + JSON.stringify(real, null, 2));
-	}
-	return true;
+	this.realValue = JSON.stringify(real, null, 2);
+	return areEqual(real, JSON.parse(expression));
 };
 
 Apickli.prototype.assertResponseBodyContainsExpression = function(expression) {
 	var regex = new RegExp(expression);
-	return (regex.test(this.getResponseObject().body));
+	this.realValue = this.getResponseObject().body;
+	return (regex.test(this.realValue));
 };
 
 Apickli.prototype.assertResponseBodyContentType = function(contentType) {
-	var realContentType = getContentType(this.getResponseObject().body);
-	return (realContentType === contentType);
+	this.realValue = this.getResponseObject().body;
+	return (getContentType(this.realValue) === contentType);
 };
 
 Apickli.prototype.evaluatePathInResponseBody = function(path) {
@@ -217,11 +230,13 @@ Apickli.prototype.storeValueOfResponseBodyPathInScenarioScope = function(path, v
 };
 
 Apickli.prototype.assertScenarioVariableValue = function(variable, value) {
-	return (String(this.scenarioVariables[variable]) === value);
+	this.realValue = String(this.scenarioVariables[variable]);
+	return (this.realValue === value);
 };
 
 Apickli.prototype.assertGlobalVariableValue = function(variable, value) {
-	return (String(globalVariables[variable]) === value);
+	this.realValue = String(globalVariables[variable]);
+	return (this.realValue === value);
 };
 
 Apickli.prototype.storeValueOfHeaderInGlobalScope = function(headerName, variableName) {
