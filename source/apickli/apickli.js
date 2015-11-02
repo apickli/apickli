@@ -48,7 +48,8 @@ Apickli.prototype.get = function(resource, callback) { // callback(error, respon
 	var self = this;
 	request.get({
 		url: this.domain + resource,
-		headers: this.headers
+		headers: this.headers,
+		followRedirect: false
 	},
 	function(error, response) {
 		if (error) {
@@ -66,7 +67,8 @@ Apickli.prototype.post = function(resource, callback) { // callback(error, respo
 		url: this.domain + resource,
 		headers: this.headers,
 		body: this.requestBody,
-		method: 'POST'
+		method: 'POST',
+		followRedirect: false
 	},
 	function(error, response) {
 		if (error) {
@@ -84,7 +86,8 @@ Apickli.prototype.put = function(resource, callback) { // callback(error, respon
 		url: this.domain + resource,
 		headers: this.headers,
 		body: this.requestBody,
-		method: 'PUT'
+		method: 'PUT',
+		followRedirect: false
 	},
 	function(error, response) {
 		if (error) {
@@ -102,7 +105,8 @@ Apickli.prototype.delete = function(resource, callback) { // callback(error, res
 		url: this.domain + resource,
 		headers: this.headers,
 		body: this.requestBody,
-		method: 'DELETE'
+		method: 'DELETE',
+		followRedirect: false
 	},
 	function(error, response) {
 		if (error) {
@@ -116,11 +120,13 @@ Apickli.prototype.delete = function(resource, callback) { // callback(error, res
 
 Apickli.prototype.patch = function(resource, callback) { // callback(error, response)
 	var self = this;
+
 	request({
 		url: this.domain + resource,
 		headers: this.headers,
 		body: this.requestBody,
-		method: 'PATCH'
+		method: 'PATCH',
+		followRedirect: false
 	},
 	function(error, response) {
 		if (error) {
