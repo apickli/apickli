@@ -93,7 +93,7 @@ var apickli = require('apickli');
 
 module.exports = function() {
 	// cleanup before every scenario
-	this.Before(function(callback) {
+	this.Before(function(scenario, callback) {
 		this.apickli = new apickli.Apickli('http', 'httpbin.org');
 		callback();
 	});
@@ -262,6 +262,8 @@ The simplest way to adopt these expressions is to create a symlink from node_mod
 ```sh
 $ ln -s node_modules/apickli/apickli-gherkin.js features/step_definitions/apickli-gherkin.js
 ```
+
+If using Windows, follow this guide to create a symlink: [How-To Geek Guide](http://www.howtogeek.com/howto/16226/complete-guide-to-symbolic-links-symlinks-on-windows-or-linux/).
         
 ## Contributing
 
