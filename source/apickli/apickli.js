@@ -18,7 +18,7 @@ function Apickli(scheme, domain, fixturesDirectory) {
 	this.httpResponse = {};
 	this.requestBody = '';
 	this.scenarioVariables = {};
-	this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : "");
+	this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : '');
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
