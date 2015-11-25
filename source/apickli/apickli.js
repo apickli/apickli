@@ -12,12 +12,13 @@ var globalVariables = {};
 
 var ATTRIBUTE = 2;
 
-function Apickli(scheme, domain) {
+function Apickli(scheme, domain, fixturesDirectory) {
 	this.domain = scheme + '://' + domain;
 	this.headers = {};
 	this.httpResponse = {};
 	this.requestBody = '';
 	this.scenarioVariables = {};
+	this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : "");
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
@@ -34,7 +35,7 @@ Apickli.prototype.setRequestBody = function(body) {
 
 Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
 	var self = this;
-	fs.readFile(file, 'utf8', function(err, data) {
+	fs.readFile(this.fixturesDirectory + file, 'utf8', function(err, data) {
 		if (err) {
 			callback(err);
 		}
