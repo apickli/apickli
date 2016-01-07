@@ -239,6 +239,7 @@ WHEN:
 	I POST to $resource
 	I PUT $resource
 	I DELETE $resource
+	I PATCH $resource
 	
 THEN:
 	response header (.*) should exist
