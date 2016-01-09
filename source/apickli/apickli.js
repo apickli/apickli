@@ -12,13 +12,23 @@ var globalVariables = {};
 
 var ATTRIBUTE = 2;
 
-function Apickli(scheme, domain, fixturesDirectory) {
+function Apickli(scheme, domain, fixturesDirectory, options) {
 	this.domain = scheme + '://' + domain;
 	this.headers = {};
 	this.httpResponse = {};
 	this.requestBody = '';
 	this.scenarioVariables = {};
 	this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : '');
+	if(options){
+		this.verboseAssertions = options.verboseAssertions;
+	}
+}
+
+function AssertionResult(success, expected, actual, data) {
+	this.success = success;
+	this.expected = expected;
+	this.actual = actual;
+	this.data = data;	//used to display additional useful data
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
@@ -56,7 +66,7 @@ Apickli.prototype.get = function(resource, callback) { // callback(error, respon
 		if (error) {
 			return callback(error);
 		}
-		
+
 		self.httpResponse = response;
 		callback(null, response);
 	});
@@ -146,37 +156,40 @@ Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password)
 
 Apickli.prototype.assertResponseCode = function(responseCode) {
 	var realResponseCode = this.getResponseObject().statusCode;
-	return (realResponseCode == responseCode);
+	var result = (realResponseCode == responseCode);
+	return new AssertionResult(result, responseCode, realResponseCode);
 };
 
 Apickli.prototype.assertResponseContainsHeader = function(header, callback) {
-	if (this.getResponseObject().headers[header.toLowerCase()]) {
-		return true;
-	} else {
-		return false;
-	}
+	var result = Boolean(this.getResponseObject().headers[header.toLowerCase()]);
+	return new AssertionResult(result, true, result);
+
 };
 
 Apickli.prototype.assertHeaderValue = function (header, expression) {
 	var realHeaderValue = this.getResponseObject().headers[header.toLowerCase()];
 	var regex = new RegExp(expression);
-	return (regex.test(realHeaderValue));
+	var result = (regex.test(realHeaderValue));
+	return new AssertionResult(result, expression, realHeaderValue);
 };
 
 Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, regexp) {
 	var regExpObject = new RegExp(regexp);
 	var evalValue = evaluatePath(path, this.getResponseObject().body);
-	return (regExpObject.test(evalValue));
+	var result = (regExpObject.test(evalValue));
+	return new AssertionResult(result, true, result, evalValue);
 };
 
 Apickli.prototype.assertResponseBodyContainsExpression = function(expression) {
 	var regex = new RegExp(expression);
-	return (regex.test(this.getResponseObject().body));
+	var result = (regex.test(this.getResponseObject().body));
+	return new AssertionResult(result, true, result, this.getResponseObject().body);
 };
 
 Apickli.prototype.assertResponseBodyContentType = function(contentType) {
 	var realContentType = getContentType(this.getResponseObject().body);
-	return (realContentType === contentType);
+	var result = (realContentType === contentType);
+	return new AssertionResult(result, contentType, realContentType);
 };
 
 Apickli.prototype.evaluatePathInResponseBody = function(path) {
@@ -202,7 +215,9 @@ Apickli.prototype.storeValueOfResponseBodyPathInScenarioScope = function(path, v
 };
 
 Apickli.prototype.assertScenarioVariableValue = function(variable, value) {
-	return (String(this.scenarioVariables[variable]) === value);
+	var scenarioVariableValue = String(this.scenarioVariables[variable]);
+	var result = (scenarioVariableValue === value);
+	return new AssertionResult(result, value, scenarioVariableValue);
 };
 
 Apickli.prototype.storeValueOfHeaderInGlobalScope = function(headerName, variableName) {
@@ -231,7 +246,7 @@ var getContentType = function(content) {
 		return 'json';
 	} catch(e) {
 		try{
-			new dom().parseFromString(content);	
+			new dom().parseFromString(content);
 			return 'xml';
 		} catch(e) {
 			return null;
