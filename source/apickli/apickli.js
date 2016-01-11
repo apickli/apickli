@@ -19,6 +19,7 @@ function Apickli(scheme, domain, fixturesDirectory) {
 	this.requestBody = '';
 	this.scenarioVariables = {};
 	this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : '');
+	this.queryParameters = [];
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
@@ -31,6 +32,15 @@ Apickli.prototype.getResponseObject = function() {
 
 Apickli.prototype.setRequestBody = function(body) {
 	this.requestBody = body;
+};
+
+Apickli.prototype.setQueryParameters = function(queryParameters) {
+    var paramsObject = {};
+    queryParameters.forEach(function(q) {
+        paramsObject[q.parameter] = q.value;
+    });
+    
+	this.queryParameters = paramsObject;
 };
 
 Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
@@ -47,10 +57,12 @@ Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
 
 Apickli.prototype.get = function(resource, callback) { // callback(error, response)
 	var self = this;
+	
 	request.get({
 		url: this.domain + resource,
 		headers: this.headers,
-		followRedirect: false
+		followRedirect: false,
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {
@@ -69,7 +81,8 @@ Apickli.prototype.post = function(resource, callback) { // callback(error, respo
 		headers: this.headers,
 		body: this.requestBody,
 		method: 'POST',
-		followRedirect: false
+		followRedirect: false,
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {
@@ -88,7 +101,8 @@ Apickli.prototype.put = function(resource, callback) { // callback(error, respon
 		headers: this.headers,
 		body: this.requestBody,
 		method: 'PUT',
-		followRedirect: false
+		followRedirect: false,
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {
@@ -107,7 +121,8 @@ Apickli.prototype.delete = function(resource, callback) { // callback(error, res
 		headers: this.headers,
 		body: this.requestBody,
 		method: 'DELETE',
-		followRedirect: false
+		followRedirect: false,
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {
@@ -127,7 +142,8 @@ Apickli.prototype.patch = function(resource, callback) { // callback(error, resp
 		headers: this.headers,
 		body: this.requestBody,
 		method: 'PATCH',
-		followRedirect: false
+		followRedirect: false,
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {

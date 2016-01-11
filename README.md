@@ -233,6 +233,7 @@ GIVEN:
 	I pipe contents of file (.*) to body
 	I have basic authentication credentials (.*) and (.*)
 	I set bearer token
+	I set query parameters to (data table with headers |parameter|value|)
 	
 WHEN:
 	I GET $resource
