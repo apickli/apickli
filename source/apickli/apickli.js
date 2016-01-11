@@ -19,7 +19,7 @@ function Apickli(scheme, domain, fixturesDirectory) {
 	this.requestBody = '';
 	this.scenarioVariables = {};
 	this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : '');
-	this.queryParameters = [];
+	this.queryParameters = {};
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
