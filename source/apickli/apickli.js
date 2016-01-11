@@ -34,7 +34,12 @@ Apickli.prototype.setRequestBody = function(body) {
 };
 
 Apickli.prototype.setQueryParameters = function(queryParameters) {
-	this.queryParameters = queryParameters;
+    var paramsObject = {};
+    queryParameters.forEach(function(q) {
+        paramsObject[q.parameter] = q.value;
+    });
+    
+	this.queryParameters = paramsObject;
 };
 
 Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
@@ -51,18 +56,11 @@ Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
 
 Apickli.prototype.get = function(resource, callback) { // callback(error, response)
 	var self = this;
-	var urlQueryParameters = "";
-
-	var keys = Object.keys( this.queryParameters );
-	if (keys.length > 0) {
-		urlQueryParameters = "?" + this.queryParameters[0].parameter + "=" + this.queryParameters[0].value;
-		for( var i = 1,length = keys.length; i < length; i++ ) {
-			urlQueryParameters = urlQueryParameters + "&" + this.queryParameters[ i ].parameter + "=" + this.queryParameters[ i ].value;
-		}
-	}
+	
 	request.get({
-		url: this.domain + resource + urlQueryParameters,
-		headers: this.headers
+		url: this.domain + resource,
+		headers: this.headers,
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {
@@ -80,7 +78,8 @@ Apickli.prototype.post = function(resource, callback) { // callback(error, respo
 		url: this.domain + resource,
 		headers: this.headers,
 		body: this.requestBody,
-		method: 'POST'
+		method: 'POST',
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {
@@ -98,7 +97,8 @@ Apickli.prototype.put = function(resource, callback) { // callback(error, respon
 		url: this.domain + resource,
 		headers: this.headers,
 		body: this.requestBody,
-		method: 'PUT'
+		method: 'PUT',
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {
@@ -116,7 +116,8 @@ Apickli.prototype.delete = function(resource, callback) { // callback(error, res
 		url: this.domain + resource,
 		headers: this.headers,
 		body: this.requestBody,
-		method: 'DELETE'
+		method: 'DELETE',
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {
@@ -134,7 +135,8 @@ Apickli.prototype.patch = function(resource, callback) { // callback(error, resp
 		url: this.domain + resource,
 		headers: this.headers,
 		body: this.requestBody,
-		method: 'PATCH'
+		method: 'PATCH',
+        qs: this.queryParameters
 	},
 	function(error, response) {
 		if (error) {
