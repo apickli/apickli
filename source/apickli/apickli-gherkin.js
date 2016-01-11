@@ -4,11 +4,6 @@
 var apickli = require('apickli');
 
 module.exports = function () {
-    this.Before(function (scenario, callback) {
-        this.apickli = new apickli.Apickli('http', 'https://your_testing_host.com');
-        callback();
-    });
-
     this.Given(/^I set (.*) header to (.*)$/, function (headerName, headerValue, callback) {
         this.apickli.addRequestHeader(headerName, headerValue);
         callback();
