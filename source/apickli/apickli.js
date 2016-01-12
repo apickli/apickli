@@ -280,7 +280,8 @@ var evaluatePath = function(path, content) {
 	switch (contentType) {
 		case 'json':
 			var contentJson = JSON.parse(content);
-			return jsonPath.eval(contentJson, path);
+			var evalResult = jsonPath({resultType: 'all'}, path, contentJson);
+            return (evalResult.length > 0) ? evalResult[0].value : undefined;
 		case 'xml':
 			var xmlDocument = new dom().parseFromString(content);
 			var node = select(xmlDocument, path)[0];
