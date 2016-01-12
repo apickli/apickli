@@ -155,6 +155,25 @@ Apickli.prototype.patch = function(resource, callback) { // callback(error, resp
 	});
 };
 
+Apickli.prototype.options = function(resource, callback) { // callback(error, response)
+    var self = this;
+    
+    request({
+        url: this.domain + resource,
+        headers: this.headers,
+        method: 'OPTIONS',
+        qs: this.queryParameters
+    },
+    function(error, response) {
+        if (error) {
+            return callback(error);
+        } 
+        
+        self.httpResponse = response;
+        callback(null, response);
+    });  
+};
+
 Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password) {
 	var b64EncodedValue = base64Encode(username + ':' + password);
 	this.addRequestHeader('Authorization', 'Basic ' + b64EncodedValue);

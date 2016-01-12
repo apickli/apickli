@@ -81,6 +81,16 @@ module.exports = function () {
             callback();
         });
     });
+    
+    this.When('I request OPTIONS for $resource', function(resource, callback) {
+        this.apickli.options(resource, function(error, response) {
+            if (error) {
+                callback(new Error(error));
+            }
+            
+            callback();
+        });
+    });
 
     this.Then(/^response header (.*) should exist$/, function (header, callback) {
         if (this.apickli.assertResponseContainsHeader(header)) {
