@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "args": {
+      "id": "http://jsonschema.net/args",
+      "type": "object",
+      "properties": {}
+    },
+    "headers": {
+      "id": "http://jsonschema.net/headers",
+      "type": "object",
+      "properties": {
+        "Host": {
+          "id": "http://jsonschema.net/headers/Host",
+          "type": "string"
+        }
+      }
+    },
+    "origin": {
+      "id": "http://jsonschema.net/origin",
+      "type": "string"
+    },
+    "url": {
+      "id": "http://jsonschema.net/url",
+      "type": "string"
+    }
+  },
+  "required": [
+    "args",
+    "headers",
+    "origin",
+    "url"
+  ]
+}

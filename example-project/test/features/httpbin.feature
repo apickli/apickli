@@ -197,3 +197,7 @@ Feature:
         And response header Access-Control-Allow-Methods should be GET, POST, PUT, DELETE, PATCH, OPTIONS
         And response header Allow should be HEAD, OPTIONS, GET
         And response header Content-Length should be 0
+        
+    Scenario: should successfully validate json using schema
+        When I GET /get
+        Then response body should be valid according to schema file ./test/features/fixtures/get-simple.schema 
