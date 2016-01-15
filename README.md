@@ -241,6 +241,7 @@ WHEN:
 	I PUT $resource
 	I DELETE $resource
 	I PATCH $resource
+    I request OPTIONS for $resource
 	
 THEN:
 	response header (.*) should exist
@@ -254,6 +255,7 @@ THEN:
 	response body should not contain (.*)
 	response body path (.*) should be (.*)
 	response body path (.*) should not be (.*)
+    response body should be valid according to schema file (.*)
 	I store the value of body path (.*) as access token
 	I store the value of response header (.*) as (.*) in scenario scope
 	I store the value of body path (.*) as (.*) in scenario scope
