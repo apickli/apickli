@@ -24,7 +24,8 @@
     "JSONPath": "^0.11.0",
     "request": "^2.55.0",
     "xmldom": "^0.1.19",
-    "xpath.js": "^1.0.6"
+    "xpath.js": "^1.0.6",
+    "is-my-json-valid": "^2.12.3"
   },
   "devDependencies": {
     "gulp": "^3.8.11",

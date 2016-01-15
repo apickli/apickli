@@ -6,6 +6,7 @@ var jsonPath = require('JSONPath');
 var select = require('xpath.js');
 var dom = require('xmldom').DOMParser;
 var fs = require('fs');
+var jsonSchemaValidator = require('is-my-json-valid');
 
 var accessToken;
 var globalVariables = {};
@@ -256,6 +257,26 @@ Apickli.prototype.setGlobalVariable = function(name, value) {
 
 Apickli.prototype.getGlobalVariable = function(name) {
 	return globalVariables[name];
+};
+
+Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
+	var self = this;
+    
+	fs.readFile(this.fixturesDirectory + schemaFile, 'utf8', function(err, jsonSchemaString) {
+		if (err) {
+			callback(err);
+		}
+        
+        var jsonSchema = JSON.parse(jsonSchemaString);
+        var responseBody = JSON.parse(self.getResponseObject().body);
+
+		var validate = jsonSchemaValidator(jsonSchema, {verbose: true});
+        if (!validate(responseBody)) {
+            callback(JSON.stringify(validate.errors));
+        }
+        
+		callback();
+	});
 };
 
 exports.Apickli = Apickli;

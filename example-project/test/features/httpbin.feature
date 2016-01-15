@@ -203,3 +203,7 @@ Feature:
         Then response code should be 200
         And response body path $.origin should be [0-9\.]+
         And response body path $.notthere should be undefined
+
+    Scenario: should successfully validate json using schema
+        When I GET /get
+        Then response body should be valid according to schema file ./test/features/fixtures/get-simple.schema 

@@ -179,6 +179,16 @@ module.exports = function () {
             callback();
         }
     });
+    
+    this.Then(/^response body should be valid according to schema file (.*)$/, function(schemaFile, callback) {
+        this.apickli.validateResponseWithSchema(schemaFile, function (error) {
+            if (error) {
+                callback(new Error(error));
+            }
+
+            callback();
+        });
+    });
 
     this.Then(/^I store the value of body path (.*) as access token$/, function (path, callback) {
         this.apickli.setAccessTokenFromResponseBodyPath(path);
