@@ -264,10 +264,10 @@ THEN:
 	I store the value of body path (.*) as (.*) in global scope
 ```
 
-The simplest way to adopt these expressions is to create a symlink from node_modules/apickli/apickli-gherkin.js to features/step_definitions/apickli-gherkin.js
+The simplest way to adopt these expressions is to create a symlink from node_modules/apickli/apickli-gherkin.js to test/features/step_definitions/apickli-gherkin.js
 
 ```sh
-$ ln -s node_modules/apickli/apickli-gherkin.js features/step_definitions/apickli-gherkin.js
+$ ln -s ../../../node_modules/apickli/apickli-gherkin.js test/features/step_definitions/apickli-gherkin.js
 ```
 
 If using Windows, follow this guide to create a symlink: [How-To Geek Guide](http://www.howtogeek.com/howto/16226/complete-guide-to-symbolic-links-symlinks-on-windows-or-linux/).
