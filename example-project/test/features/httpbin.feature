@@ -197,3 +197,9 @@ Feature:
         And response header Access-Control-Allow-Methods should be GET, POST, PUT, DELETE, PATCH, OPTIONS
         And response header Allow should be HEAD, OPTIONS, GET
         And response header Content-Length should be 0
+        
+    Scenario: should differentiate between empty string and non-existing element in JSON path assertions
+        When I GET /get
+        Then response code should be 200
+        And response body path $.origin should be [0-9\.]+
+        And response body path $.notthere should be undefined
