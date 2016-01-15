@@ -255,7 +255,7 @@ THEN:
 	response body should not contain (.*)
 	response body path (.*) should be (.*)
 	response body path (.*) should not be (.*)
-    	response body should be valid according to schema file (.*)
+    response body should be valid according to schema file (.*)
 	I store the value of body path (.*) as access token
 	I store the value of response header (.*) as (.*) in scenario scope
 	I store the value of body path (.*) as (.*) in scenario scope
