@@ -244,18 +244,18 @@ WHEN:
     I request OPTIONS for $resource
 	
 THEN:
-	response header (.*) should exist
-	response header (.*) should not exist
-	response body should be valid (xml|json)
 	response code should be (\d+)
 	response code should not be (\d+)
+	response header (.*) should exist
+	response header (.*) should not exist
 	response header (.*) should be (.*)
 	response header (.*) should not be (.*)
+	response body should be valid (xml|json)
 	response body should contain (.*)
 	response body should not contain (.*)
 	response body path (.*) should be (.*)
 	response body path (.*) should not be (.*)
-    response body should be valid according to schema file (.*)
+    	response body should be valid according to schema file (.*)
 	I store the value of body path (.*) as access token
 	I store the value of response header (.*) as (.*) in scenario scope
 	I store the value of body path (.*) as (.*) in scenario scope
