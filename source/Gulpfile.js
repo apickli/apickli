@@ -5,6 +5,18 @@ var jshint = require('gulp-jshint');
 gulp.task('test', function() {
 	var options = {
 		'steps': 'test/features/step_definitions/*.js',
+        'tags': '@core',
+		'format': 'pretty'
+	};
+
+    return gulp.src('test/features/*')
+			.pipe(cucumber(options));
+});
+
+gulp.task('console-test', function() {
+	var options = {
+		'steps': 'test/features/step_definitions/*.js',
+        'tags': '@console',
 		'format': 'pretty'
 	};
 
