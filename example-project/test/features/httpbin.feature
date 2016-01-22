@@ -15,6 +15,17 @@ Feature:
 		When I GET /get
 		Then response body path $.headers.Accept should be application/json
 		And response body path $.headers.User-Agent should be apickli
+        
+    Scenario: combine headers passed as table and Given syntax
+        Given I set Custom-Header header to abcd
+        And I set headers to 
+        |name|value|
+        |User-Agent|apickli|
+        |Accept|application/json|
+        When I GET /get
+        Then response body path $.headers.Accept should be application/json
+        And response body path $.headers.User-Agent should be apickli
+        And response body path $.headers.Custom-Header should be abcd
 
 	Scenario: Setting body payload in POST request
 		Given I set body to {"key":"hello-world"}
