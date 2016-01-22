@@ -6,6 +6,15 @@ Feature:
 		Given I set User-Agent header to apickli
 		When I GET /get
 		Then response body path $.headers.User-Agent should be apickli
+        
+    Scenario: checking values of headers passed as datatable in get request
+		Given I set headers to 
+		|name|value|
+		|User-Agent|apickli|
+		|Accept|application/json|
+		When I GET /get
+		Then response body path $.headers.Accept should be application/json
+		And response body path $.headers.User-Agent should be apickli
 
 	Scenario: Setting body payload in POST request
 		Given I set body to {"key":"hello-world"}

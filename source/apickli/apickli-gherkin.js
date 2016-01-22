@@ -6,6 +6,11 @@ module.exports = function () {
         this.apickli.addRequestHeader(headerName, headerValue);
         callback();
     });
+    
+    this.Given(/^I set headers to$/, function(headers, callback) {
+        this.apickli.setHeaders(headers.hashes());
+        callback();
+    });
 
     this.Given(/^I set body to (.*)$/, function (bodyValue, callback) {
         this.apickli.setRequestBody(bodyValue);

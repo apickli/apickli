@@ -44,6 +44,13 @@ Apickli.prototype.setQueryParameters = function(queryParameters) {
 	this.queryParameters = paramsObject;
 };
 
+Apickli.prototype.setHeaders = function(headersTable) {
+    var self = this;
+    headersTable.forEach(function(h) {
+        self.headers[h.name] = h.value;
+    });
+};
+
 Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
 	var self = this;
 	fs.readFile(this.fixturesDirectory + file, 'utf8', function(err, data) {
