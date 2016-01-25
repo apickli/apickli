@@ -271,6 +271,14 @@ $ ln -s ../../../node_modules/apickli/apickli-gherkin.js test/features/step_defi
 ```
 
 If using Windows, follow this guide to create a symlink: [How-To Geek Guide](http://www.howtogeek.com/howto/16226/complete-guide-to-symbolic-links-symlinks-on-windows-or-linux/).
+
+## Setting Proxy Server
+apickli uses node.js request module for HTTP communications which supports setting proxy servers via the following environment variables:
+* HTTP_PROXY / http_proxy
+* HTTPS_PROXY / https_proxy
+* NO_PROXY / no_proxy
+
+For more information, see https://github.com/request/request#controlling-proxy-behaviour-using-environment-variables
         
 ## Contributing
 
