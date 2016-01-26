@@ -234,6 +234,7 @@ GIVEN:
 	I have basic authentication credentials (.*) and (.*)
 	I set bearer token
 	I set query parameters to (data table with headers |parameter|value|)
+	I set headers to (data table with headers |name|value|)
 	
 WHEN:
 	I GET $resource
