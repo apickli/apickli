@@ -37,7 +37,13 @@ function Apickli(scheme, domain, fixturesDirectory) {
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
-	this.headers[name] = value;
+    var valuesArray = [];
+    if (this.headers[name]) {
+        valuesArray = this.headers[name].split(',');
+    } 
+    valuesArray.push(value);
+    
+	this.headers[name] = valuesArray.join(',');
 };
 
 Apickli.prototype.getResponseObject = function() {
@@ -60,7 +66,7 @@ Apickli.prototype.setQueryParameters = function(queryParameters) {
 Apickli.prototype.setHeaders = function(headersTable) {
     var self = this;
     headersTable.forEach(function(h) {
-        self.headers[h.name] = h.value;
+        self.addRequestHeader(h.name, h.value);
     });
 };
 

@@ -27,6 +27,16 @@ Feature:
         Then response body path $.headers.Accept should be application/json
         And response body path $.headers.User-Agent should be apickli
         And response body path $.headers.Custom-Header should be abcd
+        
+    Scenario: Same header field with multiple values
+        Given I set Custom-Header header to A
+        And I set Custom-Header header to B
+        And I set headers to
+        |name|value|
+        |Custom-Header|C|
+        |Custom-Header|D|
+        When I GET /get
+        Then response body path $.headers.Custom-Header should be A,B,C,D
 
 	Scenario: Setting body payload in POST request
 		Given I set body to {"key":"hello-world"}
