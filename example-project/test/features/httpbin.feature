@@ -242,5 +242,5 @@ Feature:
     Scenario: should successfully validate json array
     	Given I set body to ["a","b","c"]
     	When I POST to /post
-    	Then response body path $.data should be array
-    	And response body path $.data should be array with length 3
+    	Then response body path $.data type should be array
+    	And response body path $.data type should be array with length 3

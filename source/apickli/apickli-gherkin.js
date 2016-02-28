@@ -228,7 +228,7 @@ module.exports = function () {
         }
     });
 
-    this.Then(/^response body path (.*) should be array$/, function(path, callback) {
+    this.Then(/^response body path (.*) type should be array$/, function(path, callback) {
         var assertion = this.apickli.assertPathIsArray(path);
         if (assertion.success) {
             callback();
@@ -237,7 +237,7 @@ module.exports = function () {
         }
     });
 
-    this.Then(/^response body path (.*) should be array with length (\d+)$/, function(path, length, callback) {
+    this.Then(/^response body path (.*) type should be array with length (\d+)$/, function(path, length, callback) {
         var assertion = this.apickli.assertPathIsArrayWithLength(path, length);
         if (assertion.success) {
             callback();

@@ -65,9 +65,9 @@ Feature:
     Scenario: should successfully validate json array
         Given I set body to ["a","b","c"]
         When I POST to /post
-        And response body path $.headers.Host should be array
+        And response body path $.headers.Host type should be array
 
     Scenario: should successfully validate json array length
         Given I set body to ["a","b","c"]
         When I POST to /post
-        And response body path $.data should be array with length 2
+        And response body path $.data type should be array with length 2
