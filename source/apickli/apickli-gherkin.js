@@ -227,7 +227,25 @@ module.exports = function () {
             callback(prettyPrintJson(assertion));            
         }
     });
-    
+
+    this.Then(/^response body path (.*) should be array$/, function(path, callback) {
+        var assertion = this.apickli.assertPathIsArray(path);
+        if (assertion.success) {
+            callback();
+        } else {
+            callback(prettyPrintJson(assertion));
+        }
+    });
+
+    this.Then(/^response body path (.*) should be array with length (\d+)$/, function(path, length, callback) {
+        var assertion = this.apickli.assertPathIsArrayWithLength(path, length);
+        if (assertion.success) {
+            callback();
+        } else {
+            callback(prettyPrintJson(assertion));
+        }
+    });
+
     this.Then(/^response body should be valid according to schema file (.*)$/, function(schemaFile, callback) {
         this.apickli.validateResponseWithSchema(schemaFile, function (assertion) {
             if (assertion.success) {

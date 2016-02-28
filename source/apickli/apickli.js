@@ -243,6 +243,32 @@ Apickli.prototype.assertResponseBodyContentType = function(contentType) {
     return getAssertionResult(success, contentType, realContentType, this);
 };
 
+Apickli.prototype.assertPathIsArray = function(path) {
+	var success = false;
+	var value = evaluatePath(path, this.getResponseObject().body);
+
+	try{
+		var valueJson = JSON.parse(value);
+		success = Array.isArray(valueJson);
+	} catch (err) {}
+	
+	return getAssertionResult(success, 'array', typeof value, this);
+};
+
+Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
+	var success = false;
+	var actual = '?';
+	var value = evaluatePath(path, this.getResponseObject().body);
+
+	try{
+		var valueJson = JSON.parse(value);
+		success = ((Array.isArray(valueJson)) && (valueJson.length == length));
+		actual = valueJson.length;
+	} catch (err) {}
+	
+	return getAssertionResult(success, length, actual, this);
+};
+
 Apickli.prototype.evaluatePathInResponseBody = function(path) {
 	return evaluatePath(path, this.getResponseObject().body);
 };

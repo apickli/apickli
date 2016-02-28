@@ -238,3 +238,9 @@ Feature:
     Scenario: should successfully validate json using schema
         When I GET /get
         Then response body should be valid according to schema file ./test/features/fixtures/get-simple.schema 
+
+    Scenario: should successfully validate json array
+    	Given I set body to ["a","b","c"]
+    	When I POST to /post
+    	Then response body path $.data should be array
+    	And response body path $.data should be array with length 3
