@@ -70,4 +70,4 @@ Feature:
     Scenario: should successfully validate json array length
         Given I set body to ["a","b","c"]
         When I POST to /post
-        And response body path $.data should be of type array with length 2
+        And response body path $.json should be of type array with length 2

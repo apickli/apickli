@@ -244,14 +244,8 @@ Apickli.prototype.assertResponseBodyContentType = function(contentType) {
 };
 
 Apickli.prototype.assertPathIsArray = function(path) {
-	var success = false;
 	var value = evaluatePath(path, this.getResponseObject().body);
-
-	try{
-		var valueJson = JSON.parse(value);
-		success = Array.isArray(valueJson);
-	} catch (err) {}
-	
+	var success = Array.isArray(value);
 	return getAssertionResult(success, 'array', typeof value, this);
 };
 
@@ -259,12 +253,10 @@ Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
 	var success = false;
 	var actual = '?';
 	var value = evaluatePath(path, this.getResponseObject().body);
-
-	try{
-		var valueJson = JSON.parse(value);
-		success = ((Array.isArray(valueJson)) && (valueJson.length == length));
-		actual = valueJson.length;
-	} catch (err) {}
+	if (Array.isArray(value)) {
+		success = value.length == length;
+		actual = value.length;
+	}
 	
 	return getAssertionResult(success, length, actual, this);
 };

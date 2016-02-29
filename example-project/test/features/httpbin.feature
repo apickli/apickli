@@ -242,5 +242,11 @@ Feature:
     Scenario: should successfully validate json array
     	Given I set body to ["a","b","c"]
     	When I POST to /post
-    	Then response body path $.data should be of type array
-    	And response body path $.data should be of type array with length 3
+    	Then response body path $.json should be of type array
+    	And response body path $.json should be of type array with length 3
+
+    Scenario: should successfully validate json object array
+    	Given I set body to [{"a":1},{"b":2},{"c":3}]
+    	When I POST to /post
+    	Then response body path $.json should be of type array
+    	And response body path $.json should be of type array with length 3
