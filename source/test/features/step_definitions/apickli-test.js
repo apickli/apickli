@@ -14,7 +14,7 @@ module.exports = function() {
 	});
     
     this.Given(/^I store the value (.*) as (.*) in scenario scope$/, function (value, variable, callback) {
-        this.apickli.storeValueInScenarioScope(value, variable);
+        this.apickli.storeValueInScenarioScope(variable, value);
         callback();
     });
 

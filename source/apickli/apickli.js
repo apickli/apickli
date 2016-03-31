@@ -304,7 +304,7 @@ Apickli.prototype.setBearerToken = function() {
     this.addRequestHeader('Authorization', 'Bearer ' + accessToken);
 };
 
-Apickli.prototype.storeValueInScenarioScope = function(value, variableName) {
+Apickli.prototype.storeValueInScenarioScope = function(variableName, value) {
     this.scenarioVariables[variableName] = value;
 };
 
