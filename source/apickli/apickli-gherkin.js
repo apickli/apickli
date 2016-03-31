@@ -144,7 +144,7 @@ module.exports = function () {
         }
     });
 
-    this.Then(/^response code should be (\d+)$/, function (responseCode, callback) {
+    this.Then(/^response code should be (.*)$/, function (responseCode, callback) {
         var assertion = this.apickli.assertResponseCode(responseCode);
         
         if (assertion.success) {
@@ -154,7 +154,7 @@ module.exports = function () {
         }
     });
 
-    this.Then(/^response code should not be (\d+)$/, function (responseCode, callback) {
+    this.Then(/^response code should not be (.*)$/, function (responseCode, callback) {
         var assertion = this.apickli.assertResponseCode(responseCode);
         assertion.success = !assertion.success;
         
@@ -237,7 +237,7 @@ module.exports = function () {
         }
     });
 
-    this.Then(/^response body path (.*) should be of type array with length (\d+)$/, function(path, length, callback) {
+    this.Then(/^response body path (.*) should be of type array with length (.*)$/, function(path, length, callback) {
         var assertion = this.apickli.assertPathIsArrayWithLength(path, length);
         if (assertion.success) {
             callback();

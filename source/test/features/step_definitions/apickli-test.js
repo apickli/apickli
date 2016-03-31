@@ -12,6 +12,11 @@ module.exports = function() {
 		this.apickli = new apickli.Apickli('http', 'httpbin.org');
 		callback();
 	});
+    
+    this.Given(/^I store the value (.*) as (.*) in scenario scope$/, function (value, variable, callback) {
+        this.apickli.storeValueInScenarioScope(value, variable);
+        callback();
+    });
 
 	this.When(/^I subtract (.*) from (.*)$/, function(variable1, variable2, callback) {
 		var value1 = this.apickli.getGlobalVariable(variable1); 
