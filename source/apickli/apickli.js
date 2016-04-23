@@ -38,8 +38,8 @@ function Apickli(scheme, domain, fixturesDirectory, variableChar) {
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
-    name = replaceVariables(name, this.scenarioVariables, this.variableChar);
-    value = replaceVariables(value, this.scenarioVariables, this.variableChar);
+    name = this.replaceVariables(name);
+    value = this.replaceVariables(value);
 
     var valuesArray = [];
     if (this.headers[name]) {
@@ -55,7 +55,7 @@ Apickli.prototype.getResponseObject = function() {
 };
 
 Apickli.prototype.setRequestBody = function(body) {
-    body = replaceVariables(body, this.scenarioVariables, this.variableChar);
+    body = this.replaceVariables(body);
     this.requestBody = body;
 };
 
@@ -64,10 +64,10 @@ Apickli.prototype.setQueryParameters = function(queryParameters) {
 
     for (var i = 0; i < queryParameters.length; i++) {
         var q = queryParameters[i];
-        var queryParameterName = replaceVariables(q.parameter, this.scenarioVariables, this.variableChar);
-        var queryParameterValue = replaceVariables(q.value, this.scenarioVariables, this.variableChar);
+        var queryParameterName = this.replaceVariables(q.parameter);
+        var queryParameterValue = this.replaceVariables(q.value);
         paramsObject[queryParameterName] = queryParameterValue;
-    };
+    }
 
     this.queryParameters = paramsObject;
 };
@@ -76,15 +76,15 @@ Apickli.prototype.setHeaders = function(headersTable) {
     var self = this;
     for (var i = 0; i < headersTable.length; i++) {
         var h = headersTable[i];
-        var headerName = replaceVariables(h.name, self.scenarioVariables, self.variableChar);
-        var headerValue = replaceVariables(h.value, self.scenarioVariables, self.variableChar);
+        var headerName = this.replaceVariables(h.name);
+        var headerValue = this.replaceVariables(h.value);
         self.addRequestHeader(headerName, headerValue);
-    };
+    }
 };
 
 Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
     var self = this;
-    file = replaceVariables(file, self.scenarioVariables, self.variableChar);
+    file = this.replaceVariables(file);
     fs.readFile(this.fixturesDirectory + file, 'utf8', function(err, data) {
         if (err) {
             callback(err);
@@ -97,7 +97,7 @@ Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
 
 Apickli.prototype.get = function(resource, callback) { // callback(error, response)
     var self = this;
-    resource = replaceVariables(resource, self.scenarioVariables, self.variableChar);
+    resource = this.replaceVariables(resource);
     request.get({
         url: this.domain + resource,
         headers: this.headers,
@@ -116,7 +116,7 @@ Apickli.prototype.get = function(resource, callback) { // callback(error, respon
 
 Apickli.prototype.post = function(resource, callback) { // callback(error, response)
     var self = this;
-    resource = replaceVariables(resource, self.scenarioVariables, self.variableChar);
+    resource = this.replaceVariables(resource);
     request({
         url: this.domain + resource,
         headers: this.headers,
@@ -137,7 +137,7 @@ Apickli.prototype.post = function(resource, callback) { // callback(error, respo
 
 Apickli.prototype.put = function(resource, callback) { // callback(error, response)
     var self = this;
-    resource = replaceVariables(resource, self.scenarioVariables, self.variableChar);
+    resource = this.replaceVariables(resource);
     request({
         url: this.domain + resource,
         headers: this.headers,
@@ -158,7 +158,7 @@ Apickli.prototype.put = function(resource, callback) { // callback(error, respon
 
 Apickli.prototype.delete = function(resource, callback) { // callback(error, response)
     var self = this;
-    resource = replaceVariables(resource, self.scenarioVariables, self.variableChar);
+    resource = this.replaceVariables(resource);
     request({
         url: this.domain + resource,
         headers: this.headers,
@@ -179,7 +179,7 @@ Apickli.prototype.delete = function(resource, callback) { // callback(error, res
 
 Apickli.prototype.patch = function(resource, callback) { // callback(error, response)
     var self = this;
-    resource = replaceVariables(resource, self.scenarioVariables, self.variableChar);
+    resource = this.replaceVariables(resource);
     request({
         url: this.domain + resource,
         headers: this.headers,
@@ -200,7 +200,7 @@ Apickli.prototype.patch = function(resource, callback) { // callback(error, resp
 
 Apickli.prototype.options = function(resource, callback) { // callback(error, response)
     var self = this;
-    resource = replaceVariables(resource, self.scenarioVariables, self.variableChar);
+    resource = this.replaceVariables(resource);
     request({
         url: this.domain + resource,
         headers: this.headers,
@@ -218,28 +218,28 @@ Apickli.prototype.options = function(resource, callback) { // callback(error, re
 };
 
 Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password) {
-    username = replaceVariables(username, this.scenarioVariables, this.variableChar);
-    password = replaceVariables(password, this.scenarioVariables, this.variableChar);
+    username = this.replaceVariables(username);
+    password = this.replaceVariables(password);
     var b64EncodedValue = base64Encode(username + ':' + password);
     this.addRequestHeader('Authorization', 'Basic ' + b64EncodedValue);
 };
 
 Apickli.prototype.assertResponseCode = function(responseCode) {
-    responseCode = replaceVariables(responseCode, this.scenarioVariables, this.variableChar);
+    responseCode = this.replaceVariables(responseCode);
     var realResponseCode = this.getResponseObject().statusCode;
     var success = (realResponseCode == responseCode);
     return getAssertionResult(success, responseCode, realResponseCode, this);
 };
 
 Apickli.prototype.assertResponseContainsHeader = function(header, callback) {
-    header = replaceVariables(header, this.scenarioVariables, this.variableChar);
+    header = this.replaceVariables(header);
     var success = typeof this.getResponseObject().headers[header.toLowerCase()] != 'undefined';
     return getAssertionResult(success, true, false, this);
 };
 
 Apickli.prototype.assertHeaderValue = function(header, expression) {
-    header = replaceVariables(header, this.scenarioVariables, this.variableChar);
-    expression = replaceVariables(expression, this.scenarioVariables, this.variableChar);
+    header = this.replaceVariables(header);
+    expression = this.replaceVariables(expression);
     var realHeaderValue = this.getResponseObject().headers[header.toLowerCase()];
     var regex = new RegExp(expression);
     var success = (regex.test(realHeaderValue));
@@ -247,8 +247,8 @@ Apickli.prototype.assertHeaderValue = function(header, expression) {
 };
 
 Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, regexp) {
-    path = replaceVariables(path, this.scenarioVariables, this.variableChar);
-    regexp = replaceVariables(regexp, this.scenarioVariables, this.variableChar);
+    path = this.replaceVariables(path);
+    regexp = this.replaceVariables(regexp);
     var regExpObject = new RegExp(regexp);
     var evalValue = evaluatePath(path, this.getResponseObject().body);
     var success = regExpObject.test(evalValue);
@@ -256,29 +256,29 @@ Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, reg
 };
 
 Apickli.prototype.assertResponseBodyContainsExpression = function(expression) {
-    expression = replaceVariables(expression, this.scenarioVariables, this.variableChar);
+    expression = this.replaceVariables(expression);
     var regex = new RegExp(expression);
     var success = regex.test(this.getResponseObject().body);
     return getAssertionResult(success, expression, null, this);
 };
 
 Apickli.prototype.assertResponseBodyContentType = function(contentType) {
-    contentType = replaceVariables(contentType, this.scenarioVariables, this.variableChar);
+    contentType = this.replaceVariables(contentType);
     var realContentType = getContentType(this.getResponseObject().body);
     var success = (realContentType === contentType);
     return getAssertionResult(success, contentType, realContentType, this);
 };
 
 Apickli.prototype.assertPathIsArray = function(path) {
-    path = replaceVariables(path, this.scenarioVariables, this.variableChar);
+    path = this.replaceVariables(path);
     var value = evaluatePath(path, this.getResponseObject().body);
     var success = Array.isArray(value);
     return getAssertionResult(success, 'array', typeof value, this);
 };
 
 Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
-    path = replaceVariables(path, this.scenarioVariables, this.variableChar);
-    length = replaceVariables(length, this.scenarioVariables, this.variableChar);
+    path = this.replaceVariables(path);
+    length = this.replaceVariables(length);
     var success = false;
     var actual = '?';
     var value = evaluatePath(path, this.getResponseObject().body);
@@ -291,12 +291,12 @@ Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
 };
 
 Apickli.prototype.evaluatePathInResponseBody = function(path) {
-    path = replaceVariables(path, this.scenarioVariables, this.variableChar);
+    path = this.replaceVariables(path);
     return evaluatePath(path, this.getResponseObject().body);
 };
 
 Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
-    path = replaceVariables(path, this.scenarioVariables, this.variableChar);
+    path = this.replaceVariables(path);
     accessToken = evaluatePath(path, this.getResponseObject().body);
 };
 
@@ -309,30 +309,30 @@ Apickli.prototype.storeValueInScenarioScope = function(variableName, value) {
 };
 
 Apickli.prototype.storeValueOfHeaderInScenarioScope = function(header, variableName) {
-    header = replaceVariables(header, this.scenarioVariables, this.variableChar);  //only replace header. replacing variable name wouldn't make sense
+    header = this.replaceVariables(header);  //only replace header. replacing variable name wouldn't make sense
     var value = this.getResponseObject().headers[header.toLowerCase()];
     this.scenarioVariables[variableName] = value;
 };
 
 Apickli.prototype.storeValueOfResponseBodyPathInScenarioScope = function(path, variableName) {
-    path = replaceVariables(path, this.scenarioVariables, this.variableChar);  //only replace path. replacing variable name wouldn't make sense
+    path = this.replaceVariables(path);  //only replace path. replacing variable name wouldn't make sense
     var value = evaluatePath(path, this.getResponseObject().body);
     this.scenarioVariables[variableName] = value;
 };
 
 Apickli.prototype.assertScenarioVariableValue = function(variable, value) {
-    value = replaceVariables(value, this.scenarioVariables, this.variableChar);    //only replace value. replacing variable name wouldn't make sense
+    value = this.replaceVariables(value);    //only replace value. replacing variable name wouldn't make sense
     return (String(this.scenarioVariables[variable]) === value);
 };
 
 Apickli.prototype.storeValueOfHeaderInGlobalScope = function(headerName, variableName) {
-    headerName = replaceVariables(headerName, this.scenarioVariables, this.variableChar);    //only replace headerName. replacing variable name wouldn't make sense
+    headerName = this.replaceVariables(headerName);    //only replace headerName. replacing variable name wouldn't make sense
     var value = this.getResponseObject().headers[headerName.toLowerCase()];
     this.setGlobalVariable(variableName, value);
 };
 
 Apickli.prototype.storeValueOfResponseBodyPathInGlobalScope = function(path, variableName) {
-    path = replaceVariables(path, this.scenarioVariables, this.variableChar);    //only replace path. replacing variable name wouldn't make sense
+    path = this.replaceVariables(path);    //only replace path. replacing variable name wouldn't make sense
     var value = evaluatePath(path, this.getResponseObject().body);
     this.setGlobalVariable(variableName, value);
 };
@@ -347,7 +347,7 @@ Apickli.prototype.getGlobalVariable = function(name) {
 
 Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
     var self = this;
-    schemaFile = replaceVariables(schemaFile, self.scenarioVariables, self.variableChar);
+    schemaFile = this.replaceVariables(schemaFile, self.scenarioVariables, self.variableChar);
 
     fs.readFile(this.fixturesDirectory + schemaFile, 'utf8', function(err, jsonSchemaString) {
         if (err) {
@@ -367,17 +367,6 @@ exports.Apickli = Apickli;
 
 /**
  * Replaces variable identifiers in the resource string
- * with their value in scenario variables if it exists.
- * Returns the modified string or empty string.
- * The variable identifiers must be delimited with backticks or variableChar character
- */
-var replaceVariables = function(resource, scenarioVariables, variableChar) {
-    resource = replaceScopeVariables(resource, scenarioVariables, 0, variableChar);
-    return resource;
-};
-
-/**
- * Replaces variable identifiers in the resource string
  * with their value in scope if it exists
  * Returns the modified string
  * The variable identifiers must be delimited with backticks or variableChar character
@@ -386,19 +375,22 @@ var replaceVariables = function(resource, scenarioVariables, variableChar) {
  * 
  * Credits: Based on contribution by PascalLeMerrer
  */
-var replaceScopeVariables = function(resource, scope, offset, variableChar) {
-      
+Apickli.prototype.replaceVariables = function(resource, scope, variableChar, offset) {
+    scope = scope || this.scenarioVariables;
+    variableChar = variableChar || this.variableChar;
+    offset = offset || 0;
+    
     var startIndex = resource.indexOf(variableChar, offset);
     if (startIndex >= 0) {
         var endIndex = resource.indexOf(variableChar, startIndex + 1);
-        if (endIndex >= startIndex) {
+        if (endIndex > startIndex) {
             var variableName = resource.substr(startIndex + 1, endIndex - startIndex - 1);
-            var variableValue = "";
+            var variableValue = '';
             if (scope.hasOwnProperty(variableName)) {
                 variableValue = scope[variableName];
             }
             resource = resource.substr(0, startIndex) + variableValue + resource.substr(endIndex + 1);
-            resource = replaceScopeVariables(resource, scope, endIndex + 1);
+            resource = this.replaceVariables(resource, scope, variableChar, endIndex + 1);
         }
     }
     return resource;

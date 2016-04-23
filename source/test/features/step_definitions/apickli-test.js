@@ -13,7 +13,7 @@ module.exports = function() {
 		callback();
 	});
     
-    this.Given(/^I store the value (.*) as (.*) in scenario scope$/, function (value, variable, callback) {
+    this.Given(/^I store the raw value (.*) as (.*) in scenario scope$/, function (value, variable, callback) {
         this.apickli.storeValueInScenarioScope(variable, value);
         callback();
     });

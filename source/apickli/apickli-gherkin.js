@@ -266,7 +266,7 @@ module.exports = function () {
         callback();
     });
 
-    this.Then(/^I store the value of response header(.*) as (.*) in global scope$/, function (headerName, variableName, callback) {
+    this.Then(/^I store the value of response header (.*) as (.*) in global scope$/, function (headerName, variableName, callback) {
         this.apickli.storeValueOfHeaderInGlobalScope(headerName, variableName);
         callback();
     });
@@ -276,12 +276,12 @@ module.exports = function () {
         callback();
     });
 
-    this.When(/^I store the value of response header (.*) as (.*) in scenario scope$/, function (name, variable, callback) {
+    this.Then(/^I store the value of response header (.*) as (.*) in scenario scope$/, function (name, variable, callback) {
         this.apickli.storeValueOfHeaderInScenarioScope(name, variable);
         callback();
     });
 
-    this.When(/^I store the value of body path (.*) as (.*) in scenario scope$/, function (path, variable, callback) {
+    this.Then(/^I store the value of body path (.*) as (.*) in scenario scope$/, function (path, variable, callback) {
         this.apickli.storeValueOfResponseBodyPathInScenarioScope(path, variable);
         callback();
     });
