@@ -282,6 +282,41 @@ apickli uses node.js request module for HTTP communications which supports setti
 * NO_PROXY / no_proxy
 
 For more information, see https://github.com/request/request#controlling-proxy-behaviour-using-environment-variables
+
+## Variable Injection
+
+It is possible to use Scenario Variables in a Feature file, that will have values injected when the tests are run. Whilst defining values explicitly provides better clarity to those reading a feature file, there are some configuration values such as Client Id which it is easier to externalise.
+
+By default, backticks are use to indicate a variable in a feature file. When instantiating Apickli, a different character can be passed as a parameter. In order to follow BDD best practices, global variables should not be used in the way. Each Scenario should be independent, and as such if you would like to define configurable variables it should be done using the Before hook:
+
+```js
+/* jslint node: true */
+'use strict';
+
+var apickli = require('apickli');
+
+module.exports = function() {
+	// cleanup before every scenario
+	this.Before(function(scenario, callback) {
+		this.apickli = new apickli.Apickli('http', 'httpbin.org');
+        this.apickli.storeValueInScenarioScope("BasicAuthValue", "Basic abc123");
+		callback();
+	});
+};
+```
+
+```
+Feature:
+  Httpbin.org exposes various resources for HTTP request testing
+  As Httpbin client I want to verify that all API resources are working as they should
+
+
+  Scenario: Setting authorization headers in GET request                         
+    Given I set Authorization header to `BasicAuthValue`                       
+    When I GET /get                                                
+    Then response body path $.headers.Authorization should be Basic abc123 
+```
+For more examples, please see /source/test/features/injecting-variables.feature
         
 ## Contributing
 

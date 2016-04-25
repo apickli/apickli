@@ -56,7 +56,7 @@ Feature:
 	Scenario: Setting body payload from file
 		Given I pipe contents of file ./test/features/fixtures/requestbody.xml to body
 		When I POST to /post
-		Then response body should contain "data": "<a>b</a>"
+		Then response body should contain "<a>b</a>"
 
 	Scenario: Sending request with basic auth authentication
 		Given I have basic authentication credentials username and password
