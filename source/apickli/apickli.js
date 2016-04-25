@@ -60,26 +60,26 @@ Apickli.prototype.setRequestBody = function(body) {
 };
 
 Apickli.prototype.setQueryParameters = function(queryParameters) {
+    var self = this;
     var paramsObject = {};
-
-    for (var i = 0; i < queryParameters.length; i++) {
-        var q = queryParameters[i];
-        var queryParameterName = this.replaceVariables(q.parameter);
-        var queryParameterValue = this.replaceVariables(q.value);
+    
+    queryParameters.forEach(function(q){
+        var queryParameterName = self.replaceVariables(q.parameter);
+        var queryParameterValue = self.replaceVariables(q.value);
         paramsObject[queryParameterName] = queryParameterValue;
-    }
+    });
 
     this.queryParameters = paramsObject;
 };
 
 Apickli.prototype.setHeaders = function(headersTable) {
     var self = this;
-    for (var i = 0; i < headersTable.length; i++) {
-        var h = headersTable[i];
-        var headerName = this.replaceVariables(h.name);
-        var headerValue = this.replaceVariables(h.value);
+    
+    headersTable.forEach(function(h) {
+        var headerName = self.replaceVariables(h.name);
+        var headerValue = self.replaceVariables(h.value);
         self.addRequestHeader(headerName, headerValue);
-    }
+    });
 };
 
 Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
