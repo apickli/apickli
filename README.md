@@ -316,7 +316,7 @@ Feature:
     When I GET /get                                                
     Then response body path $.headers.Authorization should be Basic abc123 
 ```
-For more examples, please see /source/test/features/injecting-variables.feature
+For more examples, please see [source/test/features/injecting-variables.feature](source/test/features/injecting-variables.feature)
         
 ## Contributing
 
