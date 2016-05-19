@@ -62,7 +62,7 @@ Apickli.prototype.setRequestBody = function(body) {
 Apickli.prototype.setQueryParameters = function(queryParameters) {
     var self = this;
     var paramsObject = {};
-    
+
     queryParameters.forEach(function(q){
         var queryParameterName = self.replaceVariables(q.parameter);
         var queryParameterValue = self.replaceVariables(q.value);
@@ -74,7 +74,7 @@ Apickli.prototype.setQueryParameters = function(queryParameters) {
 
 Apickli.prototype.setHeaders = function(headersTable) {
     var self = this;
-    
+
     headersTable.forEach(function(h) {
         var headerName = self.replaceVariables(h.name);
         var headerValue = self.replaceVariables(h.value);
@@ -372,14 +372,14 @@ exports.Apickli = Apickli;
  * The variable identifiers must be delimited with backticks or variableChar character
  * offset defines the index of the char from which the varaibles are to be searched
  * It's optional.
- * 
+ *
  * Credits: Based on contribution by PascalLeMerrer
  */
 Apickli.prototype.replaceVariables = function(resource, scope, variableChar, offset) {
     scope = scope || this.scenarioVariables;
     variableChar = variableChar || this.variableChar;
     offset = offset || 0;
-    
+
     var startIndex = resource.indexOf(variableChar, offset);
     if (startIndex >= 0) {
         var endIndex = resource.indexOf(variableChar, startIndex + 1);
