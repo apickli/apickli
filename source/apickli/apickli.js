@@ -50,6 +50,15 @@ Apickli.prototype.addRequestHeader = function(name, value) {
     this.headers[name] = valuesArray.join(',');
 };
 
+Apickli.prototype.removeRequestHeader = function(name) {
+    delete this.headers[name];
+};
+
+Apickli.prototype.setRequestHeader = function(name, value) {
+    this.removeRequestHeader(name);
+    this.addRequestHeader(name, value);
+};
+
 Apickli.prototype.getResponseObject = function() {
     return this.httpResponse;
 };
