@@ -11,18 +11,18 @@ module.exports = function () {
         stepContext.scenario = scenario.getName();
         callback();
     });
-    
+
     this.registerHandler('BeforeStep', function(event, callback) {
         var step = event.getPayloadItem('step');
         stepContext.step = step.getName();
         callback();
     });
-    
+
     this.Given(/^I set (.*) header to (.*)$/, function (headerName, headerValue, callback) {
         this.apickli.addRequestHeader(headerName, headerValue);
         callback();
     });
-    
+
     this.Given(/^I set headers to$/, function(headers, callback) {
         this.apickli.setHeaders(headers.hashes());
         callback();
@@ -42,11 +42,11 @@ module.exports = function () {
             callback();
         });
     });
-    
+
     this.Given(/^I set query parameters to$/, function(queryParameters, callback) {
-		this.apickli.setQueryParameters(queryParameters.hashes());
-		callback();
-	});
+        this.apickli.setQueryParameters(queryParameters.hashes());
+        callback();
+    });
 
     this.Given(/^I have basic authentication credentials (.*) and (.*)$/, function (username, password, callback) {
         this.apickli.addHttpBasicAuthorizationHeader(username, password);
@@ -102,20 +102,20 @@ module.exports = function () {
             callback();
         });
     });
-    
+
     this.When('I request OPTIONS for $resource', function(resource, callback) {
         this.apickli.options(resource, function(error, response) {
             if (error) {
                 callback(new Error(error));
             }
-            
+
             callback();
         });
     });
 
     this.Then(/^response header (.*) should exist$/, function (header, callback) {
         var assertion = this.apickli.assertResponseContainsHeader(header);
-        
+
         if (assertion.success) {
             callback();
         } else {
@@ -126,7 +126,7 @@ module.exports = function () {
     this.Then(/^response header (.*) should not exist$/, function (header, callback) {
         var assertion = this.apickli.assertResponseContainsHeader(header);
         assertion.success = !assertion.success;
-        
+
         if (assertion.success) {
             callback();
         } else {
@@ -136,7 +136,7 @@ module.exports = function () {
 
     this.Then(/^response body should be valid (xml|json)$/, function (contentType, callback) {
         var assertion = this.apickli.assertResponseBodyContentType(contentType);
-        
+
         if (assertion.success) {
             callback();
         } else {
@@ -146,7 +146,7 @@ module.exports = function () {
 
     this.Then(/^response code should be (.*)$/, function (responseCode, callback) {
         var assertion = this.apickli.assertResponseCode(responseCode);
-        
+
         if (assertion.success) {
             callback();
         } else {
@@ -157,7 +157,7 @@ module.exports = function () {
     this.Then(/^response code should not be (.*)$/, function (responseCode, callback) {
         var assertion = this.apickli.assertResponseCode(responseCode);
         assertion.success = !assertion.success;
-        
+
         if (assertion.success) {
             callback();
         } else {
@@ -167,7 +167,7 @@ module.exports = function () {
 
     this.Then(/^response header (.*) should be (.*)$/, function (header, expression, callback) {
         var assertion = this.apickli.assertHeaderValue(header, expression);
-        
+
         if (assertion.success) {
             callback();
         } else {
@@ -178,17 +178,17 @@ module.exports = function () {
     this.Then(/^response header (.*) should not be (.*)$/, function (header, expression, callback) {
         var assertion = this.apickli.assertHeaderValue(header, expression);
         assertion.success = !assertion.success;
-        
+
         if (assertion.success) {
             callback();
         } else {
-            callback(prettyPrintJson(assertion));            
+            callback(prettyPrintJson(assertion));
         }
     });
 
     this.Then(/^response body should contain (.*)$/, function (expression, callback) {
         var assertion = this.apickli.assertResponseBodyContainsExpression(expression);
-        
+
         if (assertion.success) {
             callback();
         } else {
@@ -199,17 +199,17 @@ module.exports = function () {
     this.Then(/^response body should not contain (.*)$/, function (expression, callback) {
         var assertion = this.apickli.assertResponseBodyContainsExpression(expression);
         assertion.success = !assertion.success;
-        
+
         if (assertion.success) {
             callback();
         } else {
-            callback(prettyPrintJson(assertion));            
+            callback(prettyPrintJson(assertion));
         }
     });
 
     this.Then(/^response body path (.*) should be ((?!of type).+)$/, function (path, value, callback) {
         var assertion = this.apickli.assertPathInResponseBodyMatchesExpression(path, value);
-        
+
         if (assertion.success) {
             callback();
         } else {
@@ -220,11 +220,11 @@ module.exports = function () {
     this.Then(/^response body path (.*) should not be ((?!of type).+)$/, function (path, value, callback) {
         var assertion = this.apickli.assertPathInResponseBodyMatchesExpression(path, value);
         assertion.success = !assertion.success;
-        
+
         if (assertion.success) {
             callback();
         } else {
-            callback(prettyPrintJson(assertion));            
+            callback(prettyPrintJson(assertion));
         }
     });
 
@@ -251,7 +251,7 @@ module.exports = function () {
             if (assertion.success) {
                 callback();
             } else {
-                callback(prettyPrintJson(assertion));            
+                callback(prettyPrintJson(assertion));
             }
         });
     });
@@ -300,7 +300,7 @@ var prettyPrintJson = function(json) {
         stepContext: stepContext,
         testOutput: json
     };
-    
+
     return prettyJson.render(output, {
         noColor: true
     });
