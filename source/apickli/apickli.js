@@ -51,11 +51,15 @@ Apickli.prototype.addRequestHeader = function(name, value) {
 };
 
 Apickli.prototype.removeRequestHeader = function(name) {
+    name = this.replaceVariables(name);
     delete this.headers[name];
 };
 
 Apickli.prototype.setRequestHeader = function(name, value) {
     this.removeRequestHeader(name);
+
+    name = this.replaceVariables(name);
+    value = this.replaceVariables(value);
     this.addRequestHeader(name, value);
 };
 
