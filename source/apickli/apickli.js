@@ -50,6 +50,19 @@ Apickli.prototype.addRequestHeader = function(name, value) {
     this.headers[name] = valuesArray.join(',');
 };
 
+Apickli.prototype.removeRequestHeader = function(name) {
+    name = this.replaceVariables(name);
+    delete this.headers[name];
+};
+
+Apickli.prototype.setRequestHeader = function(name, value) {
+    this.removeRequestHeader(name);
+
+    name = this.replaceVariables(name);
+    value = this.replaceVariables(value);
+    this.addRequestHeader(name, value);
+};
+
 Apickli.prototype.getResponseObject = function() {
     return this.httpResponse;
 };
@@ -385,10 +398,8 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
         var endIndex = resource.indexOf(variableChar, startIndex + 1);
         if (endIndex > startIndex) {
             var variableName = resource.substr(startIndex + 1, endIndex - startIndex - 1);
-            var variableValue = '';
-            if (scope.hasOwnProperty(variableName)) {
-                variableValue = scope[variableName];
-            }
+            var variableValue = scope && scope.hasOwnProperty(variableName) ? scope[variableName] : globalVariables[variableName];
+
             resource = resource.substr(0, startIndex) + variableValue + resource.substr(endIndex + 1);
             resource = this.replaceVariables(resource, scope, variableChar, endIndex + 1);
         }
