@@ -20,10 +20,6 @@ It provides a gherkin framework and a collection of utility functions to make AP
 $ npm install -g cucumber
 ```
 
-### Copy example project
-
-You can copy existing [example-project](example-project) directory in this code repository which has skeleton test project created with tests against `httpbin.org`
-
 ### Start new project
 
 Below steps will help you start a new test project from scratch.
@@ -62,9 +58,9 @@ $ npm install
 ```
     
 #### 4. Scenario definitions
-We can now start defining our scenarios for the test. For this tutorial, we will be borrowing sections from the [example project](example-project/) in apickli source code. 
 
-Let's start with the scenario file called *myapi.feature*. Full scenario definition with various other functions can be found here: [example-project/features/httpbin.feature](example-project/features/httpbin.feature)
+Let's start with the scenario file called *myapi.feature*. For more examples of
+feature and scenario definitions, check out [test folder](source/test).
 
 ```
 Feature:
