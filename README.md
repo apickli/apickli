@@ -261,10 +261,11 @@ THEN:
 	I store the value of body path (.*) as (.*) in global scope
 ```
 
-The simplest way to adopt these expressions is to create a symlink from node_modules/apickli/apickli-gherkin.js to test/features/step_definitions/apickli-gherkin.js
+The simplest way to adopt these expressions is to create a file named apickli-gherkin.js in features/step_definitions and extend the apickli/gherkin.js module.
 
-```sh
-$ ln -s ../../../node_modules/apickli/apickli-gherkin.js test/features/step_definitions/apickli-gherkin.js
+add the following to test/features/step_definitions/apickli-gherkin.js
+```javascript
+module.exports = require('apickli/apickli-gherkin');
 ```
 
 If using Windows, follow this guide to create a symlink: [How-To Geek Guide](http://www.howtogeek.com/howto/16226/complete-guide-to-symbolic-links-symlinks-on-windows-or-linux/).
