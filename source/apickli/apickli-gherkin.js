@@ -247,7 +247,7 @@ module.exports = function () {
     });
 
     this.Then(/^response body should be valid according to schema file (.*)$/, function(schemaFile, callback) {
-        this.apickli.validateResponseWithSchema(schemaFile, function (assertion) {
+        this.apickli.validateResponseWithSchema(schemaFile, function (err, assertion) {
             if (assertion.success) {
                 callback();
             } else {

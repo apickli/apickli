@@ -13,28 +13,21 @@ var globalVariables = {};
 
 var ATTRIBUTE = 2;
 
-var getAssertionResult = function(success, expected, actual, apickliInstance) {
-    return {
-        success: success,
-        expected: expected,
-        actual: actual,
-        response: {
-            statusCode: apickliInstance.getResponseObject().statusCode,
-            headers: apickliInstance.getResponseObject().headers,
-            body: apickliInstance.getResponseObject().body
-        }
-    };
-};
+function Apickli(options) {
+    if (!options.domain) {
+        throw new Error('domain name is not provided');
+    }
 
-function Apickli(scheme, domain, fixturesDirectory, variableChar) {
-    this.domain = scheme + '://' + domain;
+    var scheme = options.scheme || 'https';
+    this.domain = scheme + '://' + options.domain;
+    this.fixturesDirectory = options.fixturesDirectory || '';
+    this.variableChar = options.varibleChar || '`';
+
     this.headers = {};
     this.httpResponse = {};
     this.requestBody = '';
     this.scenarioVariables = {};
-    this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : '');
     this.queryParameters = {};
-    this.variableChar = (variableChar ? variableChar : '`');
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
@@ -241,13 +234,21 @@ Apickli.prototype.assertResponseCode = function(responseCode) {
     responseCode = this.replaceVariables(responseCode);
     var realResponseCode = this.getResponseObject().statusCode;
     var success = (realResponseCode == responseCode);
-    return getAssertionResult(success, responseCode, realResponseCode, this);
+    return this.getAssertionResult({
+        success: success,
+        expected: responseCode,
+        actual: realResponseCode
+    });
 };
 
 Apickli.prototype.assertResponseContainsHeader = function(header, callback) {
     header = this.replaceVariables(header);
     var success = typeof this.getResponseObject().headers[header.toLowerCase()] != 'undefined';
-    return getAssertionResult(success, true, false, this);
+    return this.getAssertionResult({
+        success: success,
+        expected: true,
+        actual: false
+    });
 };
 
 Apickli.prototype.assertHeaderValue = function(header, expression) {
@@ -256,7 +257,11 @@ Apickli.prototype.assertHeaderValue = function(header, expression) {
     var realHeaderValue = this.getResponseObject().headers[header.toLowerCase()];
     var regex = new RegExp(expression);
     var success = (regex.test(realHeaderValue));
-    return getAssertionResult(success, expression, realHeaderValue, this);
+    return this.getAssertionResult({
+        success: success,
+        expected: expression,
+        actual: realHeaderValue
+    });
 };
 
 Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, regexp) {
@@ -265,28 +270,44 @@ Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, reg
     var regExpObject = new RegExp(regexp);
     var evalValue = evaluatePath(path, this.getResponseObject().body);
     var success = regExpObject.test(evalValue);
-    return getAssertionResult(success, regexp, evalValue, this);
+    return this.getAssertionResult({
+        success: success,
+        expected: regexp,
+        actual: evalValue
+    });
 };
 
 Apickli.prototype.assertResponseBodyContainsExpression = function(expression) {
     expression = this.replaceVariables(expression);
     var regex = new RegExp(expression);
     var success = regex.test(this.getResponseObject().body);
-    return getAssertionResult(success, expression, null, this);
+    return this.getAssertionResult({
+        success: success,
+        expected: expression,
+        actual: null
+    });
 };
 
 Apickli.prototype.assertResponseBodyContentType = function(contentType) {
     contentType = this.replaceVariables(contentType);
     var realContentType = getContentType(this.getResponseObject().body);
     var success = (realContentType === contentType);
-    return getAssertionResult(success, contentType, realContentType, this);
+    return this.getAssertionResult({
+        success: success,
+        expected: contentType,
+        actual: realContentType
+    });
 };
 
 Apickli.prototype.assertPathIsArray = function(path) {
     path = this.replaceVariables(path);
     var value = evaluatePath(path, this.getResponseObject().body);
     var success = Array.isArray(value);
-    return getAssertionResult(success, 'array', typeof value, this);
+    return this.getAssertionResult({
+        success: success,
+        expected: 'array',
+        actual: typeof value
+    });
 };
 
 Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
@@ -300,7 +321,11 @@ Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
         actual = value.length;
     }
 
-    return getAssertionResult(success, length, actual, this);
+    return this.getAssertionResult({
+        success: success,
+        expected: length,
+        actual: actual
+    });
 };
 
 Apickli.prototype.evaluatePathInResponseBody = function(path) {
@@ -372,8 +397,29 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
 
         var validate = jsonSchemaValidator(jsonSchema, { verbose: true });
         var success = validate(responseBody);
-        callback(getAssertionResult(success, validate.errors, null, self));
+        callback(null, self.getAssertionResult({
+            success: success,
+            expected: validate.errors,
+            actual: null
+        }, self));
     });
+};
+
+Apickli.prototype.getAssertionResult = function(assertionResult, apickliInstance) {
+    if (!apickliInstance) {
+        apickliInstance = this;
+    }
+
+    return {
+        success: assertionResult.success,
+        expected: assertionResult.expected,
+        actual: assertionResult.actual,
+        response: {
+            statusCode: apickliInstance.getResponseObject().statusCode,
+            headers: apickliInstance.getResponseObject().headers,
+            body: apickliInstance.getResponseObject().body
+        }
+    };
 };
 
 exports.Apickli = Apickli;
