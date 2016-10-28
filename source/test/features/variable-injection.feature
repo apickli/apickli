@@ -88,15 +88,6 @@ Feature:
 		Then response body path `myPath` should be `correctValue`
 		And response body path `myPath` should not be `incorrectValue`
 
-	Scenario: Access token retrieval from response body (authorization code grant, password, client credentials)
-        Given I store the raw value $.headers.Token as myTokenPath in scenario scope
-		And I set Token header to token123
-		When I GET /get
-		Then I store the value of body path `myTokenPath` as access token
-		Given I set bearer token
-		When I GET /get
-		Then response body path $.headers.Authorization should be Bearer token123
-
     Scenario: checking values of query parameter passed as datatable
         Given I store the raw value argument1 as myParam in scenario scope
         And I store the raw value test as myVal in scenario scope
