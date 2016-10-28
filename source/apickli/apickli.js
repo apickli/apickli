@@ -21,13 +21,13 @@ function Apickli(options) {
     var scheme = options.scheme || 'https';
     this.domain = scheme + '://' + options.domain;
     this.fixturesDirectory = options.fixturesDirectory || '';
-    this.variableChar = options.varibleChar || '`';
+    this.variableChar = options.variableChar || '`';
+    this.scenarioVariables = options.scenarioVariables || {};
 
-    this.headers = {};
-    this.httpResponse = {};
-    this.requestBody = '';
-    this.scenarioVariables = {};
     this.queryParameters = {};
+    this.headers = {};
+    this.requestBody = '';
+    this.httpResponse = {};
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
