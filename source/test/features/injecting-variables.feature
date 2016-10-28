@@ -13,33 +13,33 @@ Feature:
 		Given I store the raw value bar as value1 in scenario scope
 		When I GET /get?foo=`value1`
         Then response body path $.args.foo should be bar
-   
-#test injection logic with other step definitions   
+
+#test injection logic with other step definitions
 
     Scenario: Setting headers with variables
         Given I store the raw value apickli as foo in scenario scope
         And I set User-Agent header to `foo`
 		When I GET /get
 		Then response body path $.headers.User-Agent should be apickli
-        
+
     Scenario: Calling a resource with variables
         Given I store the raw value /get as myResourcePath in scenario scope
 		When I GET `myResourcePath`
 		Then response body path $.url should be (.*)/get
-        
+
     Scenario: Setting headers in datatable with variables
         Given I store the raw value apickli as foo in scenario scope
         And I store the raw value Accept as bar in scenario scope
-		And I set headers to 
+		And I set headers to
 		|name|value|
 		|User-Agent|`foo`|
 		|`bar`|application/json|
 		When I GET /get
 		Then response body path $.headers.Accept should be application/json
 		And response body path $.headers.User-Agent should be apickli
-            
+
 	Scenario: Setting body payload using variables
-        Given I store the raw value {"key":"hello-world"} as myPayload in scenario scope  
+        Given I store the raw value {"key":"hello-world"} as myPayload in scenario scope
 		And I set body to `myPayload`
 		When I POST to /post
 		Then response body should contain hello-world
@@ -56,7 +56,7 @@ Feature:
 		Given I have basic authentication credentials `myUsername` and `myPassword`
 		When I POST to /post
 		Then response body path $.headers.Authorization should be Basic dXNlcm5hbWU6cGFzc3dvcmQ=
-        
+
 	Scenario: Response code checks
         Given I store the raw value 200 as myCode in scenario scope
         And I store the raw value 404 as myIncorrectCode in scenario scope
@@ -96,11 +96,11 @@ Feature:
 		Given I set bearer token
 		When I GET /get
 		Then response body path $.headers.Authorization should be Bearer token123
-    
+
     Scenario: checking values of query parameter passed as datatable
         Given I store the raw value argument1 as myParam in scenario scope
         And I store the raw value test as myVal in scenario scope
-		And I set query parameters to 
+		And I set query parameters to
 		|parameter|value|
 		|argument1|`myParam`|
 		|argument2|`myVal`|

@@ -14,14 +14,14 @@ module.exports = function() {
         });
 		callback();
 	});
-    
+
     this.Given(/^I store the raw value (.*) as (.*) in scenario scope$/, function (value, variable, callback) {
         this.apickli.storeValueInScenarioScope(variable, value);
         callback();
     });
 
 	this.When(/^I subtract (.*) from (.*)$/, function(variable1, variable2, callback) {
-		var value1 = this.apickli.getGlobalVariable(variable1); 
+		var value1 = this.apickli.getGlobalVariable(variable1);
 		var value2 = this.apickli.getGlobalVariable(variable2);
 		subtractionResult = value2 - value1;
 
