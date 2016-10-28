@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var cucumber = require('gulp-cucumber');
 var jshint = require('gulp-jshint');
- 
+
 gulp.task('test', function() {
 	var options = {
 		'steps': 'test/features/step_definitions/*.js',

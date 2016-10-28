@@ -8,10 +8,8 @@ var dom = require('xmldom').DOMParser;
 var fs = require('fs');
 var jsonSchemaValidator = require('is-my-json-valid');
 
-var accessToken;
-var globalVariables = {};
-
-var ATTRIBUTE = 2;
+var _globalVariables = {};
+var _xmlAttributeNodeType = 2;
 
 function Apickli(options) {
     if (!options.domain) {
@@ -333,15 +331,6 @@ Apickli.prototype.evaluatePathInResponseBody = function(path) {
     return evaluatePath(path, this.getResponseObject().body);
 };
 
-Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
-    path = this.replaceVariables(path);
-    accessToken = evaluatePath(path, this.getResponseObject().body);
-};
-
-Apickli.prototype.setBearerToken = function() {
-    this.addRequestHeader('Authorization', 'Bearer ' + accessToken);
-};
-
 Apickli.prototype.storeValueInScenarioScope = function(variableName, value) {
     this.scenarioVariables[variableName] = value;
 };
@@ -363,24 +352,12 @@ Apickli.prototype.assertScenarioVariableValue = function(variable, value) {
     return (String(this.scenarioVariables[variable]) === value);
 };
 
-Apickli.prototype.storeValueOfHeaderInGlobalScope = function(headerName, variableName) {
-    headerName = this.replaceVariables(headerName);    //only replace headerName. replacing variable name wouldn't make sense
-    var value = this.getResponseObject().headers[headerName.toLowerCase()];
-    this.setGlobalVariable(variableName, value);
-};
-
-Apickli.prototype.storeValueOfResponseBodyPathInGlobalScope = function(path, variableName) {
-    path = this.replaceVariables(path);    //only replace path. replacing variable name wouldn't make sense
-    var value = evaluatePath(path, this.getResponseObject().body);
-    this.setGlobalVariable(variableName, value);
-};
-
 Apickli.prototype.setGlobalVariable = function(name, value) {
-    globalVariables[name] = value;
+    _globalVariables[name] = value;
 };
 
 Apickli.prototype.getGlobalVariable = function(name) {
-    return globalVariables[name];
+    return _globalVariables[name];
 };
 
 Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
@@ -444,7 +421,7 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
         var endIndex = resource.indexOf(variableChar, startIndex + 1);
         if (endIndex > startIndex) {
             var variableName = resource.substr(startIndex + 1, endIndex - startIndex - 1);
-            var variableValue = scope && scope.hasOwnProperty(variableName) ? scope[variableName] : globalVariables[variableName];
+            var variableValue = scope && scope.hasOwnProperty(variableName) ? scope[variableName] : _globalVariables[variableName];
 
             resource = resource.substr(0, startIndex) + variableValue + resource.substr(endIndex + 1);
             resource = this.replaceVariables(resource, scope, variableChar, endIndex + 1);
@@ -478,7 +455,7 @@ var evaluatePath = function(path, content) {
         case 'xml':
             var xmlDocument = new dom().parseFromString(content);
             var node = select(xmlDocument, path)[0];
-            if (node.nodeType === ATTRIBUTE) {
+            if (node.nodeType === _xmlAttributeNodeType) {
                 return node.value;
             }
 
