@@ -34,7 +34,7 @@ Feature: ability to assert response payload
         When I GET /get
         Then response code should be 200
         And response body path $.origin should be [0-9\.]+
-        And response body path $.notthere should be undefined
+        And response body path $.notthere should be null
 
     Scenario: should successfully validate json using schema
         When I GET /get

@@ -1,15 +1,55 @@
 /* jslint node: true */
+/* jshint esversion: 6 */
 'use strict';
 
 var request = require('request');
 var jsonPath = require('JSONPath');
 var select = require('xpath.js');
-var dom = require('xmldom').DOMParser;
+var Dom = require('xmldom').DOMParser;
 var fs = require('fs');
 var jsonSchemaValidator = require('is-my-json-valid');
 
 var _globalVariables = {};
 var _xmlAttributeNodeType = 2;
+
+var base64Encode = function(str) {
+    return new Buffer(str).toString('base64');
+};
+
+var getContentType = function(content) {
+    try {
+        JSON.parse(content);
+        return 'json';
+    } catch (e) {
+        try {
+            new Dom().parseFromString(content);
+            return 'xml';
+        } catch (e) {
+            return null;
+        }
+    }
+};
+
+var evaluatePath = function(path, content) {
+    var contentType = getContentType(content);
+
+    switch (contentType) {
+        case 'json':
+            var contentJson = JSON.parse(content);
+            var evalResult = jsonPath({ resultType: 'all' }, path, contentJson);
+            return (evalResult.length > 0) ? evalResult[0].value : null;
+        case 'xml':
+            var xmlDocument = new Dom().parseFromString(content);
+            var node = select(xmlDocument, path)[0];
+            if (node.nodeType === _xmlAttributeNodeType) {
+                return node.value;
+            }
+
+            return node.firstChild.data; // element or comment
+        default:
+            return null;
+    }
+};
 
 function Apickli(options) {
     if (!options.domain) {
@@ -230,10 +270,10 @@ Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password)
 
 Apickli.prototype.assertResponseCode = function(responseCode) {
     responseCode = this.replaceVariables(responseCode);
-    var realResponseCode = this.getResponseObject().statusCode;
-    var success = (realResponseCode == responseCode);
+    var realResponseCode = this.getResponseObject().statusCode.toString();
+    var success = (realResponseCode === responseCode);
     return this.getAssertionResult({
-        success: success,
+        success,
         expected: responseCode,
         actual: realResponseCode
     });
@@ -310,19 +350,19 @@ Apickli.prototype.assertPathIsArray = function(path) {
 
 Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
     path = this.replaceVariables(path);
-    length = this.replaceVariables(length);
+    length = parseInt(this.replaceVariables(length));
     var success = false;
     var actual = '?';
     var value = evaluatePath(path, this.getResponseObject().body);
     if (Array.isArray(value)) {
-        success = value.length == length;
+        success = value.length === length;
         actual = value.length;
     }
 
     return this.getAssertionResult({
         success: success,
         expected: length,
-        actual: actual
+        actual
     });
 };
 
@@ -428,43 +468,4 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
         }
     }
     return resource;
-};
-
-var getContentType = function(content) {
-    try {
-        JSON.parse(content);
-        return 'json';
-    } catch (e) {
-        try {
-            new dom().parseFromString(content);
-            return 'xml';
-        } catch (e) {
-            return null;
-        }
-    }
-};
-
-var evaluatePath = function(path, content) {
-    var contentType = getContentType(content);
-
-    switch (contentType) {
-        case 'json':
-            var contentJson = JSON.parse(content);
-            var evalResult = jsonPath({ resultType: 'all' }, path, contentJson);
-            return (evalResult.length > 0) ? evalResult[0].value : undefined;
-        case 'xml':
-            var xmlDocument = new dom().parseFromString(content);
-            var node = select(xmlDocument, path)[0];
-            if (node.nodeType === _xmlAttributeNodeType) {
-                return node.value;
-            }
-
-            return node.firstChild.data; // element or comment
-        default:
-            return null;
-    }
-};
-
-var base64Encode = function(str) {
-    return new Buffer(str).toString('base64');
 };
