@@ -2,7 +2,7 @@
 
 ![NPM version](https://badge.fury.io/js/apickli.svg)
 
-[![NPM](https://nodei.co/npm/apickli.png)](https://nodei.co/npm/apickli/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cf7ec02741974577a2fc3fead37ec91a)](https://www.codacy.com/app/oseymen/apickli?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=apickli/apickli&amp;utm_campaign=Badge_Grade)
 
 **Apickli** is a REST API integration testing framework based on cucumber.js.
 
@@ -33,7 +33,7 @@ Let's start a new integration testing project for an API called *myapi*. The fol
     --------- step_definitions/
     -------------- myapi.js
     ---- package.json
-    
+
 Features directory contains cucumber feature files written in gherkin syntax. step_definitions contains the JavaScript implementation of gherkin test cases. Check out the GitHub repository for example implementations covering most used testing scenarios.
 
 #### 2. Package.json
@@ -56,7 +56,7 @@ Now we can get the project dependencies installed:
 ```sh
 $ npm install
 ```
-    
+
 #### 4. Scenario definitions
 
 Let's start with the scenario file called *myapi.feature*. For more examples of
@@ -107,9 +107,9 @@ $ cucumber-js features/httpbin.feature
 
 ## Step timeout
 Cucumber.js default step timeout is 5000ms. Follow [this guide](https://github.com/cucumber/cucumber-js#timeouts) to change it for your steps.
-	
+
 ## Grunt integration
-    
+
 You can also use [Grunt](http://gruntjs.com/) task runner to run the tests. 
 
 ### 1. Start by adding a Gruntfile.js to the project root:
@@ -172,7 +172,7 @@ Feature:
 3 steps (3 passed)
 
 Done, without errors.
-``` 
+```
 ## Gulp Integration
 You can also use [Gulp](http://gulpjs.com/) to run the tests.
 
@@ -181,7 +181,7 @@ You can also use [Gulp](http://gulpjs.com/) to run the tests.
 ```js
 var gulp = require('gulp');
 var cucumber = require('gulp-cucumber');
- 
+
 gulp.task('test', function() {
     return gulp.src('features/*')
 			.pipe(cucumber({
@@ -215,7 +215,7 @@ See [https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md](https:/
 ### 5. Run tests using gulp
 ```sh
 $ gulp test
-``` 
+```
 
 ## Gherkin Expressions
 The following gherkin expressions are implemented in apickli source code [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js):
@@ -229,7 +229,7 @@ GIVEN:
 	I set bearer token
 	I set query parameters to (data table with headers |parameter|value|)
 	I set headers to (data table with headers |name|value|)
-	
+
 WHEN:
 	I GET $resource
 	I POST to $resource
@@ -237,7 +237,7 @@ WHEN:
 	I DELETE $resource
 	I PATCH $resource
     I request OPTIONS for $resource
-	
+
 THEN:
 	response code should be (\d+)
 	response code should not be (\d+)
@@ -306,13 +306,13 @@ Feature:
   As Httpbin client I want to verify that all API resources are working as they should
 
 
-  Scenario: Setting authorization headers in GET request                         
-    Given I set Authorization header to `BasicAuthValue`                       
-    When I GET /get                                                
-    Then response body path $.headers.Authorization should be Basic abc123 
+  Scenario: Setting authorization headers in GET request
+    Given I set Authorization header to `BasicAuthValue`
+    When I GET /get
+    Then response body path $.headers.Authorization should be Basic abc123
 ```
 For more examples, please see [source/test/features/injecting-variables.feature](source/test/features/injecting-variables.feature)
-        
+
 ## Contributing
 
 If you have any comments or suggestions, feel free to raise [an issue](https://github.com/apickli/apickli/issues) or fork the project and issue a pull request with suggested improvements.
