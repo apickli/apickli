@@ -30,19 +30,6 @@ var getContentType = function(content) {
     }
 };
 
-var evaluatePath = function(path, content) {
-    var contentType = getContentType(content);
-
-    switch (contentType) {
-        case 'json':
-            return evaluateJsonPath(path, content);
-        case 'xml':
-            return evaluateXPath(path, content);
-        default:
-            return null;
-    }
-};
-
 var evaluateJsonPath = function(path, content) {
     var contentJson = JSON.parse(content);
     var evalResult = jsonPath({ resultType: 'all' }, path, contentJson);
@@ -59,6 +46,18 @@ var evaluateXPath = function(path, content) {
     return node.firstChild.data; // element or comment
 };
 
+var evaluatePath = function(path, content) {
+    var contentType = getContentType(content);
+
+    switch (contentType) {
+        case 'json':
+            return evaluateJsonPath(path, content);
+        case 'xml':
+            return evaluateXPath(path, content);
+        default:
+            return null;
+    }
+};
 
 function Apickli(options) {
     if (!options.domain) {
@@ -73,13 +72,13 @@ function Apickli(options) {
     };
 
     var defaultValueHandler = {
-        get: function(target, name) {
+        get(target, name) {
             return target.hasOwnProperty(name) ? target[name] : defaultOptions[name];
         }
     };
 
     this.opts = new Proxy(options, defaultValueHandler);
-    this.domain = this.opts.scheme + '://' + this.opts.domain;
+    this.domain = `${this.opts.scheme}://${this.opts.domain}`;
     this.queryParameters = {};
     this.headers = {};
     this.requestBody = '';
@@ -301,7 +300,7 @@ Apickli.prototype.assertResponseContainsHeader = function(header, callback) {
     header = this.replaceVariables(header);
     var success = typeof this.getResponseObject().headers[header.toLowerCase()] != 'undefined';
     return this.getAssertionResult({
-        success: success,
+        success,
         expected: true,
         actual: false
     });
@@ -314,7 +313,7 @@ Apickli.prototype.assertHeaderValue = function(header, expression) {
     var regex = new RegExp(expression);
     var success = (regex.test(realHeaderValue));
     return this.getAssertionResult({
-        success: success,
+        success,
         expected: expression,
         actual: realHeaderValue
     });
@@ -327,7 +326,7 @@ Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, reg
     var evalValue = evaluatePath(path, this.getResponseObject().body);
     var success = regExpObject.test(evalValue);
     return this.getAssertionResult({
-        success: success,
+        success,
         expected: regexp,
         actual: evalValue
     });
@@ -338,7 +337,7 @@ Apickli.prototype.assertResponseBodyContainsExpression = function(expression) {
     var regex = new RegExp(expression);
     var success = regex.test(this.getResponseObject().body);
     return this.getAssertionResult({
-        success: success,
+        success,
         expected: expression,
         actual: null
     });
@@ -349,7 +348,7 @@ Apickli.prototype.assertResponseBodyContentType = function(contentType) {
     var realContentType = getContentType(this.getResponseObject().body);
     var success = (realContentType === contentType);
     return this.getAssertionResult({
-        success: success,
+        success,
         expected: contentType,
         actual: realContentType
     });
@@ -360,7 +359,7 @@ Apickli.prototype.assertPathIsArray = function(path) {
     var value = evaluatePath(path, this.getResponseObject().body);
     var success = Array.isArray(value);
     return this.getAssertionResult({
-        success: success,
+        success,
         expected: 'array',
         actual: typeof value
     });
@@ -378,7 +377,7 @@ Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
     }
 
     return this.getAssertionResult({
-        success: success,
+        success,
         expected: length,
         actual
     });
@@ -438,7 +437,7 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
         var validate = jsonSchemaValidator(jsonSchema, { verbose: true });
         var success = validate(responseBody);
         callback(null, self.getAssertionResult({
-            success: success,
+            success,
             expected: validate.errors,
             actual: null
         }, self));

@@ -1,4 +1,5 @@
 /* jslint node: true */
+/* jshint esversion: 6 */
 'use strict';
 
 var prettyJson = require('prettyjson');
@@ -7,7 +8,7 @@ var stepContext = {};
 
 var prettyPrintJson = function(json) {
     var output = {
-        stepContext: stepContext,
+        stepContext,
         testOutput: json
     };
 
