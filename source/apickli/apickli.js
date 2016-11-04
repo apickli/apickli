@@ -1,5 +1,6 @@
 /* jslint node: true */
 /* jshint esversion: 6 */
+/* jshint maxcomplexity: 4 */
 'use strict';
 
 var request = require('request');
@@ -473,21 +474,17 @@ exports.Apickli = Apickli;
  *
  * Credits: Based on contribution by PascalLeMerrer
  */
-Apickli.prototype.replaceVariables = function(resource, scope, variableChar, offset) {
-    scope = scope || this.opts.scenarioVariables;
-    variableChar = variableChar || this.opts.variableChar;
-    offset = offset || 0;
-
+Apickli.prototype.replaceVariables = function(resource, scope = this.opts.scenarioVariables, variableChar = this.opts.variableChar, offset = 0) {
     var startIndex = resource.indexOf(variableChar, offset);
-    if (startIndex >= 0) {
-        var endIndex = resource.indexOf(variableChar, startIndex + 1);
-        if (endIndex > startIndex) {
-            var variableName = resource.substr(startIndex + 1, endIndex - startIndex - 1);
-            var variableValue = scope && scope.hasOwnProperty(variableName) ? scope[variableName] : _globalVariables[variableName];
+    var endIndex = resource.indexOf(variableChar, startIndex + 1);
 
-            resource = resource.substr(0, startIndex) + variableValue + resource.substr(endIndex + 1);
-            resource = this.replaceVariables(resource, scope, variableChar, endIndex + 1);
-        }
+    if ((startIndex < 0) || (endIndex <= startIndex)) {
+        return resource;
     }
-    return resource;
+
+    var variableName = resource.substr(startIndex + 1, endIndex - startIndex - 1);
+    var variableValue = scope.hasOwnProperty(variableName) ? scope[variableName] : _globalVariables[variableName];
+
+    resource = resource.substr(0, startIndex) + variableValue + resource.substr(endIndex + 1);
+    return this.replaceVariables(resource, scope, variableChar, endIndex + 1);
 };
