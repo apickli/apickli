@@ -35,33 +35,51 @@ var evaluatePath = function(path, content) {
 
     switch (contentType) {
         case 'json':
-            var contentJson = JSON.parse(content);
-            var evalResult = jsonPath({ resultType: 'all' }, path, contentJson);
-            return (evalResult.length > 0) ? evalResult[0].value : null;
+            return evaluateJsonPath(path, content);
         case 'xml':
-            var xmlDocument = new Dom().parseFromString(content);
-            var node = select(xmlDocument, path)[0];
-            if (node.nodeType === _xmlAttributeNodeType) {
-                return node.value;
-            }
-
-            return node.firstChild.data; // element or comment
+            return evaluateXPath(path, content);
         default:
             return null;
     }
 };
+
+var evaluateJsonPath = function(path, content) {
+    var contentJson = JSON.parse(content);
+    var evalResult = jsonPath({ resultType: 'all' }, path, contentJson);
+    return (evalResult.length > 0) ? evalResult[0].value : null;
+};
+
+var evaluateXPath = function(path, content) {
+    var xmlDocument = new Dom().parseFromString(content);
+    var node = select(xmlDocument, path)[0];
+    if (node.nodeType === _xmlAttributeNodeType) {
+        return node.value;
+    }
+
+    return node.firstChild.data; // element or comment
+};
+
 
 function Apickli(options) {
     if (!options.domain) {
         throw new Error('domain name is not provided');
     }
 
-    var scheme = options.scheme || 'https';
-    this.domain = scheme + '://' + options.domain;
-    this.fixturesDirectory = options.fixturesDirectory || '';
-    this.variableChar = options.variableChar || '`';
-    this.scenarioVariables = options.scenarioVariables || {};
+    var defaultOptions = {
+        scheme: 'https',
+        fixturesDirectory: '',
+        variableChar: '`',
+        scenarioVariables: {}
+    };
 
+    var defaultValueHandler = {
+        get: function(target, name) {
+            return target.hasOwnProperty(name) ? target[name] : defaultOptions[name];
+        }
+    };
+
+    this.opts = new Proxy(options, defaultValueHandler);
+    this.domain = this.opts.scheme + '://' + this.opts.domain;
     this.queryParameters = {};
     this.headers = {};
     this.requestBody = '';
@@ -129,7 +147,7 @@ Apickli.prototype.setHeaders = function(headersTable) {
 Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
     var self = this;
     file = this.replaceVariables(file);
-    fs.readFile(this.fixturesDirectory + file, 'utf8', function(err, data) {
+    fs.readFile(this.opts.fixturesDirectory + file, 'utf8', function(err, data) {
         if (err) {
             callback(err);
         }
@@ -372,24 +390,29 @@ Apickli.prototype.evaluatePathInResponseBody = function(path) {
 };
 
 Apickli.prototype.storeValueInScenarioScope = function(variableName, value) {
-    this.scenarioVariables[variableName] = value;
+    this.opts.scenarioVariables[variableName] = value;
 };
 
 Apickli.prototype.storeValueOfHeaderInScenarioScope = function(header, variableName) {
     header = this.replaceVariables(header);  //only replace header. replacing variable name wouldn't make sense
     var value = this.getResponseObject().headers[header.toLowerCase()];
-    this.scenarioVariables[variableName] = value;
+    this.opts.scenarioVariables[variableName] = value;
 };
 
 Apickli.prototype.storeValueOfResponseBodyPathInScenarioScope = function(path, variableName) {
     path = this.replaceVariables(path);  //only replace path. replacing variable name wouldn't make sense
     var value = evaluatePath(path, this.getResponseObject().body);
-    this.scenarioVariables[variableName] = value;
+    this.opts.scenarioVariables[variableName] = value;
 };
 
 Apickli.prototype.assertScenarioVariableValue = function(variable, value) {
     value = this.replaceVariables(value);    //only replace value. replacing variable name wouldn't make sense
-    return (String(this.scenarioVariables[variable]) === value);
+
+    return this.getAssertionResult({
+        success: (String(this.opts.scenarioVariables[variable]) === value),
+        expected: value,
+        actual: this.opts.scenarioVariables[variable]
+    });
 };
 
 Apickli.prototype.setGlobalVariable = function(name, value) {
@@ -404,7 +427,7 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
     var self = this;
     schemaFile = this.replaceVariables(schemaFile, self.scenarioVariables, self.variableChar);
 
-    fs.readFile(this.fixturesDirectory + schemaFile, 'utf8', function(err, jsonSchemaString) {
+    fs.readFile(this.opts.fixturesDirectory + schemaFile, 'utf8', function(err, jsonSchemaString) {
         if (err) {
             callback(err);
         }
@@ -452,8 +475,8 @@ exports.Apickli = Apickli;
  * Credits: Based on contribution by PascalLeMerrer
  */
 Apickli.prototype.replaceVariables = function(resource, scope, variableChar, offset) {
-    scope = scope || this.scenarioVariables;
-    variableChar = variableChar || this.variableChar;
+    scope = scope || this.opts.scenarioVariables;
+    variableChar = variableChar || this.opts.variableChar;
     offset = offset || 0;
 
     var startIndex = resource.indexOf(variableChar, offset);

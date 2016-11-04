@@ -5,7 +5,18 @@ var prettyJson = require('prettyjson');
 
 var stepContext = {};
 
-module.exports = function () {    
+var prettyPrintJson = function(json) {
+    var output = {
+        stepContext: stepContext,
+        testOutput: json
+    };
+
+    return prettyJson.render(output, {
+        noColor: true
+    });
+};
+
+module.exports = function () {
     this.registerHandler('BeforeScenario', function (event, callback) {
         var scenario = event.getPayloadItem('scenario');
         stepContext.scenario = scenario.getName();
@@ -266,13 +277,8 @@ module.exports = function () {
         callback();
     });
 
-    this.Then(/^I store the value of response header (.*) as (.*) in global scope$/, function (headerName, variableName, callback) {
-        this.apickli.storeValueOfHeaderInGlobalScope(headerName, variableName);
-        callback();
-    });
-
-    this.Then(/^I store the value of body path (.*) as (.*) in global scope$/, function (path, variableName, callback) {
-        this.apickli.storeValueOfResponseBodyPathInGlobalScope(path, variableName);
+    this.Given(/^I store the raw value (.*) as (.*) in scenario scope$/, function (value, variable, callback) {
+        this.apickli.storeValueInScenarioScope(variable, value);
         callback();
     });
 
@@ -287,21 +293,12 @@ module.exports = function () {
     });
 
     this.Then(/^value of scenario variable (.*) should be (.*)$/, function (variableName, variableValue, callback) {
-        if (this.apickli.assertScenarioVariableValue(variableName, variableValue)) {
+        var assertion = this.apickli.assertScenarioVariableValue(variableName, variableValue);
+
+        if (assertion.success) {
             callback();
         } else {
-            callback(new Error('value of variable ' + variableName + ' isn\'t equal to ' + variableValue));
+            callback(prettyPrintJson(assertion));
         }
-    });
-};
-
-var prettyPrintJson = function(json) {
-    var output = {
-        stepContext: stepContext,
-        testOutput: json
-    };
-
-    return prettyJson.render(output, {
-        noColor: true
     });
 };
