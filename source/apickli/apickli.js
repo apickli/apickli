@@ -281,8 +281,8 @@ Apickli.prototype.options = function(resource, callback) { // callback(error, re
 Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password) {
     username = this.replaceVariables(username);
     password = this.replaceVariables(password);
-    var b64EncodedValue = base64Encode(username + ':' + password);
-    this.addRequestHeader('Authorization', 'Basic ' + b64EncodedValue);
+    var b64EncodedValue = base64Encode(`${username}:${password}`);
+    this.addRequestHeader('Authorization', `Basic ${b64EncodedValue}`);
 };
 
 Apickli.prototype.assertResponseCode = function(responseCode) {

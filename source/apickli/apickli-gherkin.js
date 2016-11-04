@@ -17,6 +17,14 @@ var prettyPrintJson = function(json) {
     });
 };
 
+var callbackWithAssertion = function(callback, assertion) {
+    if (assertion.success) {
+        callback();
+    } else {
+        callback(prettyPrintJson(assertion));
+    }
+};
+
 module.exports = function () {
     this.registerHandler('BeforeScenario', function (event, callback) {
         var scenario = event.getPayloadItem('scenario');
@@ -127,144 +135,77 @@ module.exports = function () {
 
     this.Then(/^response header (.*) should exist$/, function (header, callback) {
         var assertion = this.apickli.assertResponseContainsHeader(header);
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response header (.*) should not exist$/, function (header, callback) {
         var assertion = this.apickli.assertResponseContainsHeader(header);
         assertion.success = !assertion.success;
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response body should be valid (xml|json)$/, function (contentType, callback) {
         var assertion = this.apickli.assertResponseBodyContentType(contentType);
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response code should be (.*)$/, function (responseCode, callback) {
         var assertion = this.apickli.assertResponseCode(responseCode);
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response code should not be (.*)$/, function (responseCode, callback) {
         var assertion = this.apickli.assertResponseCode(responseCode);
         assertion.success = !assertion.success;
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response header (.*) should be (.*)$/, function (header, expression, callback) {
         var assertion = this.apickli.assertHeaderValue(header, expression);
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response header (.*) should not be (.*)$/, function (header, expression, callback) {
         var assertion = this.apickli.assertHeaderValue(header, expression);
         assertion.success = !assertion.success;
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response body should contain (.*)$/, function (expression, callback) {
         var assertion = this.apickli.assertResponseBodyContainsExpression(expression);
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response body should not contain (.*)$/, function (expression, callback) {
         var assertion = this.apickli.assertResponseBodyContainsExpression(expression);
         assertion.success = !assertion.success;
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response body path (.*) should be ((?!of type).+)$/, function (path, value, callback) {
         var assertion = this.apickli.assertPathInResponseBodyMatchesExpression(path, value);
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response body path (.*) should not be ((?!of type).+)$/, function (path, value, callback) {
         var assertion = this.apickli.assertPathInResponseBodyMatchesExpression(path, value);
         assertion.success = !assertion.success;
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response body path (.*) should be of type array$/, function(path, callback) {
         var assertion = this.apickli.assertPathIsArray(path);
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response body path (.*) should be of type array with length (.*)$/, function(path, length, callback) {
         var assertion = this.apickli.assertPathIsArrayWithLength(path, length);
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 
     this.Then(/^response body should be valid according to schema file (.*)$/, function(schemaFile, callback) {
         this.apickli.validateResponseWithSchema(schemaFile, function (err, assertion) {
-            if (assertion.success) {
-                callback();
-            } else {
-                callback(prettyPrintJson(assertion));
-            }
+            callbackWithAssertion(callback, assertion);
         });
     });
 
@@ -295,11 +236,6 @@ module.exports = function () {
 
     this.Then(/^value of scenario variable (.*) should be (.*)$/, function (variableName, variableValue, callback) {
         var assertion = this.apickli.assertScenarioVariableValue(variableName, variableValue);
-
-        if (assertion.success) {
-            callback();
-        } else {
-            callback(prettyPrintJson(assertion));
-        }
+        callbackWithAssertion(callback, assertion);
     });
 };
