@@ -1,5 +1,5 @@
 {
-  "name": "@theTestTube/apickli",
+  "name": "@thetesttube/apickli",
   "version": "1.7.1",
   "description": "Collection of utility functions and a gherkin framework for REST API integration testing based on cucumber.js",
   "main": "apickli.js",
