@@ -1,6 +1,6 @@
 {
-  "name": "apickli",
-  "version": "1.7.0",
+  "name": "@theTestTube/apickli",
+  "version": "1.7.1",
   "description": "Collection of utility functions and a gherkin framework for REST API integration testing based on cucumber.js",
   "main": "apickli.js",
   "readme": "README.md",
@@ -14,12 +14,7 @@
     "rest",
     "api"
   ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/apickli/apickli/blob/master/LICENSE"
-    }
-  ],
+  "license" : "MIT",
   "dependencies": {
     "JSONPath": "^0.11.0",
     "request": "^2.55.0",

@@ -322,9 +322,13 @@ Apickli.prototype.unsetAccessToken = function() {
     accessToken = undefined;
 };
 
-Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
+Apickli.prototype.getAccessTokenFromResponseBodyPath = function(path) {
     path = this.replaceVariables(path);
-    this.setAccessToken(evaluatePath(path, this.getResponseObject().body));
+    return evaluatePath(path, this.getResponseObject().body);
+};
+
+Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
+    this.setAccessToken(this.getAccessTokenFromResponseBodyPath(path));
 };
 
 Apickli.prototype.setBearerToken = function() {

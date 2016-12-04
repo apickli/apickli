@@ -45,7 +45,7 @@ Feature:
 		Then response body should contain hello-world
 
 	Scenario: Setting body payload from file using variable
-        Given I store the raw value ./test/features/fixtures/requestbody.xml as myFilePath in scenario scope
+        Given I store the raw value ./test/features/fixtures/requestBody.xml as myFilePath in scenario scope
 		And I pipe contents of file `myFilePath` to body
 		When I POST to /post
 		Then response body should contain "<a>b</a>"
