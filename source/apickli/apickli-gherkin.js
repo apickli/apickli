@@ -5,16 +5,14 @@ var prettyJson = require('prettyjson');
 
 var stepContext = {};
 
-module.exports = function () {    
-    this.registerHandler('BeforeScenario', function (event, callback) {
-        var scenario = event.getPayloadItem('scenario');
-        stepContext.scenario = scenario.getName();
+module.exports = function () {
+    this.registerHandler('BeforeScenario', function (scenario, callback) {
+        stepContext.scenario = scenario.getName;
         callback();
     });
 
-    this.registerHandler('BeforeStep', function(event, callback) {
-        var step = event.getPayloadItem('step');
-        stepContext.step = step.getName();
+    this.registerHandler('BeforeStep', function(step, callback) {
+        stepContext.step = step.getName;
         callback();
     });
 
