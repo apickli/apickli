@@ -16,11 +16,6 @@ _Thank you for considering contributing to apickli._
 
 * Before submitting, please read the guide below to know more about coding conventions and benchmarks.
 
-#### **Did you fix whitespace, format code, or make a purely cosmetic patch?**
-
-Changes that are cosmetic in nature and do not add anything substantial to the stability,
- functionality, or testability of Rails will generally not be accepted (read more about [our rationales behind this decision](https://github.com/rails/rails/pull/13771#issuecomment-32746700)).
-
 ### **Code Conventions**
 In lieu of a formal style guide, take care to maintain the existing coding style.
  Add unit tests for any new or changed functionality. Lint and test your code.
