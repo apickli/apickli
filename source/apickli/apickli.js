@@ -8,7 +8,7 @@ var dom = require('xmldom').DOMParser;
 var fs = require('fs');
 var jsonSchemaValidator = require('is-my-json-valid');
 
-var accessToken;
+var accessToken = undefined;
 var globalVariables = {};
 
 var ATTRIBUTE = 2;
@@ -244,6 +244,12 @@ Apickli.prototype.assertResponseCode = function(responseCode) {
     return getAssertionResult(success, responseCode, realResponseCode, this);
 };
 
+Apickli.prototype.assertResponseDoesNotContainHeader = function(header, callback) {
+    header = this.replaceVariables(header);
+    var success = typeof this.getResponseObject().headers[header.toLowerCase()] == 'undefined';
+    return getAssertionResult(success, true, false, this);
+};
+
 Apickli.prototype.assertResponseContainsHeader = function(header, callback) {
     header = this.replaceVariables(header);
     var success = typeof this.getResponseObject().headers[header.toLowerCase()] != 'undefined';
@@ -308,13 +314,28 @@ Apickli.prototype.evaluatePathInResponseBody = function(path) {
     return evaluatePath(path, this.getResponseObject().body);
 };
 
-Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
+Apickli.prototype.setAccessToken = function(token) {
+    accessToken = token;
+};
+
+Apickli.prototype.unsetAccessToken = function() {
+    accessToken = undefined;
+};
+
+Apickli.prototype.getAccessTokenFromResponseBodyPath = function(path) {
     path = this.replaceVariables(path);
-    accessToken = evaluatePath(path, this.getResponseObject().body);
+    return evaluatePath(path, this.getResponseObject().body);
+};
+
+Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
+    this.setAccessToken(this.getAccessTokenFromResponseBodyPath(path));
 };
 
 Apickli.prototype.setBearerToken = function() {
-    this.addRequestHeader('Authorization', 'Bearer ' + accessToken);
+    if (accessToken)
+      return this.addRequestHeader('Authorization', 'Bearer ' + accessToken);
+    else
+      return false;
 };
 
 Apickli.prototype.storeValueInScenarioScope = function(variableName, value) {
