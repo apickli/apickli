@@ -61,7 +61,7 @@ module.exports = function () {
         });
     });
 
-    this.When('I POST to $resource', function (resource, callback) {
+    this.When(/^I POST to (.*)$/, function (resource, callback) {
         this.apickli.post(resource, function (error, response) {
             if (error) {
                 callback(new Error(error));
@@ -71,7 +71,7 @@ module.exports = function () {
         });
     });
 
-    this.When('I PUT $resource', function (resource, callback) {
+    this.When(/^I PUT (.*)$/, function (resource, callback) {
         this.apickli.put(resource, function (error, response) {
             if (error) {
                 callback(new Error(error));
@@ -81,7 +81,7 @@ module.exports = function () {
         });
     });
 
-    this.When('I DELETE $resource', function (resource, callback) {
+    this.When(/^I DELETE (.*)$/, function (resource, callback) {
         this.apickli.delete(resource, function (error, response) {
             if (error) {
                 callback(new Error(error));
@@ -91,7 +91,7 @@ module.exports = function () {
         });
     });
 
-    this.When('I PATCH $resource', function (resource, callback) {
+    this.When(/^I PATCH (.*)$/, function (resource, callback) {
         this.apickli.patch(resource, function (error, response) {
             if (error) {
                 callback(new Error(error));
@@ -101,7 +101,7 @@ module.exports = function () {
         });
     });
 
-    this.When('I request OPTIONS for $resource', function(resource, callback) {
+    this.When(/^I request OPTIONS for (.*)$/, function(resource, callback) {
         this.apickli.options(resource, function(error, response) {
             if (error) {
                 callback(new Error(error));
