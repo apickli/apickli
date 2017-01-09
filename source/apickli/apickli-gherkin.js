@@ -254,6 +254,16 @@ module.exports = function () {
         });
     });
 
+    this.Then(/^response body should be valid according to swagger definition (.*) in file (.*)$/, function(definitionName, swaggerSpecFile, callback) {
+        this.apickli.validateResponseWithSwaggerSpecDefinition(definitionName, swaggerSpecFile, function (assertion) {
+            if (assertion.success) {
+                callback();
+            } else {
+                callback(prettyPrintJson(assertion));
+            }
+        });
+    });
+
     this.Then(/^I store the value of body path (.*) as access token$/, function (path, callback) {
         this.apickli.setAccessTokenFromResponseBodyPath(path);
         callback();

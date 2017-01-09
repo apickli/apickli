@@ -34,7 +34,7 @@ Let's start a new integration testing project for an API called *myapi*. The fol
     --------- step_definitions/
     -------------- myapi.js
     ---- package.json
-    
+
 Features directory contains cucumber feature files written in gherkin syntax. step_definitions contains the JavaScript implementation of gherkin test cases. Check out the GitHub repository for example implementations covering most used testing scenarios.
 
 #### 2. Package.json
@@ -52,12 +52,12 @@ This can be an example package.json file for our project:
 ```
 
 #### 3. Install dependencies
-Now we can get the project dependencies installed: 
+Now we can get the project dependencies installed:
 
 ```sh
 $ npm install
 ```
-    
+
 #### 4. Scenario definitions
 
 Let's start with the scenario file called *myapi.feature*. For more examples of
@@ -108,10 +108,10 @@ $ cucumber-js features/httpbin.feature
 
 ## Step timeout
 Cucumber.js default step timeout is 5000ms. Follow [this guide](https://github.com/cucumber/cucumber-js#timeouts) to change it for your steps.
-	
+
 ## Grunt integration
-    
-You can also use [Grunt](http://gruntjs.com/) task runner to run the tests. 
+
+You can also use [Grunt](http://gruntjs.com/) task runner to run the tests.
 
 ### 1. Start by adding a Gruntfile.js to the project root:
 
@@ -173,7 +173,7 @@ Feature:
 3 steps (3 passed)
 
 Done, without errors.
-``` 
+```
 ## Gulp Integration
 You can also use [Gulp](http://gulpjs.com/) to run the tests.
 
@@ -182,7 +182,7 @@ You can also use [Gulp](http://gulpjs.com/) to run the tests.
 ```js
 var gulp = require('gulp');
 var cucumber = require('gulp-cucumber');
- 
+
 gulp.task('test', function() {
     return gulp.src('features/*')
 			.pipe(cucumber({
@@ -216,7 +216,7 @@ See [https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md](https:/
 ### 5. Run tests using gulp
 ```sh
 $ gulp test
-``` 
+```
 
 ## Gherkin Expressions
 The following gherkin expressions are implemented in apickli source code [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js):
@@ -230,7 +230,7 @@ GIVEN:
 	I set bearer token
 	I set query parameters to (data table with headers |parameter|value|)
 	I set headers to (data table with headers |name|value|)
-	
+
 WHEN:
 	I GET $resource
 	I POST to $resource
@@ -238,7 +238,7 @@ WHEN:
 	I DELETE $resource
 	I PATCH $resource
     I request OPTIONS for $resource
-	
+
 THEN:
 	response code should be (\d+)
 	response code should not be (\d+)
@@ -254,6 +254,7 @@ THEN:
     response body path (.*) should be of type array
     response body path (.*) should be of type array with length (\d+)
     response body should be valid according to schema file (.*)
+    response body should be valid according to swagger definition (.*) in file (.*)
 	I store the value of body path (.*) as access token
 	I store the value of response header (.*) as (.*) in scenario scope
 	I store the value of body path (.*) as (.*) in scenario scope
@@ -310,10 +311,10 @@ Feature:
   Scenario: Setting authorization headers in GET request                         
     Given I set Authorization header to `BasicAuthValue`                       
     When I GET /get                                                
-    Then response body path $.headers.Authorization should be Basic abc123 
+    Then response body path $.headers.Authorization should be Basic abc123
 ```
 For more examples, please see [source/test/features/injecting-variables.feature](source/test/features/injecting-variables.feature)
-        
+
 ## Contributing
 
 If you have any comments or suggestions, feel free to raise [an issue](https://github.com/apickli/apickli/issues) or fork the project and issue a pull request with suggested improvements.

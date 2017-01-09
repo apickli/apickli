@@ -1,0 +1,66 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "ttpbin.ORG API",
+        "version": "1.0.0",
+        "title": "httpbin.ORG API"
+    },
+    "host": "httpbin.org",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "paths": {
+        "/get": {
+            "get": {
+                "description": "TODO",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "TODO",
+                        "schema": {
+                            "$ref": "#/definitions/GetResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "GetResponse": {
+            "additionalProperties": false,
+            "properties": {
+                "args": {
+                    "additionalProperties": false,
+                    "properties": {},
+                    "type": "object"
+                },
+                "headers": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "Accept": {
+                            "type": "string"
+                        },
+                        "Accept-Encoding": {
+                            "type": "string"
+                        },
+                        "Host": {
+                            "type": "string"
+                        },
+                        "User-Agent": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                },
+                "origin": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    }
+}

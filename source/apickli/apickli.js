@@ -8,6 +8,7 @@ var dom = require('xmldom').DOMParser;
 var fs = require('fs');
 var path = require('path');
 var jsonSchemaValidator = require('is-my-json-valid');
+var swaggerValidation = require('swagger-validation');
 
 var accessToken;
 var globalVariables = {};
@@ -395,6 +396,26 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
         var validate = jsonSchemaValidator(jsonSchema, { verbose: true });
         var success = validate(responseBody);
         callback(getAssertionResult(success, validate.errors, null, self));
+    });
+};
+
+Apickli.prototype.validateResponseWithSwaggerSpecDefinition = function(definitionName, swaggerSpecFile, callback) {
+    var self = this;
+    swaggerSpecFile = this.replaceVariables(swaggerSpecFile, self.scenarioVariables, self.variableChar);
+
+    fs.readFile(path.join(this.fixturesDirectory, swaggerSpecFile), 'utf8', function(err, swaggerSpecString) {
+        if (err) {
+            callback(err);
+        }
+
+        var swaggerSpec = JSON.parse(swaggerSpecString);
+
+        var responseBody = JSON.parse(self.getResponseObject().body);
+
+        var ret = swaggerValidation(swaggerSpec.definitions[definitionName], JSON.parse(self.getResponseObject().body), swaggerSpec.definitions);
+
+        return callback(getAssertionResult(!ret.length, ret, null, self));
+
     });
 };
 
