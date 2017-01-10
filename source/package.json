@@ -17,11 +17,12 @@
   "license": "MIT",
   "dependencies": {
     "JSONPath": "^0.11.0",
+    "is-my-json-valid": "^2.12.3",
+    "path": "^0.12.7",
+    "prettyjson": "^1.1.3",
     "request": "^2.55.0",
     "xmldom": "^0.1.19",
-    "xpath.js": "^1.0.6",
-    "is-my-json-valid": "^2.12.3",
-    "prettyjson": "^1.1.3"
+    "xpath.js": "^1.0.6"
   },
   "devDependencies": {
     "gulp": "^3.8.11",

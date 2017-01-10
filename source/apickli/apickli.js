@@ -6,9 +6,10 @@ var jsonPath = require('JSONPath');
 var select = require('xpath.js');
 var dom = require('xmldom').DOMParser;
 var fs = require('fs');
+var path = require('path');
 var jsonSchemaValidator = require('is-my-json-valid');
 
-var accessToken = undefined;
+var accessToken;
 var globalVariables = {};
 
 var ATTRIBUTE = 2;
@@ -98,7 +99,7 @@ Apickli.prototype.setHeaders = function(headersTable) {
 Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
     var self = this;
     file = this.replaceVariables(file);
-    fs.readFile(this.fixturesDirectory + file, 'utf8', function(err, data) {
+    fs.readFile(path.join(this.fixturesDirectory, file), 'utf8', function(err, data) {
         if (err) {
             callback(err);
         }
@@ -383,7 +384,7 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
     var self = this;
     schemaFile = this.replaceVariables(schemaFile, self.scenarioVariables, self.variableChar);
 
-    fs.readFile(this.fixturesDirectory + schemaFile, 'utf8', function(err, jsonSchemaString) {
+    fs.readFile(path.join(this.fixturesDirectory, schemaFile), 'utf8', function(err, jsonSchemaString) {
         if (err) {
             callback(err);
         }
