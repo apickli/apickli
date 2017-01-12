@@ -1,0 +1,11 @@
+language: node_js
+
+node_js:
+  - 6
+before_script:
+  - cd source && npm install && cd ..
+  - npm install -g cucumber@^1.0.0
+  - cp source/apickli/apickli-gherkin.js source/test/features/step_definitions/
+script:
+  - cd source && cucumber-js test/ --tags @core
+  
