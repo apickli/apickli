@@ -112,123 +112,37 @@ Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
 Apickli.prototype.get = function(resource, callback) { // callback(error, response)
     var self = this;
     resource = this.replaceVariables(resource);
-    request.get({
-        url: this.domain + resource,
-        headers: this.headers,
-        followRedirect: false,
-        qs: this.queryParameters
-    },
-        function(error, response) {
-            if (error) {
-                return callback(error);
-            }
-
-            self.httpResponse = response;
-            callback(null, response);
-        });
+    this.sendRequest('GET', resource, callback);
 };
 
 Apickli.prototype.post = function(resource, callback) { // callback(error, response)
     var self = this;
     resource = this.replaceVariables(resource);
-    request({
-        url: this.domain + resource,
-        headers: this.headers,
-        body: this.requestBody,
-        method: 'POST',
-        followRedirect: false,
-        qs: this.queryParameters
-    },
-        function(error, response) {
-            if (error) {
-                return callback(error);
-            }
-
-            self.httpResponse = response;
-            callback(null, response);
-        });
+    this.sendRequest('POST', resource, callback);
 };
 
 Apickli.prototype.put = function(resource, callback) { // callback(error, response)
     var self = this;
     resource = this.replaceVariables(resource);
-    request({
-        url: this.domain + resource,
-        headers: this.headers,
-        body: this.requestBody,
-        method: 'PUT',
-        followRedirect: false,
-        qs: this.queryParameters
-    },
-        function(error, response) {
-            if (error) {
-                return callback(error);
-            }
-
-            self.httpResponse = response;
-            callback(null, response);
-        });
+    this.sendRequest('PUT', resource, callback);
 };
 
 Apickli.prototype.delete = function(resource, callback) { // callback(error, response)
     var self = this;
     resource = this.replaceVariables(resource);
-    request({
-        url: this.domain + resource,
-        headers: this.headers,
-        body: this.requestBody,
-        method: 'DELETE',
-        followRedirect: false,
-        qs: this.queryParameters
-    },
-        function(error, response) {
-            if (error) {
-                return callback(error);
-            }
-
-            self.httpResponse = response;
-            callback(null, response);
-        });
+    this.sendRequest('DELETE', resource, callback);
 };
 
 Apickli.prototype.patch = function(resource, callback) { // callback(error, response)
     var self = this;
     resource = this.replaceVariables(resource);
-    request({
-        url: this.domain + resource,
-        headers: this.headers,
-        body: this.requestBody,
-        method: 'PATCH',
-        followRedirect: false,
-        qs: this.queryParameters
-    },
-        function(error, response) {
-            if (error) {
-                return callback(error);
-            }
-
-            self.httpResponse = response;
-            callback(null, response);
-        });
+    this.sendRequest('PATCH', resource, callback);
 };
 
 Apickli.prototype.options = function(resource, callback) { // callback(error, response)
     var self = this;
     resource = this.replaceVariables(resource);
-    request({
-        url: this.domain + resource,
-        headers: this.headers,
-        method: 'OPTIONS',
-        qs: this.queryParameters
-    },
-        function(error, response) {
-            if (error) {
-                return callback(error);
-            }
-
-            self.httpResponse = response;
-            callback(null, response);
-        });
+    this.sendRequest('OPTIONS', resource, callback);
 };
 
 Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password) {
@@ -427,6 +341,28 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
         }
     }
     return resource;
+};
+
+Apickli.prototype.sendRequest = function(method, resource, callback) {
+    var self = this;
+    var options = {};
+    options.url = this.domain + resource;
+    options.method = method;
+    options.headers = this.headers;
+    options.qs = this.queryParameters;
+    options.body = this.requestBody;
+    if(method !== 'OPTIONS') {
+        options.followRedirect = false;
+    }
+    resource = this.replaceVariables(resource);
+    request(options, function(error, response) {
+        if (error) {
+            return callback(error);
+        }
+
+        self.httpResponse = response;
+        callback(null, response);
+    });
 };
 
 var getContentType = function(content) {
