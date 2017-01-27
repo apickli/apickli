@@ -8,6 +8,7 @@ var dom = require('xmldom').DOMParser;
 var fs = require('fs');
 var path = require('path');
 var jsonSchemaValidator = require('is-my-json-valid');
+var spec = require('swagger-tools').specs.v2;
 
 var accessToken;
 var globalVariables = {};
@@ -309,6 +310,31 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
         var validate = jsonSchemaValidator(jsonSchema, { verbose: true });
         var success = validate(responseBody);
         callback(getAssertionResult(success, validate.errors, null, self));
+    });
+};
+
+Apickli.prototype.validateResponseWithSwaggerSpecDefinition = function(definitionName, swaggerSpecFile, callback) {
+    var self = this;
+    swaggerSpecFile = this.replaceVariables(swaggerSpecFile, self.scenarioVariables, self.variableChar);
+
+    fs.readFile(path.join(this.fixturesDirectory, swaggerSpecFile), 'utf8', function(err, swaggerSpecString) {
+        if (err) {
+            callback(err);
+        }
+
+        var swaggerObject = JSON.parse(swaggerSpecString);
+        var responseBody = JSON.parse(self.getResponseObject().body);
+
+        spec.validateModel(swaggerObject, '#/definitions/' + definitionName, responseBody, function (err, result) {
+            if(err) {
+                callback(getAssertionResult(false, null, err, self));
+            } else if (result && result.errors) {
+                callback(getAssertionResult(false, null, result.errors, self));
+            } else {
+                callback(getAssertionResult(true, null, null, self));
+            }
+        });
+
     });
 };
 
