@@ -36,21 +36,6 @@
                     "type": "object"
                 },
                 "headers": {
-                    "additionalProperties": false,
-                    "properties": {
-                        "Accept": {
-                            "type": "string"
-                        },
-                        "Accept-Encoding": {
-                            "type": "string"
-                        },
-                        "Host": {
-                            "type": "string"
-                        },
-                        "User-Agent": {
-                            "type": "string"
-                        }
-                    },
                     "type": "object"
                 },
                 "origin": {

@@ -21,7 +21,7 @@
     "path": "^0.12.7",
     "prettyjson": "^1.1.3",
     "request": "^2.55.0",
-    "swagger-validation": "^1.4.2",
+    "swagger-tools": "^0.10.1",
     "xmldom": "^0.1.19",
     "xpath.js": "^1.0.6"
   },
