@@ -237,7 +237,7 @@ WHEN:
 	I PUT $resource
 	I DELETE $resource
 	I PATCH $resource
-    I request OPTIONS for $resource
+    	I request OPTIONS for $resource
 
 THEN:
 	response code should be (\d+)
@@ -251,10 +251,10 @@ THEN:
 	response body should not contain (.*)
 	response body path (.*) should be (.*)
 	response body path (.*) should not be (.*)
-    response body path (.*) should be of type array
-    response body path (.*) should be of type array with length (\d+)
-    response body should be valid according to schema file (.*)
-    response body should be valid according to swagger definition (.*) in file (.*)
+    	response body path (.*) should be of type array
+    	response body path (.*) should be of type array with length (\d+)
+    	response body should be valid according to schema file (.*)
+    	response body should be valid according to swagger definition (.*) in file (.*)
 	I store the value of body path (.*) as access token
 	I store the value of response header (.*) as (.*) in scenario scope
 	I store the value of body path (.*) as (.*) in scenario scope
