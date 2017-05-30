@@ -135,7 +135,7 @@ Feature:
   Scenario: setting header value as variable
     When I GET /get
     Then I store the value of response header Server as agent in scenario scope
-    And value of scenario variable agent should be nginx
+    And value of scenario variable agent should be meinheld/0.6.1
 
   Scenario: setting body path as variable (xml)
     When I GET /xml
@@ -226,7 +226,7 @@ Feature:
     Then response code should be 200
     And response header Access-Control-Allow-Credentials should be true
     And response header Access-Control-Allow-Methods should be GET, POST, PUT, DELETE, PATCH, OPTIONS
-    And response header Allow should be HEAD, OPTIONS, GET
+    And response header Allow should be OPTIONS, GET, HEAD
     And response header Content-Length should be 0
 
   Scenario: should differentiate between empty string and non-existing element in JSON path assertions
