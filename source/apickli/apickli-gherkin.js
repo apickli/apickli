@@ -254,7 +254,7 @@ module.exports = function () {
         });
     });
 
-    this.Then(/^response body should be valid according to swagger definition (.*) in file (.*)$/, function(definitionName, swaggerSpecFile, callback) {
+    this.Then(/^response body should be valid according to the OpenAPI description (.*) in file (.*)$/, function(definitionName, swaggerSpecFile, callback) {
         this.apickli.validateResponseWithSwaggerSpecDefinition(definitionName, swaggerSpecFile, function (assertion) {
             if (assertion.success) {
                 callback();
