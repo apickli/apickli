@@ -17,6 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "JSONPath": "^0.11.0",
+    "cucumber": "^0.8.1",
     "is-my-json-valid": "^2.12.3",
     "path": "^0.12.7",
     "prettyjson": "^1.1.3",
