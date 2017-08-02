@@ -28,7 +28,7 @@ var getAssertionResult = function(success, expected, actual, apickliInstance) {
     };
 };
 
-function Apickli(scheme, domain, fixturesDirectory, variableChar) {
+function Apickli(scheme, domain, fixturesDirectory, variableChar, gzipRequest) {
     this.domain = scheme + '://' + domain;
     this.headers = {};
     this.httpResponse = {};
@@ -37,6 +37,7 @@ function Apickli(scheme, domain, fixturesDirectory, variableChar) {
     this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : '');
     this.queryParameters = {};
     this.variableChar = (variableChar ? variableChar : '`');
+    this.gzipRequest = (gzipRequest ? gzipRequest : false);
 }
 
 Apickli.prototype.addRequestHeader = function(name, value) {
@@ -377,6 +378,7 @@ Apickli.prototype.sendRequest = function(method, resource, callback) {
     options.headers = this.headers;
     options.qs = this.queryParameters;
     options.body = this.requestBody;
+    options.gzip = this.gzipRequest;
     if(method !== 'OPTIONS') {
         options.followRedirect = false;
     }
