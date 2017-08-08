@@ -38,6 +38,11 @@ Feature:
     When I GET /get
     Then response body path $.headers.Custom-Header should be A,B,C,D
 
+  Scenario: Setting cookie in GET request
+  	Given I set cookie to test=value; HttpOnly
+	When I GET /get
+	Then response body path $.headers.Cookie should be test=value
+
   Scenario: Setting body payload in POST request
     Given I set body to {"key":"hello-world"}
     When I POST to /post

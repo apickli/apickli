@@ -20,6 +20,11 @@ module.exports = function () {
         this.apickli.addRequestHeader(headerName, headerValue);
         callback();
     });
+    
+	this.Given(/^I set cookie to (.*)$/, function (cookie, callback) {
+        this.apickli.addCookie(cookie);
+        callback();
+    });
 
     this.Given(/^I set headers to$/, function(headers, callback) {
         this.apickli.setHeaders(headers.hashes());
