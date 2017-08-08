@@ -224,6 +224,7 @@ The following gherkin expressions are implemented in apickli source code [source
 ```
 GIVEN:
 	I set (.*) header to (.*)
+    I set cookie to (.*)
 	I set body to (.*)
 	I pipe contents of file (.*) to body
 	I have basic authentication credentials (.*) and (.*)

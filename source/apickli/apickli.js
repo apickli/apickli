@@ -31,6 +31,7 @@ var getAssertionResult = function(success, expected, actual, apickliInstance) {
 function Apickli(scheme, domain, fixturesDirectory, variableChar) {
     this.domain = scheme + '://' + domain;
     this.headers = {};
+    this.cookies = [];
     this.httpResponse = {};
     this.requestBody = '';
     this.scenarioVariables = {};
@@ -67,6 +68,11 @@ Apickli.prototype.setRequestHeader = function(name, value) {
 
 Apickli.prototype.getResponseObject = function() {
     return this.httpResponse;
+};
+
+Apickli.prototype.addCookie = function(cookie) {
+    cookie = this.replaceVariables(cookie);
+    this.cookies.push(cookie);
 };
 
 Apickli.prototype.setRequestBody = function(body) {
@@ -377,6 +383,13 @@ Apickli.prototype.sendRequest = function(method, resource, callback) {
     options.headers = this.headers;
     options.qs = this.queryParameters;
     options.body = this.requestBody;
+	
+    var cookieJar = request.jar();
+    for(var i = 0; i < this.cookies.length; i++) {
+        cookieJar.setCookie(request.cookie(this.cookies[i]), this.domain);
+    }
+    options.jar = cookieJar;
+
     if(method !== 'OPTIONS') {
         options.followRedirect = false;
     }
