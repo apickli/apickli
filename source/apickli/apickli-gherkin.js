@@ -20,8 +20,8 @@ module.exports = function () {
         this.apickli.addRequestHeader(headerName, headerValue);
         callback();
     });
-    
-	this.Given(/^I set cookie to (.*)$/, function (cookie, callback) {
+
+    this.Given(/^I set cookie to (.*)$/, function (cookie, callback) {
         this.apickli.addCookie(cookie);
         callback();
     });
