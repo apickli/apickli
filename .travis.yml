@@ -5,7 +5,8 @@ node_js:
 before_script:
   - cd source && npm install && cd ..
   - npm install -g cucumber@^1.0.0
+  - npm install -g gulp
   - cp source/apickli/apickli-gherkin.js source/test/features/step_definitions/
 script:
-  - cd source && cucumber-js test/ --tags @core
+  - cd source && cucumber-js test/ --tags @core && gulp test
   
