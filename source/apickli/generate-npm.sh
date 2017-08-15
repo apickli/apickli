@@ -1,3 +1,4 @@
+#!/bin/sh
 rm -rf ./npm
 mkdir ./npm
 
@@ -8,6 +9,6 @@ cp ../../LICENSE ./npm/LICENSE
 cp ../../README.md ./npm/README.md
 
 cd ./npm
-npm publish 
+npm publish
 
 rm -rf ../npm
