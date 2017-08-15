@@ -248,6 +248,42 @@ Feature:
     Then response body path $.json should be of type array
     And response body path $.json should be of type array with length 3
 
+  Scenario: checking values of form parameter passed as datatable in post request
+    Given I set form parameters to
+      | parameter | value |
+      | argument1 | 1     |
+      | argument2 | test  |
+    When I POST to /post
+    Then response body path $.form.argument1 should be 1
+    And response body path $.form.argument2 should be test
+  
+  Scenario: checking values of form parameter passed as datatable in put request
+    Given I set form parameters to
+      | parameter | value |
+      | argument1 | 1     |
+      | argument2 | test  |
+    When I PUT /put
+    Then response body path $.form.argument1 should be 1
+    And response body path $.form.argument2 should be test
+  
+  Scenario: checking values of form parameter passed as datatable in delete request
+    Given I set form parameters to
+      | parameter | value |
+      | argument1 | 1     |
+      | argument2 | test  |
+    When I DELETE /delete
+    Then response body path $.form.argument1 should be 1
+    And response body path $.form.argument2 should be test
+    
+  Scenario: checking values of form parameter passed as datatable in patch request
+    Given I set form parameters to
+      | parameter | value |
+      | argument1 | 1     |
+      | argument2 | test  |
+    When I PATCH /patch
+    Then response body path $.form.argument1 should be 1
+    And response body path $.form.argument2 should be test
+
   Scenario: should successfully pipe form parameters
     Given I set Authorization header to Basic abcd
     And I pipe contents of file ./test/features/fixtures/formparams to body
