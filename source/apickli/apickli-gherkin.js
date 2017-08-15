@@ -51,6 +51,11 @@ module.exports = function () {
         callback();
     });
 
+    this.Given(/^I set form parameters to$/, function(formParameters, callback) {
+        this.apickli.setFormParameters(formParameters.hashes());
+        callback();
+    });
+    
     this.Given(/^I have basic authentication credentials (.*) and (.*)$/, function (username, password, callback) {
         this.apickli.addHttpBasicAuthorizationHeader(username, password);
         callback();

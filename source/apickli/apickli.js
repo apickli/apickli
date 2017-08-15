@@ -37,6 +37,7 @@ function Apickli(scheme, domain, fixturesDirectory, variableChar) {
     this.scenarioVariables = {};
     this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : '');
     this.queryParameters = {};
+    this.formParameters = {};
     this.variableChar = (variableChar ? variableChar : '`');
 }
 
@@ -91,6 +92,19 @@ Apickli.prototype.setQueryParameters = function(queryParameters) {
     });
 
     this.queryParameters = paramsObject;
+};
+
+Apickli.prototype.setFormParameters = function(formParameters) {
+    var self = this;
+    var paramsObject = {};
+
+    formParameters.forEach(function(f){
+        var formParameterName = self.replaceVariables(f.parameter);
+        var formParameterValue = self.replaceVariables(f.value);
+        paramsObject[formParameterName] = formParameterValue;
+    });
+
+    this.formParameters = paramsObject;
 };
 
 Apickli.prototype.setHeaders = function(headersTable) {
@@ -382,7 +396,12 @@ Apickli.prototype.sendRequest = function(method, resource, callback) {
     options.method = method;
     options.headers = this.headers;
     options.qs = this.queryParameters;
-    options.body = this.requestBody;
+    if(this.requestBody.length > 0) {
+        options.body = this.requestBody;
+    }
+    else if(Object.keys(this.formParameters).length > 0) {
+        options.form = this.formParameters;
+    }
 	
     var cookieJar = request.jar();
     for(var i = 0; i < this.cookies.length; i++) {
