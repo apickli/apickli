@@ -217,7 +217,9 @@ Feature:
     Then response code should be 200
     And response header Access-Control-Allow-Credentials should be true
     And response header Access-Control-Allow-Methods should be GET, POST, PUT, DELETE, PATCH, OPTIONS
-    And response header Allow should be OPTIONS, GET, HEAD
+    And response header Allow should be (.*)OPTIONS(.*)
+    And response header Allow should be (.*)GET(.*)
+    And response header Allow should be (.*)HEAD(.*)
     And response header Content-Length should be 0
 
   Scenario: should differentiate between empty string and non-existing element in JSON path assertions

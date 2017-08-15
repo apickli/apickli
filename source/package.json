@@ -29,7 +29,7 @@
         "eslint": "^4.4.1",
         "eslint-config-google": "^0.9.1",
         "gulp": "^3.8.11",
-        "gulp-cucumber": "0.0.9",
+        "gulp-cucumber": "0.0.22",
         "gulp-eslint": "^4.0.0"
     }
 }
