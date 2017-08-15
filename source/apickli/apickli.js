@@ -140,12 +140,12 @@ Apickli.prototype.setQueryParameters = function(queryParameters) {
 };
 
 Apickli.prototype.setFormParameters = function(formParameters) {
-    var self = this;
-    var paramsObject = {};
+    const self = this;
+    const paramsObject = {};
 
-    formParameters.forEach(function(f){
-        var formParameterName = self.replaceVariables(f.parameter);
-        var formParameterValue = self.replaceVariables(f.value);
+    formParameters.forEach(function(f) {
+        const formParameterName = self.replaceVariables(f.parameter);
+        const formParameterValue = self.replaceVariables(f.value);
         paramsObject[formParameterName] = formParameterValue;
     });
 
@@ -436,17 +436,17 @@ Apickli.prototype.sendRequest = function(method, resource, callback) {
     options.headers = this.headers;
     options.qs = this.queryParameters;
 
-    if(this.requestBody.length > 0) {
+    if (this.requestBody.length > 0) {
         options.body = this.requestBody;
-    }
-    else if(Object.keys(this.formParameters).length > 0) {
+    } else if (Object.keys(this.formParameters).length > 0) {
         options.form = this.formParameters;
     }
 
     const cookieJar = request.jar();
-    for (let i = 0; i < this.cookies.length; i++) {
-        cookieJar.setCookie(request.cookie(this.cookies[i]), this.domain);
-    }
+    this.cookies.forEach(function(cookie) {
+        cookieJar.setCookie(request.cookie(cookie), self.domain);
+    });
+
     options.jar = cookieJar;
 
     if (method !== 'OPTIONS') {
