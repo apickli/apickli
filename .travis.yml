@@ -8,5 +8,6 @@ before_script:
   - npm install -g gulp
   - cp source/apickli/apickli-gherkin.js source/test/features/step_definitions/
 script:
-  - cd source && cucumber-js test/ --tags @core && gulp test
-  
+  - cd source
+  - gulp lint
+  - cucumber-js test/ --tags @core && gulp test
