@@ -1,34 +1,32 @@
-var gulp = require('gulp');
-var cucumber = require('gulp-cucumber');
-var jshint = require('gulp-jshint');
- 
+const gulp = require('gulp');
+const cucumber = require('gulp-cucumber');
+const eslint = require('gulp-eslint');
+
 gulp.task('test', function() {
-	var options = {
-		'steps': 'test/features/step_definitions/*.js',
+    const options = {
+        'steps': 'test/features/step_definitions/*.js',
         'tags': '@core',
-		'format': 'pretty'
-	};
+        'format': 'pretty',
+    };
 
     return gulp.src('test/features/*')
-			.pipe(cucumber(options));
+        .pipe(cucumber(options));
 });
 
 gulp.task('console-test', function() {
-	var options = {
-		'steps': 'test/features/step_definitions/*.js',
+    const options = {
+        'steps': 'test/features/step_definitions/*.js',
         'tags': '@console',
-		'format': 'pretty'
-	};
+        'format': 'pretty',
+    };
 
     return gulp.src('test/features/*')
-			.pipe(cucumber(options));
+        .pipe(cucumber(options));
 });
 
-gulp.task('jshint', function() {
-	var apickliJs = 'apickli/*.js';
-	var apickliTestJs = 'test/features/step_definitions/*.js';
-
-	return gulp.src([ apickliJs, apickliTestJs ])
-		.pipe(jshint())
-		.pipe(jshint.reporter('jshint-stylish'));
+gulp.task('lint', function() {
+    return gulp.src(['**/*.js', '!node_modules/**'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
 });

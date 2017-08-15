@@ -123,20 +123,6 @@ Feature:
     When I GET /get
     Then response body path $.headers.Authorization should be Bearer token123
 
-  Scenario: Quota testing - first request
-    Given I set X-Quota-Remaining header to 10
-    When I GET /get
-    Then I store the value of body path $.headers.X-Quota-Remaining as remaining1 in global scope
-
-  Scenario: Quota testing - second request
-    Given I set X-Quota-Remaining header to 9
-    When I GET /get
-    Then I store the value of body path $.headers.X-Quota-Remaining as remaining2 in global scope
-
-  Scenario: Quota testing - assertion
-    When I subtract remaining2 from remaining1
-    Then result should be 1
-
   Scenario: setting header value as variable
     When I GET /get
     Then I store the value of response header Server as agent in scenario scope
@@ -231,14 +217,16 @@ Feature:
     Then response code should be 200
     And response header Access-Control-Allow-Credentials should be true
     And response header Access-Control-Allow-Methods should be GET, POST, PUT, DELETE, PATCH, OPTIONS
-    And response header Allow should be OPTIONS, GET, HEAD
+    And response header Allow should be (.*)OPTIONS(.*)
+    And response header Allow should be (.*)GET(.*)
+    And response header Allow should be (.*)HEAD(.*)
     And response header Content-Length should be 0
 
   Scenario: should differentiate between empty string and non-existing element in JSON path assertions
     When I GET /get
     Then response code should be 200
     And response body path $.origin should be [0-9\.]+
-    And response body path $.notthere should be undefined
+    And response body path $.notthere should be null
 
   Scenario: should successfully validate json using schema
     When I GET /get
