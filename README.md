@@ -232,14 +232,14 @@ The following gherkin expressions are implemented in apickli source code [source
 ```
 GIVEN:
 	I set (.*) header to (.*)
-    I set cookie to (.*)
+    	I set cookie to (.*)
 	I set body to (.*)
 	I pipe contents of file (.*) to body
 	I have basic authentication credentials (.*) and (.*)
 	I set bearer token
 	I set query parameters to (data table with headers |parameter|value|)
 	I set headers to (data table with headers |name|value|)
-    I set form parameters to (data table with headers |name|value|)
+    	I set form parameters to (data table with headers |name|value|)
 
 WHEN:
 	I GET $resource
@@ -247,7 +247,7 @@ WHEN:
 	I PUT $resource
 	I DELETE $resource
 	I PATCH $resource
-    I request OPTIONS for $resource
+	I request OPTIONS for $resource
 
 THEN:
 	response code should be (\d+)
