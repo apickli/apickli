@@ -28,6 +28,9 @@ const callbackWithAssertion = function(callback, assertion) {
 
 defineSupportCode(function({Before}) {
     Before(function(scenarioResult, callback) {
+        // https://github.com/cucumber/cucumber-js/issues/891
+        // stepContext.step = step.getName;
+        // stepContext.scenario = scenario.getName;
 
         callback();
     });
