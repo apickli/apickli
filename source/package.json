@@ -26,6 +26,7 @@
         "xpath.js": "^1.0.6"
     },
     "devDependencies": {
+        "cucumber": "^3",
         "eslint": "^4.4.1",
         "eslint-config-google": "^0.9.1",
         "gulp": "^3.8.11",

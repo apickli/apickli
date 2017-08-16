@@ -3,12 +3,15 @@
 'use strict';
 
 const apickli = require('../../../apickli/apickli.js');
+const {defineSupportCode} = require('cucumber');
 
-module.exports = function() {
-    // cleanup before every scenario
-    this.Before(function(scenario, callback) {
+defineSupportCode(function({Before}) {
+    Before(function() {
         this.apickli = new apickli.Apickli('http', 'httpbin.org');
         this.apickli.addRequestHeader('Cache-Control', 'no-cache');
-        callback();
     });
-};
+});
+
+defineSupportCode(function({setDefaultTimeout}) {
+    setDefaultTimeout(60 * 1000);
+});
