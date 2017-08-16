@@ -3,9 +3,8 @@ language: node_js
 node_js:
   - 6
 before_script:
-  - cd source && npm install && cd ..
-  - cp source/apickli/apickli-gherkin.js source/test/features/step_definitions/
-script:
   - cd source
+  - npm install
+script:
   - node_modules/.bin/gulp lint
   - node_modules/.bin/cucumber-js test/ --tags @core
