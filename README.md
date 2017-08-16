@@ -264,7 +264,7 @@ THEN:
    	response body path (.*) should be of type array
    	response body path (.*) should be of type array with length (\d+)
    	response body should be valid according to schema file (.*)
-   	response body should be valid according to swagger definition (.*) in file (.*)
+   	response body should be valid according to openapi description (.*) in file (.*)
 	I store the value of body path (.*) as access token
 	I store the value of response header (.*) as (.*) in scenario scope
 	I store the value of body path (.*) as (.*) in scenario scope

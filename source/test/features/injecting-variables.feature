@@ -113,7 +113,7 @@ Feature:
         When I GET /get
         Then response body should be valid according to schema file `schemaPath`
 
-	Scenario: should successfully validate json using Swagger spec definition
+	Scenario: should successfully validate json using the OpenAPI spec description
         Given I store the raw value ./test/features/fixtures/get-simple-swagger-spec.json as swaggerSpecPath in scenario scope
         When I GET /get
         Then response body should be valid according to schema file `swaggerSpecPath`

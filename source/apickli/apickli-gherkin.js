@@ -218,7 +218,7 @@ defineSupportCode(function({Given, When, Then}) {
         });
     });
 
-    Then(/^response body should be valid according to swagger definition (.*) in file (.*)$/, function(definitionName, swaggerSpecFile, callback) {
+    Then(/^response body should be valid according to openapi description (.*) in file (.*)$/, function(definitionName, swaggerSpecFile, callback) {
         this.apickli.validateResponseWithSwaggerSpecDefinition(definitionName, swaggerSpecFile, function(assertion) {
             callbackWithAssertion(callback, assertion);
         });
