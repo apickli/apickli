@@ -113,7 +113,7 @@ Cucumber.js default step timeout is 5000ms. Add the following to features/suppor
 
 ```javascript
 defineSupportCode(function({setDefaultTimeout}) {
-    setDefaultTimeout(60 * 1000);
+    setDefaultTimeout(60 * 1000); // this is in ms
 });
 ```
 
