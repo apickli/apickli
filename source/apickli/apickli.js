@@ -168,7 +168,7 @@ Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
     fs.readFile(path.join(this.fixturesDirectory, file), 'utf8', function(err, data) {
         if (err) {
             callback(err);
-        } else{
+        } else {
             self.setRequestBody(data);
            callback();
        }
@@ -363,9 +363,8 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
         if (err) {
             callback(err);
         } else {
-
-	    const jsonSchema = JSON.parse(jsonSchemaString);
-	    const responseBody = JSON.parse(self.getResponseObject().body);
+            const jsonSchema = JSON.parse(jsonSchemaString);
+            const responseBody = JSON.parse(self.getResponseObject().body);
 
             const validate = jsonSchemaValidator(jsonSchema, {verbose: true});
             const success = validate(responseBody);
@@ -381,8 +380,7 @@ Apickli.prototype.validateResponseWithSwaggerSpecDefinition = function(definitio
     fs.readFile(path.join(this.fixturesDirectory, swaggerSpecFile), 'utf8', function(err, swaggerSpecString) {
         if (err) {
             callback(err);
-        } else{
-
+        } else {
             const swaggerObject = JSON.parse(swaggerSpecString);
             const responseBody = JSON.parse(self.getResponseObject().body);
 
