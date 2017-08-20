@@ -168,10 +168,10 @@ Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
     fs.readFile(path.join(this.fixturesDirectory, file), 'utf8', function(err, data) {
         if (err) {
             callback(err);
-        }
-
-        self.setRequestBody(data);
-        callback();
+        } else {
+            self.setRequestBody(data);
+           callback();
+       }
     });
 };
 
@@ -362,14 +362,14 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
     fs.readFile(path.join(this.fixturesDirectory, schemaFile), 'utf8', function(err, jsonSchemaString) {
         if (err) {
             callback(err);
-        }
+        } else {
+            const jsonSchema = JSON.parse(jsonSchemaString);
+            const responseBody = JSON.parse(self.getResponseObject().body);
 
-        const jsonSchema = JSON.parse(jsonSchemaString);
-        const responseBody = JSON.parse(self.getResponseObject().body);
-
-        const validate = jsonSchemaValidator(jsonSchema, {verbose: true});
-        const success = validate(responseBody);
-        callback(getAssertionResult(success, validate.errors, null, self));
+            const validate = jsonSchemaValidator(jsonSchema, {verbose: true});
+            const success = validate(responseBody);
+            callback(getAssertionResult(success, validate.errors, null, self));
+       }
     });
 };
 
@@ -380,20 +380,20 @@ Apickli.prototype.validateResponseWithSwaggerSpecDefinition = function(definitio
     fs.readFile(path.join(this.fixturesDirectory, swaggerSpecFile), 'utf8', function(err, swaggerSpecString) {
         if (err) {
             callback(err);
+        } else {
+            const swaggerObject = JSON.parse(swaggerSpecString);
+            const responseBody = JSON.parse(self.getResponseObject().body);
+
+            spec.validateModel(swaggerObject, '#/definitions/' + definitionName, responseBody, function(err, result) {
+                if (err) {
+                    callback(getAssertionResult(false, null, err, self));
+                } else if (result && result.errors) {
+                    callback(getAssertionResult(false, null, result.errors, self));
+                } else {
+                    callback(getAssertionResult(true, null, null, self));
+                }
+            });
         }
-
-        const swaggerObject = JSON.parse(swaggerSpecString);
-        const responseBody = JSON.parse(self.getResponseObject().body);
-
-        spec.validateModel(swaggerObject, '#/definitions/' + definitionName, responseBody, function(err, result) {
-            if (err) {
-                callback(getAssertionResult(false, null, err, self));
-            } else if (result && result.errors) {
-                callback(getAssertionResult(false, null, result.errors, self));
-            } else {
-                callback(getAssertionResult(true, null, null, self));
-            }
-        });
     });
 };
 
