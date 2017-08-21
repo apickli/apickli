@@ -232,9 +232,9 @@ Feature:
     When I GET /get
     Then response body should be valid according to schema file ./test/features/fixtures/get-simple.schema
 
-  Scenario: should successfully validate json using Swagger spec definition
+  Scenario: should successfully validate json using the OpenAPI spec description
     When I GET /get
-    Then response body should be valid according to swagger definition GetResponse in file ./test/features/fixtures/get-simple-swagger-spec.json
+    Then response body should be valid according to openapi description GetResponse in file ./test/features/fixtures/get-simple-swagger-spec.json
 
   Scenario: should successfully validate json array
     Given I set body to ["a","b","c"]

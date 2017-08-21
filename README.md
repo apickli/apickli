@@ -11,15 +11,9 @@ It provides a gherkin framework and a collection of utility functions to make AP
 
 **Apickli** is also available as an [NPM package](https://www.npmjs.com/package/apickli).
 
-[Cucumber.js](https://github.com/cucumber/cucumber-js) is JavaScript & Node.js implementation of Behaviour Driven Development test framework - [Cucumber](http://cukes.info/). Cucumber.js is using [Gherkin](http://cukes.info/gherkin.html) language for describing the test scenarios in [BDD](http://en.wikipedia.org/wiki/Behavior-driven_development) manner.  
+[Cucumber.js](https://github.com/cucumber/cucumber-js) is JavaScript & Node.js implementation of Behaviour Driven Development test framework - [Cucumber](http://cukes.info/). Cucumber.js is using [Gherkin](http://cukes.info/gherkin.html) language for describing the test scenarios in [BDD](http://en.wikipedia.org/wiki/Behavior-driven_development) manner.
 
 ## How to start - a simple tutorial
-
-**Apickli** depends on cucumber.js being installed on your system. You can do this by installing cucumber.js globally:
-
-```sh
-$ npm install -g cucumber
-```
 
 ### Start new project
 
@@ -30,9 +24,11 @@ Let's start a new integration testing project for an API called *myapi*. The fol
 
     test/
     ---- features/
-    --------- myapi.feature
     --------- step_definitions/
-    -------------- myapi.js
+    -------------- apickli-gherkin.js
+    --------- support/
+    -------------- init.js
+    --------- myapi.feature
     ---- package.json
 
 Features directory contains cucumber feature files written in gherkin syntax. step_definitions contains the JavaScript implementation of gherkin test cases. Check out the GitHub repository for example implementations covering most used testing scenarios.
@@ -75,31 +71,37 @@ Feature:
 ```
 
 #### 5. Get apickli-gherkin steps
-We now need the corresponding step definitions that implement the steps in our scenario. Apickli has a collection of steps already implemented - ready to be included in your project: [source/apickli/apickli-gherkin.js](source/apickli/apickli-gherkin.js). It is included in the NPM package so you can symlink to it from under your local node_modules/apickli folder - see [gherkin expressions](#gherkin-expressions) for more information and help on symlink.
+We now need the corresponding step definitions that implement the steps in our scenario. Apickli has a collection of steps already implemented - ready to be included in your project - see [gherkin expressions](#gherkin-expressions).
 
-#### 6. Step_definitions for this project
-Now we need a step definition file specific for this project, let's call it *myapi.js*:
+The simplest way to adopt these expressions is to create a file named apickli-gherkin.js in features/step_definitions and import the apickli/gherkin.js module.
+
+Add the following to test/features/step_definitions/apickli-gherkin.js
+```javascript
+module.exports = require('apickli/apickli-gherkin');
+```
+
+#### 6. Support code
+Now we need a support code to implement cucumber hooks and initialize apickli. Add the following in features/support/init.js:
 
 ```js
-/* jslint node: true */
 'use strict';
 
-var apickli = require('apickli');
+const apickli = require('apickli');
+const {defineSupportCode} = require('cucumber');
 
-module.exports = function() {
-	// cleanup before every scenario
-	this.Before(function(scenario, callback) {
-		this.apickli = new apickli.Apickli('http', 'httpbin.org');
-		callback();
-	});
-};
+defineSupportCode(function({Before}) {
+    Before(function() {
+        this.apickli = new apickli.Apickli('http', 'httpbin.org');
+        this.apickli.addRequestHeader('Cache-Control', 'no-cache');
+    });
+});
 ```
 
 #### 7. Run tests with cucumber.js
 The following will run our scenario (in the project directory):
 
 ```sh
-$ cucumber-js features/httpbin.feature
+$ cucumber-js features/myapi.feature
 ....
 
 1 scenario (1 passed)
@@ -107,7 +109,13 @@ $ cucumber-js features/httpbin.feature
 ```
 
 ## Step timeout
-Cucumber.js default step timeout is 5000ms. Follow [this guide](https://github.com/cucumber/cucumber-js#timeouts) to change it for your steps.
+Cucumber.js default step timeout is 5000ms. Add the following to features/support/init.js in order to change it:
+
+```javascript
+defineSupportCode(function({setDefaultTimeout}) {
+    setDefaultTimeout(60 * 1000); // this is in ms
+});
+```
 
 ## Grunt integration
 
@@ -224,13 +232,14 @@ The following gherkin expressions are implemented in apickli source code [source
 ```
 GIVEN:
 	I set (.*) header to (.*)
-    I set cookie to (.*)
+    	I set cookie to (.*)
 	I set body to (.*)
 	I pipe contents of file (.*) to body
 	I have basic authentication credentials (.*) and (.*)
 	I set bearer token
 	I set query parameters to (data table with headers |parameter|value|)
 	I set headers to (data table with headers |name|value|)
+    	I set form parameters to (data table with headers |name|value|)
 
 WHEN:
 	I GET $resource
@@ -238,7 +247,7 @@ WHEN:
 	I PUT $resource
 	I DELETE $resource
 	I PATCH $resource
-    	I request OPTIONS for $resource
+	I request OPTIONS for $resource
 
 THEN:
 	response code should be (\d+)
@@ -252,10 +261,10 @@ THEN:
 	response body should not contain (.*)
 	response body path (.*) should be (.*)
 	response body path (.*) should not be (.*)
-    	response body path (.*) should be of type array
-    	response body path (.*) should be of type array with length (\d+)
-    	response body should be valid according to schema file (.*)
-    	response body should be valid according to swagger definition (.*) in file (.*)
+   	response body path (.*) should be of type array
+   	response body path (.*) should be of type array with length (\d+)
+   	response body should be valid according to schema file (.*)
+   	response body should be valid according to openapi description (.*) in file (.*)
 	I store the value of body path (.*) as access token
 	I store the value of response header (.*) as (.*) in scenario scope
 	I store the value of body path (.*) as (.*) in scenario scope
@@ -263,15 +272,6 @@ THEN:
 	I store the value of response header (.*) as (.*) in global scope
 	I store the value of body path (.*) as (.*) in global scope
 ```
-
-The simplest way to adopt these expressions is to create a file named apickli-gherkin.js in features/step_definitions and extend the apickli/gherkin.js module.
-
-add the following to test/features/step_definitions/apickli-gherkin.js
-```javascript
-module.exports = require('apickli/apickli-gherkin');
-```
-
-If using Windows, follow this guide to create a symlink: [How-To Geek Guide](http://www.howtogeek.com/howto/16226/complete-guide-to-symbolic-links-symlinks-on-windows-or-linux/).
 
 ## Setting Proxy Server
 apickli uses node.js request module for HTTP communications which supports setting proxy servers via the following environment variables:
@@ -287,34 +287,7 @@ It is possible to use Scenario Variables in a Feature file, that will have value
 
 By default, backticks are use to indicate a variable in a feature file. When instantiating Apickli, a different character can be passed as a parameter. In order to follow BDD best practices, global variables should not be used in the way. Each Scenario should be independent, and as such if you would like to define configurable variables it should be done using the Before hook:
 
-```js
-/* jslint node: true */
-'use strict';
-
-var apickli = require('apickli');
-
-module.exports = function() {
-	// cleanup before every scenario
-	this.Before(function(scenario, callback) {
-		this.apickli = new apickli.Apickli('http', 'httpbin.org');
-        this.apickli.storeValueInScenarioScope("BasicAuthValue", "Basic abc123");
-		callback();
-	});
-};
-```
-
-```
-Feature:
-  Httpbin.org exposes various resources for HTTP request testing
-  As Httpbin client I want to verify that all API resources are working as they should
-
-
-  Scenario: Setting authorization headers in GET request                         
-    Given I set Authorization header to `BasicAuthValue`                       
-    When I GET /get                                                
-    Then response body path $.headers.Authorization should be Basic abc123
-```
-For more examples, please see [source/test/features/injecting-variables.feature](source/test/features/injecting-variables.feature)
+See [source/test/features/injecting-variables.feature](source/test/features/injecting-variables.feature) for examples.
 
 ## Contributing
 
