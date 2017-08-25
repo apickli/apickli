@@ -5,8 +5,8 @@ const eslint = require('gulp-eslint');
 gulp.task('test', function() {
     const options = {
         'steps': 'test/features/step_definitions/*.js',
+        'support': 'test/features/support/init.js',
         'tags': '@core',
-        'format': 'pretty',
     };
 
     return gulp.src('test/features/*')
