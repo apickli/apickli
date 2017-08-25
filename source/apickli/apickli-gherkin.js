@@ -82,6 +82,15 @@ defineSupportCode(function({Given, When, Then}) {
         callback();
     });
 
+    Given(/^I have (.+) client TLS configuration$/, function(configurationName, callback) {
+        this.apickli.setClientTLSConfiguration(configurationName, function(error) {
+            if (error) {
+                callback(new Error(error));
+            }
+            callback();
+        });
+    });
+
     When(/^I GET (.*)$/, function(resource, callback) {
         this.apickli.get(resource, function(error, response) {
             if (error) {

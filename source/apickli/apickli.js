@@ -83,6 +83,8 @@ function Apickli(scheme, domain, fixturesDirectory, variableChar) {
     this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : '');
     this.queryParameters = {};
     this.formParameters = {};
+    this.clientTLSConfig = {};
+    this.selectedClientTLSConfig = '';
     this.variableChar = (variableChar ? variableChar : '`');
 }
 
@@ -102,6 +104,15 @@ Apickli.prototype.addRequestHeader = function(name, value) {
 Apickli.prototype.removeRequestHeader = function(name) {
     name = this.replaceVariables(name);
     delete this.headers[name];
+};
+
+Apickli.prototype.setClientTLSConfiguration = function(configurationName, callback) {
+    if (!this.clientTLSConfig.hasOwnProperty(configurationName)) {
+        callback('Client TLS Configuration ' + configurationName + ' does not exist.');
+    } else {
+        this.selectedClientTLSConfig = configurationName;
+        callback();
+    }
 };
 
 Apickli.prototype.setRequestHeader = function(name, value) {
@@ -448,6 +459,14 @@ Apickli.prototype.sendRequest = function(method, resource, callback) {
     });
 
     options.jar = cookieJar;
+
+    if (this.selectedClientTLSConfig.length > 0) {
+        options.key = fs.readFileSync(this.clientTLSConfig[this.selectedClientTLSConfig].key);
+        options.cert = fs.readFileSync(this.clientTLSConfig[this.selectedClientTLSConfig].cert);
+        if (this.clientTLSConfig[this.selectedClientTLSConfig].ca) {
+            options.ca = fs.readFileSync(this.clientTLSConfig[this.selectedClientTLSConfig].ca);
+        }
+    }
 
     if (method !== 'OPTIONS') {
         options.followRedirect = false;
