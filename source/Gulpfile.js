@@ -2,20 +2,22 @@ const gulp = require('gulp');
 const cucumber = require('gulp-cucumber');
 const eslint = require('gulp-eslint');
 const reporter = require('cucumber-html-reporter');
-const fs = require('fs-promise');
-const run = require('run-sequence');
+const fs = require('fs-extra');
+const run = require('gulp4-run-sequence');
 const argv = require('argv').option({name: 'report', type: 'string'}).run();
 
-gulp.task('test', () => {
+gulp.task('test', (done) => {
     const tasks = argv.options.report ? ['clean', 'cucumber', 'report'] : ['cucumber'];
-    run(...tasks);
+    run(tasks);
+    done();
 });
 
 gulp.task('clean', function(done) {
-    return fs.emptyDir('reports');
+    return fs.ensureDir('reports')
+            .then(fs.emptyDir('reports'));
 });
 
-gulp.task('report', function() {
+gulp.task('report', function(done) {
     const reportOptions = {
         theme: 'bootstrap',
         jsonFile: 'reports/reports.json',
@@ -25,6 +27,7 @@ gulp.task('report', function() {
     };
 
     reporter.generate(reportOptions);
+    done();
 });
 
 gulp.task('cucumber', function() {
@@ -32,9 +35,12 @@ gulp.task('cucumber', function() {
         'steps': 'test/features/step_definitions/*.js',
         'support': 'test/features/support/init.js',
         'tags': '@core',
-        'format': 'json:reports/reports.json',
         'emitErrors': false,
     };
+
+    if (argv.options.report) {
+        options.format = 'json:reports/reports.json';
+    }
 
     return gulp.src('test/features/*')
         .pipe(cucumber(options));
