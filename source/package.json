@@ -27,10 +27,13 @@
     },
     "devDependencies": {
         "cucumber": "^3",
+        "cucumber-html-reporter": "^3.0.4",
         "eslint": "^4",
         "eslint-config-google": "^0",
+        "fs-promise": "^2.0.3",
         "gulp": "^3",
         "gulp-cucumber": "^0",
-        "gulp-eslint": "^4"
+        "gulp-eslint": "^4",
+        "run-sequence": "^2.2.0"
     }
 }
