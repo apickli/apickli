@@ -222,6 +222,18 @@ Feature:
     And response header Allow should be (.*)HEAD(.*)
     And response header Content-Length should be 0
 
+  Scenario: should successfully send an HEAD call to target API and assert response
+    When I request HEAD for /get
+    Then response code should be 200
+    And response header Access-Control-Allow-Credentials should be true
+    And response header Content-Type should be application/json
+    And response body should contain ^$
+
+  Scenario: should successfully send an TRACE call to target API and assert response
+    When I TRACE /anything
+    Then response code should be 200
+    And response body path $.method should be ^TRACE$
+
   Scenario: should differentiate between empty string and non-existing element in JSON path assertions
     When I GET /get
     Then response code should be 200

@@ -205,6 +205,16 @@ Apickli.prototype.options = function(resource, callback) { // callback(error, re
     this.sendRequest('OPTIONS', resource, callback);
 };
 
+Apickli.prototype.trace = function(resource, callback) { // callback(error, response)
+    resource = this.replaceVariables(resource);
+    this.sendRequest('TRACE', resource, callback);
+};
+
+Apickli.prototype.head = function(resource, callback) { // callback(error, response)
+    resource = this.replaceVariables(resource);
+    this.sendRequest('HEAD', resource, callback);
+};
+
 Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password) {
     username = this.replaceVariables(username);
     password = this.replaceVariables(password);

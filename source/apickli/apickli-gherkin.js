@@ -142,6 +142,26 @@ defineSupportCode(function({Given, When, Then}) {
         });
     });
 
+    When(/^I request HEAD for (.*)$/, function(resource, callback) {
+        this.apickli.head(resource, function(error, response) {
+            if (error) {
+                callback(new Error(error));
+            }
+
+            callback();
+        });
+    });
+
+    When(/^I TRACE (.*)$/, function(resource, callback) {
+        this.apickli.trace(resource, function(error, response) {
+            if (error) {
+                callback(new Error(error));
+            }
+
+            callback();
+        });
+    });
+
     Then(/^response header (.*) should exist$/, function(header, callback) {
         const assertion = this.apickli.assertResponseContainsHeader(header);
         callbackWithAssertion(callback, assertion);
