@@ -1,4 +1,4 @@
-/* eslint new-cap: 'off', no-invalid-this: "off" */
+/* eslint new-cap: "off", no-invalid-this: "off" */
 
 'use strict';
 
