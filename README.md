@@ -292,7 +292,7 @@ See [source/test/features/injecting-variables.feature](source/test/features/inje
 
 ## Client Authentication
 
-In order to make a request to a target that is protected by Mutual TLS, you must specify you client TLS configuration. This can be done when initializing Apickli as shown below.
+In order to make a request to a server that is protected by Mutual TLS, you must specify your client TLS configuration. This can be done when initializing Apickli as shown below.
 
 ``` shell
 defineSupportCode(function({Before}) {
