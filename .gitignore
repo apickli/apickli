@@ -33,3 +33,6 @@ npm
 
 # IDE
 .idea
+
+# cucumber test reports
+reports
