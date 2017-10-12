@@ -2,45 +2,38 @@ const gulp = require('gulp');
 const cucumber = require('gulp-cucumber');
 const eslint = require('gulp-eslint');
 const reporter = require('cucumber-html-reporter');
-const runSequence = require('run-sequence');
-const fsp = require('fs-promise');
+const fs = require('fs-promise');
+const run = require('run-sequence');
+const argv = require('argv').option({name: 'report', type: 'string'}).run();
 
-
-gulp.task('run-test', function() {
-    runSequence('onPrepare',
-        'test',
-        'reportHtml');
+gulp.task('test', () => {
+    const tasks = argv.options.report ? ['clean', 'cucumber', 'report'] : ['cucumber'];
+    run(...tasks);
 });
 
-gulp.task('onPrepare', function() {
-    return fsp.emptyDir('reports/json')
-        .then(function() {
-            return fsp.emptyDir('reports/html');
-        });
+gulp.task('clean', function(done) {
+    return fs.emptyDir('reports');
 });
 
-
-gulp.task('reportHtml', function() {
-    const options = {
+gulp.task('report', function() {
+    const reportOptions = {
         theme: 'bootstrap',
-        jsonFile: 'reports/json/reports.json',
-        output: 'reports/html/reports.html',
+        jsonFile: 'reports/reports.json',
+        output: 'reports/reports.html',
         reportSuiteAsScenarios: true,
         launchReport: false,
-        metadata: {
-            'App Version': '0.0.3',
-         },
     };
-    reporter.generate(options);
+
+    reporter.generate(reportOptions);
 });
 
-gulp.task('test', function() {
+gulp.task('cucumber', function() {
     const options = {
         'steps': 'test/features/step_definitions/*.js',
         'support': 'test/features/support/init.js',
         'tags': '@core',
-        'format': 'json:reports/json/reports.json',
-
+        'format': 'json:reports/reports.json',
+        'emitErrors': false,
     };
 
     return gulp.src('test/features/*')

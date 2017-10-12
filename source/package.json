@@ -26,14 +26,15 @@
         "xpath.js": "^1"
     },
     "devDependencies": {
+        "argv": "^0",
         "cucumber": "^3",
-        "cucumber-html-reporter": "^3.0.4",
+        "cucumber-html-reporter": "^3",
         "eslint": "^4",
         "eslint-config-google": "^0",
-        "fs-promise": "^2.0.3",
+        "fs-promise": "^2",
         "gulp": "^3",
         "gulp-cucumber": "^0",
         "gulp-eslint": "^4",
-        "run-sequence": "^2.2.0"
+        "run-sequence": "^2"
     }
 }
