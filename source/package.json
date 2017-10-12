@@ -32,8 +32,10 @@
         "gulp": "^4",
         "cucumber-html-reporter": "^4.0.4",
         "fs-extra": "^7.0.0",
+        "argv": "^0",
+        "fs-promise": "^2",
         "gulp-cucumber": "^0",
         "gulp-eslint": "^4",
-        "run-sequence": "^2.2.0"
+        "run-sequence": "^2"
     }
 }
