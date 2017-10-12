@@ -220,6 +220,7 @@ Apickli.prototype.addHttpBasicAuthorizationHeader = function(username, password)
     username = this.replaceVariables(username);
     password = this.replaceVariables(password);
     const b64EncodedValue = base64Encode(username + ':' + password);
+    this.removeRequestHeader('Authorization');
     this.addRequestHeader('Authorization', 'Basic ' + b64EncodedValue);
 };
 
@@ -319,6 +320,7 @@ Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
 
 Apickli.prototype.setBearerToken = function() {
     if (accessToken) {
+      this.removeRequestHeader('Authorization');
       return this.addRequestHeader('Authorization', 'Bearer ' + accessToken);
     } else {
       return false;
