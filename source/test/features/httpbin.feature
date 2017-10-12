@@ -290,3 +290,9 @@ Feature:
     When I POST to /post
     Then response code should be 200
     And response body path $.data should be a=a&b=b&c=c
+
+  Scenario: should override the authorization header correctly
+        Given I set Authorization header to token1
+        And I have basic authentication credentials user1 and password1
+        When I GET /get
+        Then response body path $.headers.Authorization should be ^Basic dXNlcjE6cGFzc3dvcmQx$
