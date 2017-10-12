@@ -237,6 +237,7 @@ GIVEN:
 	I pipe contents of file (.*) to body
 	I have basic authentication credentials (.*) and (.*)
 	I set bearer token
+	I have (.+) client TLS configuration
 	I set query parameters to (data table with headers |parameter|value|)
 	I set headers to (data table with headers |name|value|)
     	I set form parameters to (data table with headers |name|value|)
@@ -288,6 +289,31 @@ It is possible to use Scenario Variables in a Feature file, that will have value
 By default, backticks are use to indicate a variable in a feature file. When instantiating Apickli, a different character can be passed as a parameter. In order to follow BDD best practices, global variables should not be used in the way. Each Scenario should be independent, and as such if you would like to define configurable variables it should be done using the Before hook:
 
 See [source/test/features/injecting-variables.feature](source/test/features/injecting-variables.feature) for examples.
+
+## Client Authentication
+
+In order to make a request to a server that is protected by Mutual TLS, you must specify your client TLS configuration. This can be done when initializing Apickli as shown below.
+
+``` shell
+defineSupportCode(function({Before}) {
+    Before(function() {
+        this.apickli = new apickli.Apickli('http', 'httpbin.org');
+        this.apickli.clientTLSConfig = {
+            valid: {
+                key: './fixtures/client-key.pem',
+                cert: './fixtures/client-crt.pem',
+                ca: './fixtures/ca-crt.pem',
+            },
+        };
+    });
+});
+```
+
+This configuration can then be referenced using the following step definitions.
+
+``` shell
+Given I have valid client TLS configuration
+```
 
 ## Contributing
 
