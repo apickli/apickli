@@ -83,6 +83,7 @@ function Apickli(scheme, domain, fixturesDirectory, variableChar) {
     this.fixturesDirectory = (fixturesDirectory ? fixturesDirectory : '');
     this.queryParameters = {};
     this.formParameters = {};
+    this.predefinedOptions = {};
     this.clientTLSConfig = {};
     this.selectedClientTLSConfig = '';
     this.variableChar = (variableChar ? variableChar : '`');
@@ -443,7 +444,7 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
 
 Apickli.prototype.sendRequest = function(method, resource, callback) {
     const self = this;
-    const options = {};
+    const options = this.predefinedOptions || {};
     options.url = this.domain + resource;
     options.method = method;
     options.headers = this.headers;
