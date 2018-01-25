@@ -240,7 +240,7 @@ GIVEN:
 	I have (.+) client TLS configuration
 	I set query parameters to (data table with headers |parameter|value|)
 	I set headers to (data table with headers |name|value|)
-    	I set form parameters to (data table with headers |name|value|)
+    	I set form parameters to (data table with headers |parameter|value|)
 
 WHEN:
 	I GET $resource
