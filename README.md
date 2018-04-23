@@ -248,6 +248,8 @@ WHEN:
 	I PUT $resource
 	I DELETE $resource
 	I PATCH $resource
+    I TRACE $resource
+    I request HEAD for $resource
 	I request OPTIONS for $resource
 
 THEN:
