@@ -2,11 +2,10 @@
 
 'use strict';
 
-const {defineSupportCode} = require('cucumber');
+const { Given } = require('cucumber');
 
-defineSupportCode(function({Given, When, Then}) {
-    Given(/^I use the mock target$/, function(callback) {
-        this.apickli.domain = 'https://localhost';
-        callback();
-    });
+Given(/^I use the mock target$/, function(callback) {
+    this.apickli.domain = 'https://localhost';
+    callback();
 });
+

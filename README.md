@@ -87,13 +87,11 @@ Now we need a support code to implement cucumber hooks and initialize apickli. A
 'use strict';
 
 const apickli = require('apickli');
-const {defineSupportCode} = require('cucumber');
+const { Begin } = require('cucumber');
 
-defineSupportCode(function({Before}) {
-    Before(function() {
-        this.apickli = new apickli.Apickli('http', 'httpbin.org');
-        this.apickli.addRequestHeader('Cache-Control', 'no-cache');
-    });
+Before(function() {
+	this.apickli = new apickli.Apickli('http', 'httpbin.org');
+	this.apickli.addRequestHeader('Cache-Control', 'no-cache');
 });
 ```
 
@@ -109,11 +107,19 @@ $ cucumber-js features/myapi.feature
 ```
 
 ## Step timeout
-Cucumber.js default step timeout is 5000ms. Add the following to features/support/init.js in order to change it:
+Cucumber.js default step timeout is 5000ms. In order to change it, modify the file features/support/init so it looks as follows:
 
 ```javascript
-defineSupportCode(function({setDefaultTimeout}) {
-    setDefaultTimeout(60 * 1000); // this is in ms
+'use strict';
+
+const apickli = require('apickli');
+const { Begin, setDefaultTimeout } = require('cucumber');
+
+setDefaultTimeout(60 * 1000); // this is in ms
+
+Before(function() {
+	this.apickli = new apickli.Apickli('http', 'httpbin.org');
+	this.apickli.addRequestHeader('Cache-Control', 'no-cache');
 });
 ```
 
@@ -295,17 +301,15 @@ See [source/test/features/injecting-variables.feature](source/test/features/inje
 In order to make a request to a server that is protected by Mutual TLS, you must specify your client TLS configuration. This can be done when initializing Apickli as shown below.
 
 ``` shell
-defineSupportCode(function({Before}) {
-    Before(function() {
-        this.apickli = new apickli.Apickli('http', 'httpbin.org');
-        this.apickli.clientTLSConfig = {
-            valid: {
-                key: './fixtures/client-key.pem',
-                cert: './fixtures/client-crt.pem',
-                ca: './fixtures/ca-crt.pem',
-            },
-        };
-    });
+Before(function() {
+	this.apickli = new apickli.Apickli('http', 'httpbin.org');
+	this.apickli.clientTLSConfig = {
+		valid: {
+			key: './fixtures/client-key.pem',
+			cert: './fixtures/client-crt.pem',
+			ca: './fixtures/ca-crt.pem',
+		},
+	};
 });
 ```
 
