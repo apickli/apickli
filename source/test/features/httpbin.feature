@@ -125,8 +125,8 @@ Feature:
 
   Scenario: setting header value as variable
     When I GET /get
-    Then I store the value of response header Server as agent in scenario scope
-    And value of scenario variable agent should be meinheld/0.6.1
+    Then I store the value of response header Content-Type as responseContentType in scenario scope
+    And value of scenario variable responseContentType should be application/json
 
   Scenario: setting body path as variable (xml)
     When I GET /xml
