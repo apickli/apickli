@@ -26,8 +26,9 @@
         "xpath.js": "^1"
     },
     "devDependencies": {
-        "cucumber": "^3",
+
         "cucumber-html-reporter": "^3.0.4",
+        "cucumber": "^4",
         "eslint": "^4",
         "eslint-config-google": "^0",
         "fs-promise": "^2.0.3",
