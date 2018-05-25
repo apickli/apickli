@@ -26,7 +26,7 @@
         "xpath.js": "^1"
     },
     "devDependencies": {
-        "cucumber": "^3",
+        "cucumber": "^4",
         "eslint": "^4",
         "eslint-config-google": "^0",
         "gulp": "^3",
