@@ -29,7 +29,7 @@
         "cucumber": "^4",
         "eslint": "^4",
         "eslint-config-google": "^0",
-        "gulp": "^3",
+        "gulp": "^4",
         "gulp-cucumber": "^0",
         "gulp-eslint": "^4"
     }
