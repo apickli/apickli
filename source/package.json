@@ -1,6 +1,6 @@
 {
     "name": "apickli",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "Collection of utility functions and a gherkin framework for REST API integration testing based on cucumber.js",
     "main": "apickli.js",
     "readme": "README.md",
