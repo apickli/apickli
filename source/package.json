@@ -1,6 +1,6 @@
 {
     "name": "apickli",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "Collection of utility functions and a gherkin framework for REST API integration testing based on cucumber.js",
     "main": "apickli.js",
     "readme": "README.md",
@@ -32,7 +32,7 @@
         "eslint": "^4",
         "eslint-config-google": "^0",
         "fs-promise": "^2.0.3",
-        "gulp": "^3",
+        "gulp": "^4",
         "gulp-cucumber": "^0",
         "gulp-eslint": "^4",
         "run-sequence": "^2.2.0"
