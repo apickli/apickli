@@ -39,6 +39,17 @@ Given(/^I set (.*) header to (.*)$/, function(headerName, headerValue, callback)
     callback();
 });
 
+Given(/^I remove (.*) header$/, function(headerName, callback) {
+    this.apickli.removeRequestHeader(headerName);
+    callback();
+});
+
+Given(/^I reset (.*) header to (.*)$/, function(headerName, headerValue, callback) {
+    this.apickli.removeRequestHeader(headerName);
+    this.apickli.addRequestHeader(headerName, headerValue);
+    callback();
+});
+
 Given(/^I set cookie to (.*)$/, function(cookie, callback) {
     this.apickli.addCookie(cookie);
     callback();
