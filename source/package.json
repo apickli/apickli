@@ -27,6 +27,7 @@
     },
     "devDependencies": {
         "cucumber": "^4",
+        "cucumber-html-reporter": "^4.0.4",
         "eslint": "^4",
         "eslint-config-google": "^0",
         "gulp": "^4",
