@@ -2,20 +2,21 @@ const gulp = require('gulp');
 const cucumber = require('gulp-cucumber');
 const eslint = require('gulp-eslint');
 const reporter = require('cucumber-html-reporter');
-const fs = require('fs-promise');
-const run = require('run-sequence');
+const fs = require('fs-extra');
+const run = require('gulp4-run-sequence');
 const argv = require('argv').option({name: 'report', type: 'string'}).run();
 
-gulp.task('test', () => {
+gulp.task('test', (done) => {
     const tasks = argv.options.report ? ['clean', 'cucumber', 'report'] : ['cucumber'];
-    run(...tasks);
+    run(tasks);
+    done();
 });
 
 gulp.task('clean', function(done) {
     return fs.emptyDir('reports');
 });
 
-gulp.task('report', function() {
+gulp.task('report', function(done) {
     const reportOptions = {
         theme: 'bootstrap',
         jsonFile: 'reports/reports.json',
@@ -25,6 +26,7 @@ gulp.task('report', function() {
     };
 
     reporter.generate(reportOptions);
+    done();
 });
 
 gulp.task('cucumber', function() {
