@@ -35,9 +35,12 @@ gulp.task('cucumber', function() {
         'steps': 'test/features/step_definitions/*.js',
         'support': 'test/features/support/init.js',
         'tags': '@core',
-        'format': 'json:reports/reports.json',
         'emitErrors': false,
     };
+
+    if (argv.options.report) {
+        options.format = 'json:reports/reports.json';
+    }
 
     return gulp.src('test/features/*')
         .pipe(cucumber(options));
