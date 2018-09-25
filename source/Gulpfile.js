@@ -13,7 +13,8 @@ gulp.task('test', (done) => {
 });
 
 gulp.task('clean', function(done) {
-    return fs.emptyDir('reports');
+    return fs.ensureDir('reports')
+            .then(fs.emptyDir('reports'));
 });
 
 gulp.task('report', function(done) {
