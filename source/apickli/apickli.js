@@ -14,7 +14,7 @@ const globalVariables = {};
 const _xmlAttributeNodeType = 2;
 
 const base64Encode = function(str) {
-    return new Buffer(str).toString('base64');
+    return Buffer.from(str).toString('base64');
 };
 
 const getContentType = function(content) {
