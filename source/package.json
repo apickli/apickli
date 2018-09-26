@@ -30,7 +30,11 @@
         "eslint": "^4",
         "eslint-config-google": "^0",
         "gulp": "^4",
+        "cucumber-html-reporter": "^4.0.4",
+        "fs-extra": "^7.0.0",
+        "argv": "^0",
         "gulp-cucumber": "^0",
-        "gulp-eslint": "^4"
+        "gulp-eslint": "^4",
+        "gulp4-run-sequence": "^0.0.3"
     }
 }
