@@ -27,14 +27,14 @@
     },
     "devDependencies": {
         "cucumber": "^5",
-        "eslint": "^4",
+        "eslint": "^5",
         "eslint-config-google": "^0",
         "gulp": "^4",
-        "cucumber-html-reporter": "^4.0.4",
-        "fs-extra": "^7.0.0",
+        "cucumber-html-reporter": "^4",
+        "fs-extra": "^7",
         "argv": "^0",
         "gulp-cucumber": "^0",
-        "gulp-eslint": "^4",
-        "gulp4-run-sequence": "^0.0.3"
+        "gulp-eslint": "^5",
+        "gulp4-run-sequence": "^0"
     }
 }
