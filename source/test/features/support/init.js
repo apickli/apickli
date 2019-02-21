@@ -6,15 +6,15 @@ const apickli = require('../../../apickli/apickli.js');
 const {Before, setDefaultTimeout} = require('cucumber');
 
 Before(function() {
-    this.apickli = new apickli.Apickli('http', 'httpbin.org');
-    this.apickli.addRequestHeader('Cache-Control', 'no-cache');
-    this.apickli.clientTLSConfig = {
-        valid: {
-            key: './test/mock_target/certs/client-key.pem',
-            cert: './test/mock_target/certs/client-crt.pem',
-            ca: './test/mock_target/certs/ca-crt.pem',
-        },
-    };
+  this.apickli = new apickli.Apickli('http', 'httpbin.org');
+  this.apickli.addRequestHeader('Cache-Control', 'no-cache');
+  this.apickli.clientTLSConfig = {
+    valid: {
+      key: './test/mock_target/certs/client-key.pem',
+      cert: './test/mock_target/certs/client-crt.pem',
+      ca: './test/mock_target/certs/ca-crt.pem',
+    },
+  };
 });
 
 setDefaultTimeout(60 * 1000);
