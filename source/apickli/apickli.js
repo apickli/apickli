@@ -341,15 +341,14 @@ Apickli.prototype.storeValueOfHeaderInScenarioScope = function(header, variableN
 Apickli.prototype.storeValueOfCookieInScenarioScope = function(cookieIndex, header, variableName) {
   header = this.replaceVariables(header); // only replace header. replacing variable name wouldn't make sense
   const value = this.getResponseObject().headers[header.toLowerCase()];
-  var cookieNameValue;
-  for (var index = 0; index < value.length; index++) {
-      cookieNameValue = value[index];
-      const keyPair = cookieNameValue.split('=');
-      const cookieName = keyPair[0].trim();
-      if(cookieName.toLowerCase() == cookieIndex)
-      {
-          break;
-      }
+  let cookieNameValue;
+  for (let index = 0; index < value.length; index++) {
+    cookieNameValue = value[index];
+    const keyPair = cookieNameValue.split('=');
+    const cookieName = keyPair[0].trim();
+    if (cookieName.toLowerCase() == cookieIndex) {
+      break;
+    }
   }
   this.scenarioVariables[variableName] = cookieNameValue;
 };
@@ -357,15 +356,14 @@ Apickli.prototype.storeValueOfCookieInScenarioScope = function(cookieIndex, head
 Apickli.prototype.storeValueOfCookieInGlobalScope = function(cookieIndex, header, variableName) {
   header = this.replaceVariables(header); // only replace header. replacing variable name wouldn't make sense
   const value = this.getResponseObject().headers[header.toLowerCase()];
-  var cookieNameValue;
-  for (var index = 0; index < value.length; index++) {
-      cookieNameValue = value[index];
-      const keyPair = cookieNameValue.split('=');
-      const cookieName = keyPair[0].trim();
-      if(cookieName.toLowerCase() == cookieIndex)
-      {
-          break;
-      }
+  let cookieNameValue;
+  for (let index = 0; index < value.length; index++) {
+    cookieNameValue = value[index];
+    const keyPair = cookieNameValue.split('=');
+    const cookieName = keyPair[0].trim();
+    if (cookieName.toLowerCase() == cookieIndex) {
+      break;
+    }
   }
   this.setGlobalVariable(variableName, cookieNameValue);
 };
