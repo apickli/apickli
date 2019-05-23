@@ -14,6 +14,14 @@ Feature:
 		When I GET /get?foo=`value1`
         Then response body path $.args.foo should be bar
 
+	@jarl
+	Scenario: using long named variables
+        Given I store the raw value A as variableWithAVeryVeryVeryLongNameAndAShortValueA in scenario scope
+        And I store the raw value B as v2 in scenario scope
+		When I GET /get?var1=`variableWithAVeryVeryVeryLongNameAndAShortValueA`&var2=`v2`
+        Then response body path $.args.var1 should be A
+        And response body path $.args.var2 should be B
+
 #test injection logic with other step definitions
 
     Scenario: Setting headers with variables

@@ -436,7 +436,7 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
       const variableValue = scope && scope.hasOwnProperty(variableName) ? scope[variableName] : globalVariables[variableName];
 
       resource = resource.substr(0, startIndex) + variableValue + resource.substr(endIndex + 1);
-      resource = this.replaceVariables(resource, scope, variableChar, endIndex + 1);
+      resource = this.replaceVariables(resource, scope, variableChar);
     }
   }
   return resource;
