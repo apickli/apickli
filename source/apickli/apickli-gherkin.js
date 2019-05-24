@@ -255,8 +255,18 @@ Then(/^I store the value of body path (.*) as (.*) in global scope$/, function(p
   callback();
 });
 
+Then(/^I store the value of cookie (.*) in response header (.*) as (.*) in global scope$/, function(cookieIndex, name, variable, callback) {
+  this.apickli.storeValueOfCookieInGlobalScope(cookieIndex, name, variable);
+  callback();
+});
+
 Then(/^I store the value of response header (.*) as (.*) in scenario scope$/, function(name, variable, callback) {
   this.apickli.storeValueOfHeaderInScenarioScope(name, variable);
+  callback();
+});
+
+Then(/^I store the value of cookie (.*) in response header (.*) as (.*) in scenario scope$/, function(cookieIndex, name, variable, callback) {
+  this.apickli.storeValueOfCookieInScenarioScope(cookieIndex, name, variable);
   callback();
 });
 
