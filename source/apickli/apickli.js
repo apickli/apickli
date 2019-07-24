@@ -108,7 +108,7 @@ Apickli.prototype.removeRequestHeader = function(name) {
 };
 
 Apickli.prototype.setClientTLSConfiguration = function(configurationName, callback) {
-  if (!this.clientTLSConfig.hasOwnProperty(configurationName)) {
+  if (!Object.prototype.hasOwnProperty.call(this.clientTLSConfig, configurationName)) {
     callback('Client TLS Configuration ' + configurationName + ' does not exist.');
   } else {
     this.selectedClientTLSConfig = configurationName;
@@ -433,7 +433,7 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
     const endIndex = resource.indexOf(variableChar, startIndex + 1);
     if (endIndex > startIndex) {
       const variableName = resource.substr(startIndex + 1, endIndex - startIndex - 1);
-      const variableValue = scope && scope.hasOwnProperty(variableName) ? scope[variableName] : globalVariables[variableName];
+      const variableValue = scope && Object.prototype.hasOwnProperty.call(scope, variableName) ? scope[variableName] : globalVariables[variableName];
 
       resource = resource.substr(0, startIndex) + variableValue + resource.substr(endIndex + 1);
       resource = this.replaceVariables(resource, scope, variableChar);
