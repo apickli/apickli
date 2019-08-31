@@ -58,6 +58,13 @@ Feature:
     When I DELETE /delete
     Then response body should contain hello-world
 
+  Scenario: Firing two posts in same scenario
+    Given I set body to {"key":"hello-world"}
+    When I POST to /post
+    And I clear the request
+    And I POST to /post
+    Then response body should not contain hello-world
+
   Scenario: Setting body payload from file
     Given I pipe contents of file ./test/features/fixtures/requestBody.xml to body
     When I POST to /post

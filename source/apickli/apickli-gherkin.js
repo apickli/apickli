@@ -272,3 +272,9 @@ Then(/^value of scenario variable (.*) should be (.*)$/, function(variableName, 
     callback(new Error('value of variable ' + variableName + ' isn\'t equal to ' + variableValue));
   }
 });
+
+When(/^I clear the request$/, function(callback) {
+  this.apickli.httpRequestOptions = {};
+  this.apickli.requestBody = '';
+  callback();
+});
