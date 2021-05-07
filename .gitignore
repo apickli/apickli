@@ -36,3 +36,4 @@ npm
 
 # cucumber test reports
 reports
+nohup.out
