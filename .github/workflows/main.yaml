@@ -23,7 +23,8 @@ jobs:
           cd source
           npm i
           cd test/mock_target
-          node app.js
+          sudo node app.js
+          sleep 5
           cd ../..
           node_modules/.bin/gulp lint
           node_modules/.bin/gulp test
