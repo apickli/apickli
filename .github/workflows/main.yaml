@@ -1,0 +1,29 @@
+# GitHub workflow to automate apickli builds
+name: apickli-ci
+
+on:
+  # push or pull request events to the the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # allow you to run this workflow manually on GitHub from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # run all tests
+      - name: test
+        run: |
+          cd source
+          npm i
+          cd test/mock_target
+          node app.js
+          cd ../..
+          node_modules/.bin/gulp lint
+          node_modules/.bin/gulp test
