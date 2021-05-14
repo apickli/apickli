@@ -1,0 +1,35 @@
+# GitHub workflow to automate apickli builds
+name: apickli-ci
+
+on:
+  # push or pull request events to the the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # allow to run this workflow manually on GitHub from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: setup mock server for mutual TLS tests
+        working-directory: source/test/mock_target
+        run: |
+          nohup node app.js &
+          sleep 5
+          echo "done"
+
+      - name: run all tests
+        working-directory: source
+        run: |
+          npm install
+          node_modules/.bin/gulp lint
+          node_modules/.bin/gulp test
+          node_modules/.bin/cucumber-js test/ --tags @core
