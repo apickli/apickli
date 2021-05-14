@@ -16,8 +16,8 @@
     ],
     "license": "MIT",
     "dependencies": {
-        "jsonpath-plus": "^5.0.7",
         "is-my-json-valid": "^2",
+        "jsonpath-plus": "^5.0.7",
         "path": "^0",
         "prettyjson": "^1",
         "request": "^2",
@@ -26,13 +26,13 @@
         "xpath.js": "^1"
     },
     "devDependencies": {
+        "argv": "^0",
         "cucumber": "^5",
+        "cucumber-html-reporter": "^5",
         "eslint": "^6",
         "eslint-config-google": "^0",
-        "gulp": "^4.0.2",
-        "cucumber-html-reporter": "^5",
         "fs-extra": "^8",
-        "argv": "^0",
+        "gulp": "^4.0.2",
         "gulp-cucumber": "^0",
         "gulp-eslint": "^6",
         "gulp4-run-sequence": "^0"

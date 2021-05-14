@@ -15,7 +15,7 @@ jobs:
   test:
     timeout-minutes: 5
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v2
 
@@ -30,5 +30,7 @@ jobs:
         working-directory: source
         run: |
           npm install
+          npm audit
           node_modules/.bin/gulp lint
           node_modules/.bin/gulp test
+          node_modules/.bin/cucumber-js test/ --tags @core
