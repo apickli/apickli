@@ -1,9 +1,6 @@
 # apickli - REST API integration testing framework with cucumber.js
 
 ![NPM version](https://badge.fury.io/js/apickli.svg)
-[![Build Status](https://travis-ci.org/apickli/apickli.svg?branch=master)](https://travis-ci.org/apickli/apickli)
-[![NPM](https://nodei.co/npm/apickli.png)](https://nodei.co/npm/apickli/)
-
 
 **Apickli** is a REST API integration testing framework based on cucumber.js.
 
