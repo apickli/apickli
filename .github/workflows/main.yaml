@@ -30,7 +30,6 @@ jobs:
         working-directory: source
         run: |
           npm install
-          npm audit
           node_modules/.bin/gulp lint
           node_modules/.bin/gulp test
           node_modules/.bin/cucumber-js test/ --tags @core
