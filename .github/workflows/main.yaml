@@ -1,5 +1,5 @@
 # GitHub workflow to automate apickli builds
-name: apickli-ci
+name: apickli tests
 
 on:
   # push or pull request events to the the master branch
