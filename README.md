@@ -74,7 +74,7 @@ We now need the corresponding step definitions that implement the steps in our s
 The simplest way to adopt these expressions is to create a file named apickli-gherkin.js in features/step_definitions and import the apickli/gherkin.js module.
 
 Add the following to test/features/step_definitions/apickli-gherkin.js
-```javascript
+```js
 module.exports = require('apickli/apickli-gherkin');
 ```
 
@@ -85,7 +85,7 @@ Now we need a support code to implement cucumber hooks and initialize apickli. A
 'use strict';
 
 const apickli = require('apickli');
-const {Before} = require('cucumber');
+const {Before} = require('@cucumber/cucumber');
 
 Before(function() {
     this.apickli = new apickli.Apickli('http', 'httpbin.org');
@@ -107,119 +107,8 @@ $ cucumber-js features/myapi.feature
 ## Step timeout
 Cucumber.js default step timeout is 5000ms. Add the following to features/support/init.js in order to change it:
 
-```javascript
-defineSupportCode(function({setDefaultTimeout}) {
-    setDefaultTimeout(60 * 1000); // this is in ms
-});
-```
-
-## Grunt integration
-
-You can also use [Grunt](http://gruntjs.com/) task runner to run the tests.
-
-### 1. Start by adding a Gruntfile.js to the project root:
-
 ```js
-'use strict';
-
-module.exports = function(grunt) {
-	grunt.initConfig({
-		cucumberjs: {
-			src: 'features',
-			options: {
-				format: 'pretty',
-				steps: 'features/step_definitions'
-			}
-		}
-	});
-
-	grunt.loadNpmTasks('grunt-cucumber');
-	grunt.registerTask('tests', ['cucumberjs']);
-}
-```
-
-### 2. Add grunt and grunt-cucumber dependencies to package.json:
-
-```json
-	...
-	"dependencies": {
-		"apickli": "latest",
-		"grunt": "latest",
-		"grunt-cucumber": "latest"
-	}
-	...
-```
-
-### 3. Install the new dependencies:
-
-```sh
-npm install
-```
-
-### 4. Now you can run the same tests using grunt:
-
-```sh
-$ grunt tests
-Running "cucumberjs:src" (cucumberjs) task
-
-Feature:
-  Httpbin.org exposes various resources for HTTP request testing
-  As Httpbin client I want to verify that all API resources are working as they should
-
-
-  Scenario: Setting headers in GET request                         # features/httpbin.feature:5
-    Given I set User-Agent header to apickli                       # features/httpbin.feature:6
-    When I GET /get                                                # features/httpbin.feature:7
-    Then response body path $.headers.User-Agent should be apickli # features/httpbin.feature:8
-
-
-1 scenario (1 passed)
-3 steps (3 passed)
-
-Done, without errors.
-```
-## Gulp Integration
-You can also use [Gulp](http://gulpjs.com/) to run the tests.
-
-### 1. Start by adding a Gulpfile.js to the project root:
-
-```js
-var gulp = require('gulp');
-var cucumber = require('gulp-cucumber');
-
-gulp.task('test', function() {
-    return gulp.src('features/*')
-			.pipe(cucumber({
-				'steps': 'features/step_definitions/*.js',
-				'format': 'pretty'
-			}));
-});
-```
-### 2. Add gulp and gulp-cucumber dependencies to package.json:
-
-```json
-...
-	"gulp": "latest",
-	"gulp-cucumber": "latest"
-...
-```
-### 3. Install local dependencies
-
-```sh
-$ npm install
-```
-
-### 4. Install gulp globally
-
-```sh
-$ npm install -g gulp
-```
-
-See [https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md).
-
-### 5. Run tests using gulp
-```sh
-$ gulp test
+setDefaultTimeout(60 * 1000); // this is in ms
 ```
 
 ## Gherkin Expressions
@@ -290,18 +179,16 @@ See [source/test/features/injecting-variables.feature](source/test/features/inje
 
 In order to make a request to a server that is protected by Mutual TLS, you must specify your client TLS configuration. This can be done when initializing Apickli as shown below.
 
-``` shell
-defineSupportCode(function({Before}) {
-    Before(function() {
-        this.apickli = new apickli.Apickli('http', 'httpbin.org');
-        this.apickli.clientTLSConfig = {
-            valid: {
-                key: './fixtures/client-key.pem',
-                cert: './fixtures/client-crt.pem',
-                ca: './fixtures/ca-crt.pem',
-            },
-        };
-    });
+```js
+Before(function() {
+		this.apickli = new apickli.Apickli('http', 'httpbin.org');
+		this.apickli.clientTLSConfig = {
+				valid: {
+						key: './fixtures/client-key.pem',
+						cert: './fixtures/client-crt.pem',
+						ca: './fixtures/ca-crt.pem',
+				},
+		};
 });
 ```
 

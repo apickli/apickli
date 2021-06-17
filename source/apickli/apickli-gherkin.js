@@ -3,7 +3,7 @@
 'use strict';
 
 const prettyJson = require('prettyjson');
-const {Before, Given, When, Then} = require('cucumber');
+const {Before, Given, When, Then} = require('@cucumber/cucumber');
 
 const stepContext = {};
 
