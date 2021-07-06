@@ -10,7 +10,6 @@
     "rules": {
         "require-jsdoc": "off",
         "max-len": "off",
-        "valid-jsdoc": "off",
-        "new-cap":"off"
+        "valid-jsdoc": "off"
     }
 }
