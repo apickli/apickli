@@ -1,6 +1,6 @@
 {
     "name": "apickli",
-    "version": "2.3.4",
+    "version": "3.0.0",
     "description": "Collection of utility functions and a gherkin framework for REST API integration testing based on cucumber.js",
     "main": "apickli.js",
     "readme": "README.md",
@@ -15,26 +15,24 @@
         "api"
     ],
     "license": "MIT",
+    "scripts": {
+        "lint": "npx eslint .",
+        "test": "nohup node test/mock_target/app.js & npx cucumber-js test/ --tags @core",
+        "ci": "npm run lint && npm run test"
+    },
     "dependencies": {
         "is-my-json-valid": "^2",
-        "jsonpath-plus": "^5.0.7",
+        "jsonpath-plus": "^5",
         "path": "^0",
         "prettyjson": "^1",
         "request": "^2",
         "swagger-tools": "^0",
-        "xmldom": "^0.6.0",
+        "xmldom": "^0",
         "xpath.js": "^1"
     },
     "devDependencies": {
-        "argv": "^0",
-        "cucumber": "^5",
-        "cucumber-html-reporter": "^5",
-        "eslint": "^6",
-        "eslint-config-google": "^0",
-        "fs-extra": "^8",
-        "gulp": "^4.0.2",
-        "gulp-cucumber": "^0",
-        "gulp-eslint": "^6",
-        "gulp4-run-sequence": "^0"
+        "@cucumber/cucumber": "^7",
+        "eslint": "^7",
+        "eslint-config-google": "^0"
     }
 }

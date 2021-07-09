@@ -1,7 +1,7 @@
 'use strict';
 
 const request = require('request');
-const {JSONPath} = require('jsonpath-plus');
+const {JSONPath: jsonPath} = require('jsonpath-plus');
 const select = require('xpath.js');
 const Dom = require('xmldom').DOMParser;
 const fs = require('fs');
@@ -33,7 +33,7 @@ const getContentType = function(content) {
 
 const evaluateJsonPath = function(path, content) {
   const contentJson = JSON.parse(content);
-  const evalResult = JSONPath(path, contentJson);
+  const evalResult = jsonPath(path, contentJson);
   return (evalResult.length > 0) ? evalResult[0] : null;
 };
 
