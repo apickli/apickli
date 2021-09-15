@@ -3,7 +3,7 @@
 const request = require('request');
 const {JSONPath: jsonPath} = require('jsonpath-plus');
 const select = require('xpath.js');
-const Dom = require('xmldom').DOMParser;
+const Dom = require('@xmldom/xmldom').DOMParser;
 const fs = require('fs');
 const path = require('path');
 const jsonSchemaValidator = require('is-my-json-valid');
