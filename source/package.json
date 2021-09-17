@@ -18,21 +18,21 @@
     "scripts": {
         "lint": "npx eslint .",
         "test": "nohup node test/mock_target/app.js & npx cucumber-js test/ --tags @core",
-        "ci": "npm run lint && npm run test"
+        "ci": "npm i && npm run lint && npm run test"
     },
     "dependencies": {
-        "is-my-json-valid": "^2",
-        "jsonpath-plus": "^5",
-        "path": "^0",
-        "prettyjson": "^1",
-        "request": "^2",
-        "swagger-tools": "^0",
-        "xmldom": "^0",
-        "xpath.js": "^1"
+        "@xmldom/xmldom": "0.x",
+        "is-my-json-valid": "2.x",
+        "jsonpath-plus": "6.x",
+        "path": "0.x",
+        "prettyjson": "1.x",
+        "request": "2.x",
+        "swagger-tools": "0.x",
+        "xpath.js": "1.x"
     },
     "devDependencies": {
-        "@cucumber/cucumber": "^7",
-        "eslint": "^7",
-        "eslint-config-google": "^0"
+        "@cucumber/cucumber": "7.x",
+        "eslint": "7.x",
+        "eslint-config-google": "0.x"
     }
 }
