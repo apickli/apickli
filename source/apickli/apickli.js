@@ -424,11 +424,15 @@ exports.Apickli = Apickli;
  * Credits: Based on contribution by PascalLeMerrer
  */
 Apickli.prototype.replaceVariables = function(resource, scope, variableChar, offset) {
+  // handling of nullish values for resource
+  // as cucumber-js passes undefined when a value in an example table is left empty
+  // see issue #184
+  if (!resource) return resource;
+
   scope = scope || this.scenarioVariables;
   variableChar = variableChar || this.variableChar;
   offset = offset || 0;
 
-  if (!resource) return resource;
 
   const startIndex = resource.indexOf(variableChar, offset);
   if (startIndex >= 0) {
