@@ -433,7 +433,6 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
   variableChar = variableChar || this.variableChar;
   offset = offset || 0;
 
-
   const startIndex = resource.indexOf(variableChar, offset);
   if (startIndex >= 0) {
     const endIndex = resource.indexOf(variableChar, startIndex + 1);
