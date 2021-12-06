@@ -256,7 +256,7 @@ Feature:
     When I POST to /post
     Then response body path $.form.argument1 should be 1
     And response body path $.form.argument2 should be test
-  
+
   Scenario: checking values of form parameter passed as datatable in put request
     Given I set form parameters to
       | parameter | value |
@@ -265,7 +265,7 @@ Feature:
     When I PUT /put
     Then response body path $.form.argument1 should be 1
     And response body path $.form.argument2 should be test
-  
+
   Scenario: checking values of form parameter passed as datatable in delete request
     Given I set form parameters to
       | parameter | value |
@@ -274,7 +274,7 @@ Feature:
     When I DELETE /delete
     Then response body path $.form.argument1 should be 1
     And response body path $.form.argument2 should be test
-    
+
   Scenario: checking values of form parameter passed as datatable in patch request
     Given I set form parameters to
       | parameter | value |
@@ -292,7 +292,30 @@ Feature:
     And response body path $.data should be a=a&b=b&c=c
 
   Scenario: should override the authorization header correctly
-        Given I set Authorization header to token1
-        And I have basic authentication credentials user1 and password1
-        When I GET /get
-        Then response body path $.headers.Authorization should be ^Basic dXNlcjE6cGFzc3dvcmQx$
+    Given I set Authorization header to token1
+    And I have basic authentication credentials user1 and password1
+    When I GET /get
+    Then response body path $.headers.Authorization should be ^Basic dXNlcjE6cGFzc3dvcmQx$
+
+  Scenario: should handle nullish values in form parameters
+    Given I set form parameters to
+      | parameter | value |
+      | argument1 |       |
+    When I PUT /put
+    Then response body path $.form.argument1 should be ^$
+
+  Scenario: should handle nullish values in request headers as data table
+    Given I set headers to
+      | name     | value |
+      | Endpoint |       |
+    When I GET /get
+    Then response body path $.headers.Endpoint should be ^$
+
+  Scenario Outline: should handle nullish values in request headers as example table
+    Given I set Endpoint header to <endpoint>
+    When I GET /get
+    Then response body path $.headers.Endpoint should be ^$
+
+    Examples:
+      | endpoint |
+      |          |
