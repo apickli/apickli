@@ -296,3 +296,9 @@ Feature:
         And I have basic authentication credentials user1 and password1
         When I GET /get
         Then response body path $.headers.Authorization should be ^Basic dXNlcjE6cGFzc3dvcmQx$
+
+  Scenario: should handle gzip
+    When I GET /gzip
+    Then response code should be 200
+    And response body should be valid json
+    And response body path $.gzipped should be true

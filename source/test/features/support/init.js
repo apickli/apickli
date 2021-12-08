@@ -15,6 +15,9 @@ Before(function() {
       ca: './test/mock_target/certs/ca-crt.pem',
     },
   };
+  this.apickli.httpRequestOptions = {
+    gzip: true,
+  };
 });
 
 setDefaultTimeout(60 * 1000);
