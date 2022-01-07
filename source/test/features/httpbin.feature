@@ -319,3 +319,9 @@ Feature:
     Examples:
       | endpoint |
       |          |
+
+  Scenario: should handle gzip
+    When I GET /gzip
+    Then response code should be 200
+    And response body should be valid json
+    And response body path $.gzipped should be true
