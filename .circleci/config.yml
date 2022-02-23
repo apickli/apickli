@@ -10,7 +10,6 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: cimg/node:15.1
-    working_directory: ~/source
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
@@ -21,6 +20,7 @@ jobs:
           keys:
             - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
       - run:
+          working_directory: ~/source
           name: install packages
           command: npm ci
       - save_cache:
@@ -28,6 +28,7 @@ jobs:
           paths:
             - ~/.npm
       - run:
+          working_directory: ~/source
           name: Run Tests
           command: npm run test
 
