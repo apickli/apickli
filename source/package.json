@@ -22,12 +22,13 @@
     },
     "dependencies": {
         "@xmldom/xmldom": "0.x",
+        "css-select": "^5.1.0",
+        "htmlparser2": "^8.0.1",
         "is-my-json-valid": "2.x",
         "jsonpath-plus": "6.x",
         "path": "0.x",
         "prettyjson": "1.x",
         "request": "2.x",
-        "swagger-tools": "0.x",
         "xpath.js": "1.x"
     },
     "devDependencies": {

@@ -7,7 +7,6 @@ const Dom = require('@xmldom/xmldom').DOMParser;
 const fs = require('fs');
 const path = require('path');
 const jsonSchemaValidator = require('is-my-json-valid');
-const spec = require('swagger-tools').specs.v2;
 
 let accessToken;
 const globalVariables = {};
@@ -387,30 +386,6 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
   });
 };
 
-Apickli.prototype.validateResponseWithSwaggerSpecDefinition = function(definitionName, swaggerSpecFile, callback) {
-  const self = this;
-  swaggerSpecFile = this.replaceVariables(swaggerSpecFile, self.scenarioVariables, self.variableChar);
-
-  fs.readFile(path.join(this.fixturesDirectory, swaggerSpecFile), 'utf8', function(err, swaggerSpecString) {
-    if (err) {
-      callback(err);
-    } else {
-      const swaggerObject = JSON.parse(swaggerSpecString);
-      const responseBody = JSON.parse(self.getResponseObject().body);
-
-      spec.validateModel(swaggerObject, '#/definitions/' + definitionName, responseBody, function(err, result) {
-        if (err) {
-          callback(getAssertionResult(false, null, err, self));
-        } else if (result && result.errors) {
-          callback(getAssertionResult(false, null, result.errors, self));
-        } else {
-          callback(getAssertionResult(true, null, null, self));
-        }
-      });
-    }
-  });
-};
-
 exports.Apickli = Apickli;
 
 /**
@@ -446,6 +421,14 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
   }
   return resource;
 };
+
+/**
+ * Seems like an omission to not have an easy way to inspect the body while doing
+ * test development.
+ */
+Apickli.prototype.printResponseBody() {
+  console.log(this.getResponseObject().body);
+}
 
 Apickli.prototype.sendRequest = function(method, resource, callback) {
   const self = this;

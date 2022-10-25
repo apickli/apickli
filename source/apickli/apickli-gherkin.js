@@ -4,6 +4,9 @@
 
 const prettyJson = require('prettyjson');
 const {Before, Given, When, Then} = require('@cucumber/cucumber');
+const htmlparser = require('htmlparser2');
+const select = require('css-select');
+
 
 const stepContext = {};
 
@@ -145,6 +148,29 @@ When(/^I request OPTIONS for (.*)$/, function(resource, callback) {
     }
 
     callback();
+  });
+});
+
+Then(/^I print the body$/, function() {
+  this.apickli.printResponseBody();
+  return true;
+});
+
+Then(/^html document path (.+) value is stored as (.+) in global scope$/, function(path,varname) {
+  var self=this;
+  return new Promise((res,rej)=>{
+    if( ! self.apickli.parsedhtml ) {
+        self.apickli.parsedhtml = htmlparser.parseDocument(self.apickli.getResponseObject().body);
+    }
+    var selection = select.selectOne(path, self.apickli.parsedhtml);
+    var string;
+    if( selection.attribs['value']) {
+      string = selection.attribs['value']
+    } else {
+      string = selection.data
+    }
+    self.apickli.setGlobalVariable(path,string);
+    res();
   });
 });
 
