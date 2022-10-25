@@ -7,7 +7,8 @@ const Dom = require('@xmldom/xmldom').DOMParser;
 const fs = require('fs');
 const path = require('path');
 const jsonSchemaValidator = require('is-my-json-valid');
-const spec = require('swagger-tools').specs.v2;
+const OpenAPIResponseValidator = require('openapi-response-validator');
+const jsonQuery = require('json-query');
 
 let accessToken;
 const globalVariables = {};
@@ -383,30 +384,6 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
       const validate = jsonSchemaValidator(jsonSchema, {verbose: true});
       const success = validate(responseBody);
       callback(getAssertionResult(success, validate.errors, null, self));
-    }
-  });
-};
-
-Apickli.prototype.validateResponseWithSwaggerSpecDefinition = function(definitionName, swaggerSpecFile, callback) {
-  const self = this;
-  swaggerSpecFile = this.replaceVariables(swaggerSpecFile, self.scenarioVariables, self.variableChar);
-
-  fs.readFile(path.join(this.fixturesDirectory, swaggerSpecFile), 'utf8', function(err, swaggerSpecString) {
-    if (err) {
-      callback(err);
-    } else {
-      const swaggerObject = JSON.parse(swaggerSpecString);
-      const responseBody = JSON.parse(self.getResponseObject().body);
-
-      spec.validateModel(swaggerObject, '#/definitions/' + definitionName, responseBody, function(err, result) {
-        if (err) {
-          callback(getAssertionResult(false, null, err, self));
-        } else if (result && result.errors) {
-          callback(getAssertionResult(false, null, result.errors, self));
-        } else {
-          callback(getAssertionResult(true, null, null, self));
-        }
-      });
     }
   });
 };

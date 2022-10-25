@@ -23,11 +23,12 @@
     "dependencies": {
         "@xmldom/xmldom": "0.x",
         "is-my-json-valid": "2.x",
+        "json-query": "^2.2.2",
         "jsonpath-plus": "6.x",
+        "openapi-response-validator": "^12.0.2",
         "path": "0.x",
         "prettyjson": "1.x",
         "request": "2.x",
-        "swagger-tools": "0.x",
         "xpath.js": "1.x"
     },
     "devDependencies": {
