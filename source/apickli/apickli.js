@@ -422,6 +422,14 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
   return resource;
 };
 
+/**
+ * Seems like an omission to not have an easy way to inspect the body while doing
+ * test development.
+ */
+Apickli.prototype.printResponseBody() {
+  console.log(this.getResponseObject().body);
+}
+
 Apickli.prototype.sendRequest = function(method, resource, callback) {
   const self = this;
   const options = this.httpRequestOptions || {};
