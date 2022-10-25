@@ -7,8 +7,6 @@ const Dom = require('@xmldom/xmldom').DOMParser;
 const fs = require('fs');
 const path = require('path');
 const jsonSchemaValidator = require('is-my-json-valid');
-const OpenAPIResponseValidator = require('openapi-response-validator');
-const jsonQuery = require('json-query');
 
 let accessToken;
 const globalVariables = {};
