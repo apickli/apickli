@@ -32,7 +32,7 @@
     },
     "devDependencies": {
         "@cucumber/cucumber": "11.x",
-        "eslint": "9.x",
+        "eslint": "8.x",
         "eslint-config-google": "0.x"
     }
 }
