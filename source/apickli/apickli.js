@@ -23,7 +23,7 @@ const getContentType = function(content) {
     return 'json';
   } catch (e) {
     try {
-      new Dom().parseFromString(content);
+      new Dom().parseFromString(content, 'text/xml');
       return 'xml';
     } catch (e) {
       return null;
@@ -38,7 +38,7 @@ const evaluateJsonPath = function(path, content) {
 };
 
 const evaluateXPath = function(path, content) {
-  const xmlDocument = new Dom().parseFromString(content);
+  const xmlDocument = new Dom().parseFromString(content, 'text/xml');
   const node = select(xmlDocument, path)[0];
   if (node.nodeType === _xmlAttributeNodeType) {
     return node.value;
