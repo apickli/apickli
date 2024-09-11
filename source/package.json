@@ -23,7 +23,7 @@
     "dependencies": {
         "@xmldom/xmldom": "0.x",
         "is-my-json-valid": "2.x",
-        "jsonpath-plus": "6.x",
+        "jsonpath-plus": "9.x",
         "path": "0.x",
         "prettyjson": "1.x",
         "request": "2.x",
@@ -31,7 +31,7 @@
         "xpath.js": "1.x"
     },
     "devDependencies": {
-        "@cucumber/cucumber": "7.x",
+        "@cucumber/cucumber": "11.x",
         "eslint": "8.x",
         "eslint-config-google": "0.x"
     }
