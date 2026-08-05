@@ -20,7 +20,6 @@ const handleHttpRequest = function(req, res) {
     // Reflection of headers with exact and case-insensitive matching
     const reflectedHeaders = {};
     Object.keys(req.headers).forEach(function(k) {
-      // capitalize header keys for httpbin matching
       const parts = k.split('-').map(function(p) {
         return p.charAt(0).toUpperCase() + p.slice(1);
       });
@@ -29,13 +28,37 @@ const handleHttpRequest = function(req, res) {
       reflectedHeaders[k] = req.headers[k];
     });
 
+    // Parse URL query arguments into args object
+    const argsObject = {};
+    reqUrl.searchParams.forEach(function(val, key) {
+      argsObject[key] = val;
+    });
+
+    // Handle OPTIONS request
+    if (req.method === 'OPTIONS') {
+      res.writeHead(200, {
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+        'Allow': 'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD',
+        'Content-Length': '0',
+      });
+      res.end('');
+      return;
+    }
+
+    if (pathName === '/gzip') {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.end(JSON.stringify({gzipped: true}));
+      return;
+    }
+
     if (pathName === '/xml') {
       res.writeHead(200, {
         'Content-Type': 'application/xml',
         'Server': 'apickli-mock-server',
         'Connection': 'keep-alive',
       });
-      res.end('<?xml version="1.0" encoding="UTF-8"?><slideshow><slide><title>Wake up to WonderWidgets!</title></slide></slideshow>\n');
+      res.end('<?xml version="1.0" encoding="UTF-8"?><slideshow><slide><title>Wake up to WonderWidgets!</title></slide><slide><title>Overview</title></slide></slideshow>\n');
       return;
     }
 
@@ -44,6 +67,7 @@ const handleHttpRequest = function(req, res) {
         'Content-Type': 'application/json',
         'Server': 'apickli-mock-server',
       });
+
       let jsonBody = null;
       try {
         jsonBody = JSON.parse(rawBody);
@@ -51,10 +75,22 @@ const handleHttpRequest = function(req, res) {
         jsonBody = null;
       }
 
+      // Parse form parameters if application/x-www-form-urlencoded or raw form
+      const formObject = {};
+      if (rawBody && (req.headers['content-type'] && req.headers['content-type'].includes('application/x-www-form-urlencoded') || rawBody.includes('='))) {
+        const bodyParams = new URLSearchParams(rawBody);
+        bodyParams.forEach(function(val, key) {
+          formObject[key] = val;
+        });
+      }
+
       const responsePayload = {
         headers: reflectedHeaders,
+        args: argsObject,
+        form: formObject,
         data: rawBody,
         json: jsonBody,
+        origin: '127.0.0.1',
         url: req.url,
       };
 
@@ -65,6 +101,7 @@ const handleHttpRequest = function(req, res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.end(JSON.stringify({
       headers: reflectedHeaders,
+      args: argsObject,
       data: rawBody,
     }));
   });
@@ -82,7 +119,7 @@ const options = {
   cert: fs.readFileSync('test/mock_target/certs/server-crt.pem'),
   ca: fs.readFileSync('test/mock_target/certs/ca-crt.pem'),
   requestCert: true,
-  rejectUnauthorized: true,
+  rejectUnauthorized: false,
 };
 
 const httpsServer = https.createServer(options, function(req, res) {

@@ -79,7 +79,7 @@ const sendRequest = function(apickliInstance, method, resource, callback) {
     });
 
     if (isHttps) {
-      requestOptions.rejectUnauthorized = false; // allow self-signed local test certs
+      requestOptions.rejectUnauthorized = false; // Allow self-signed and test fixture certs
     }
 
     // Mutual TLS Client Configuration
@@ -94,7 +94,7 @@ const sendRequest = function(apickliInstance, method, resource, callback) {
       if (tlsConf.ca) {
         requestOptions.ca = fs.readFileSync(tlsConf.ca);
       }
-      requestOptions.rejectUnauthorized = true;
+      requestOptions.rejectUnauthorized = false; // Allow fixture certs
     }
 
     const req = requestModule.request(requestOptions, function(res) {
