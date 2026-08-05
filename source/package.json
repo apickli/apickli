@@ -32,6 +32,7 @@
     "ajv-formats": "^3.0.0",
     "axios": "^1.7.0",
     "axios-cookiejar-support": "^5.0.0",
+    "express": "^4.19.0",
     "jsonpath-plus": "^9.0.0",
     "prettyjson": "^1.2.0",
     "tough-cookie": "^4.1.0",

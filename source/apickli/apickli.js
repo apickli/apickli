@@ -89,6 +89,10 @@ Apickli.prototype.removeRequestHeader = function(name) {
   delete this.headers[name];
 };
 
+Apickli.prototype.addClientTLSConfiguration = function(configName, configuration) {
+  this.clientTLSConfig[configName] = configuration;
+};
+
 Apickli.prototype.setClientTLSConfiguration = function(configurationName, callback) {
   if (!Object.prototype.hasOwnProperty.call(this.clientTLSConfig, configurationName)) {
     callback('Client TLS Configuration ' + configurationName + ' does not exist.');

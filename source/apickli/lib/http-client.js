@@ -1,51 +1,67 @@
 'use strict';
 
-const https = require('https');
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
-const {URL} = require('url');
 const {CookieJar, Cookie} = require('tough-cookie');
 
-const parseQueryString = function(qs) {
-  if (!qs || Object.keys(qs).length === 0) {
-    return '';
+const loadPem = function(val) {
+  if (!val) return val;
+  if (Buffer.isBuffer(val)) return val;
+  if (typeof val === 'string') {
+    if (val.includes('-----BEGIN')) return val;
+    try {
+      if (fs.existsSync(val)) {
+        return fs.readFileSync(val);
+      }
+    } catch (e) {
+      return val;
+    }
   }
-  const params = new URLSearchParams();
-  Object.keys(qs).forEach(function(key) {
-    params.append(key, qs[key]);
-  });
-  return params.toString();
+  return val;
 };
 
-const sendRequest = function(apickliInstance, method, resource, callback) {
+const sendRequest = function(apickliInstance, method, path, callback) {
   try {
-    const rawUrl = apickliInstance.domain + resource;
-    const urlObj = new URL(rawUrl);
-
-    const queryString = parseQueryString(apickliInstance.queryParameters);
-    if (queryString) {
-      urlObj.search = (urlObj.search ? urlObj.search + '&' : '?') + queryString;
+    const targetDomain = apickliInstance.domain || 'http://127.0.0.1:3000';
+    let fullUrl = targetDomain;
+    if (!fullUrl.endsWith('/') && !path.startsWith('/')) {
+      fullUrl += '/' + path;
+    } else if (fullUrl.endsWith('/') && path.startsWith('/')) {
+      fullUrl += path.substring(1);
+    } else {
+      fullUrl += path;
     }
 
-    const headers = Object.assign({}, apickliInstance.headers);
+    const urlObj = new URL(fullUrl);
+    const headers = Object.assign({}, apickliInstance.headers || {});
 
-    // Form parameter handling
-    let bodyData = null;
-    if (apickliInstance.requestBody && apickliInstance.requestBody.length > 0) {
-      bodyData = Buffer.from(apickliInstance.requestBody, 'utf8');
-    } else if (apickliInstance.formParameters && Object.keys(apickliInstance.formParameters).length > 0) {
-      const formParams = new URLSearchParams();
-      Object.keys(apickliInstance.formParameters).forEach(function(key) {
-        formParams.append(key, apickliInstance.formParameters[key]);
-      });
-      bodyData = Buffer.from(formParams.toString(), 'utf8');
+    let bodyData = apickliInstance.requestBody || '';
+    if (typeof bodyData !== 'string' && !Buffer.isBuffer(bodyData)) {
+      bodyData = JSON.stringify(bodyData);
+    }
+
+    // Form parameters processing
+    if (apickliInstance.formParameters && Object.keys(apickliInstance.formParameters).length > 0) {
+      const params = new URLSearchParams();
+      for (const [k, v] of Object.entries(apickliInstance.formParameters)) {
+        params.append(k, v);
+      }
+      bodyData = params.toString();
       if (!headers['Content-Type'] && !headers['content-type']) {
         headers['Content-Type'] = 'application/x-www-form-urlencoded';
       }
     }
 
-    if (bodyData && !headers['Content-Length'] && !headers['content-length']) {
-      headers['Content-Length'] = bodyData.length;
+    // Query parameters processing
+    if (apickliInstance.queryParameters && Object.keys(apickliInstance.queryParameters).length > 0) {
+      for (const [k, v] of Object.entries(apickliInstance.queryParameters)) {
+        urlObj.searchParams.append(k, v);
+      }
+    }
+
+    if (bodyData && bodyData.length > 0 && !headers['Content-Length'] && !headers['content-length']) {
+      headers['Content-Length'] = Buffer.byteLength(bodyData);
     }
 
     // Cookie handling
@@ -74,7 +90,7 @@ const sendRequest = function(apickliInstance, method, resource, callback) {
       hostname: urlObj.hostname,
       port: urlObj.port || (isHttps ? 443 : 80),
       path: urlObj.pathname + urlObj.search,
-      method: method.toUpperCase(),
+      method: (method || 'GET').toUpperCase(),
       headers: headers,
     });
 
@@ -86,15 +102,15 @@ const sendRequest = function(apickliInstance, method, resource, callback) {
     if (apickliInstance.selectedClientTLSConfig && apickliInstance.clientTLSConfig[apickliInstance.selectedClientTLSConfig]) {
       const tlsConf = apickliInstance.clientTLSConfig[apickliInstance.selectedClientTLSConfig];
       if (tlsConf.key) {
-        requestOptions.key = fs.readFileSync(tlsConf.key);
+        requestOptions.key = loadPem(tlsConf.key);
       }
       if (tlsConf.cert) {
-        requestOptions.cert = fs.readFileSync(tlsConf.cert);
+        requestOptions.cert = loadPem(tlsConf.cert);
       }
       if (tlsConf.ca) {
-        requestOptions.ca = fs.readFileSync(tlsConf.ca);
+        requestOptions.ca = loadPem(tlsConf.ca);
       }
-      requestOptions.rejectUnauthorized = false; // Allow fixture certs
+      requestOptions.rejectUnauthorized = false;
     }
 
     const req = requestModule.request(requestOptions, function(res) {
@@ -108,15 +124,15 @@ const sendRequest = function(apickliInstance, method, resource, callback) {
 
         // Normalizing header keys to lowercase for standard lookup
         const normalizedHeaders = {};
-        Object.keys(res.headers).forEach(function(k) {
-          normalizedHeaders[k.toLowerCase()] = res.headers[k];
-        });
+        for (const [k, v] of Object.entries(res.headers)) {
+          normalizedHeaders[k.toLowerCase()] = v;
+        }
 
         const httpResponse = {
           statusCode: res.statusCode,
           headers: normalizedHeaders,
           body: responseBody,
-          rawHeaders: res.rawHeaders,
+          rawHeaders: res.headers,
         };
 
         apickliInstance.httpResponse = httpResponse;

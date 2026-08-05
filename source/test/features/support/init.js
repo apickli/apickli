@@ -2,23 +2,30 @@
 
 'use strict';
 
+const {Before, AfterAll, setDefaultTimeout} = require('@cucumber/cucumber');
+const fs = require('fs');
+const path = require('path');
 const apickli = require('../../../apickli/apickli.js');
-const {Before, setDefaultTimeout} = require('@cucumber/cucumber');
-require('../../mock_target/app.js');
+const mockServer = require('../../mock_target/app.js');
+
+setDefaultTimeout(60 * 1000);
 
 Before(function() {
   this.apickli = new apickli.Apickli('http', '127.0.0.1:3000');
   this.apickli.addRequestHeader('Cache-Control', 'no-cache');
-  this.apickli.clientTLSConfig = {
-    valid: {
-      key: './test/mock_target/certs/client-key.pem',
-      cert: './test/mock_target/certs/client-crt.pem',
-      ca: './test/mock_target/certs/ca-crt.pem',
-    },
-  };
-  this.apickli.httpRequestOptions = {
-    gzip: true,
-  };
+
+  const certsPath = path.join(__dirname, '../../mock_target/certs');
+  this.apickli.addClientTLSConfiguration('valid', {
+    key: fs.readFileSync(path.join(certsPath, 'client-key.pem')),
+    cert: fs.readFileSync(path.join(certsPath, 'client-crt.pem')),
+    ca: fs.readFileSync(path.join(certsPath, 'ca-crt.pem')),
+  });
 });
 
-setDefaultTimeout(60 * 1000);
+AfterAll(function(done) {
+  if (mockServer && typeof mockServer.close === 'function') {
+    mockServer.close(done);
+  } else {
+    done();
+  }
+});

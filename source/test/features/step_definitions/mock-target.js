@@ -5,6 +5,6 @@
 const {Given} = require('@cucumber/cucumber');
 
 Given(/^I use the mock target$/, function(callback) {
-  this.apickli.domain = 'https://127.0.0.1:5000';
+  this.apickli.domain = 'https://127.0.0.1:3001';
   callback();
 });
