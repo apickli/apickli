@@ -1,38 +1,44 @@
 {
-    "name": "apickli",
-    "version": "3.0.3",
-    "description": "Collection of utility functions and a gherkin framework for REST API integration testing based on cucumber.js",
-    "main": "apickli.js",
-    "readme": "README.md",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/apickli/apickli.git"
-    },
-    "keywords": [
-        "cucumber.js",
-        "integration",
-        "rest",
-        "api"
-    ],
-    "license": "MIT",
-    "scripts": {
-        "lint": "npx eslint .",
-        "test": "nohup node test/mock_target/app.js & npx cucumber-js test/ --tags @core",
-        "ci": "npm i && npm run lint && npm run test"
-    },
-    "dependencies": {
-        "@xmldom/xmldom": "0.x",
-        "is-my-json-valid": "2.x",
-        "jsonpath-plus": "9.x",
-        "path": "0.x",
-        "prettyjson": "1.x",
-        "request": "2.x",
-        "swagger-tools": "0.x",
-        "xpath.js": "1.x"
-    },
-    "devDependencies": {
-        "@cucumber/cucumber": "11.x",
-        "eslint": "8.x",
-        "eslint-config-google": "0.x"
-    }
+  "name": "apickli",
+  "version": "3.0.3",
+  "description": "Collection of utility functions and a gherkin framework for REST API integration testing based on cucumber.js",
+  "main": "apickli/apickli.js",
+  "exports": {
+    ".": "./apickli/apickli.js",
+    "./apickli-gherkin": "./apickli/apickli-gherkin.js"
+  },
+  "readme": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apickli/apickli.git"
+  },
+  "keywords": [
+    "cucumber.js",
+    "integration",
+    "rest",
+    "api"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "npx eslint .",
+    "test": "nohup node test/mock_target/app.js & npx cucumber-js test/ --tags @core",
+    "ci": "npm i && npm run lint && npm run test"
+  },
+  "dependencies": {
+    "@apidevtools/swagger-parser": "^10.1.0",
+    "@xmldom/xmldom": "^0.9.0",
+    "@xmldom/xpath": "^0.1.0",
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.0",
+    "axios": "^1.7.0",
+    "axios-cookiejar-support": "^5.0.0",
+    "jsonpath-plus": "^9.0.0",
+    "prettyjson": "^1.2.0",
+    "tough-cookie": "^4.1.0"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-google": "^0.14.0"
+  }
 }
