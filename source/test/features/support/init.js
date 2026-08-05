@@ -4,9 +4,10 @@
 
 const apickli = require('../../../apickli/apickli.js');
 const {Before, setDefaultTimeout} = require('@cucumber/cucumber');
+require('../../mock_target/app.js');
 
 Before(function() {
-  this.apickli = new apickli.Apickli('http', 'localhost:3000');
+  this.apickli = new apickli.Apickli('http', '127.0.0.1:3000');
   this.apickli.addRequestHeader('Cache-Control', 'no-cache');
   this.apickli.clientTLSConfig = {
     valid: {

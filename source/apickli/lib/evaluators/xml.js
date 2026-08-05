@@ -1,54 +1,50 @@
 'use strict';
 
 const Dom = require('@xmldom/xmldom').DOMParser;
-const xpath = require('xpath');
+const select = require('xpath').select;
 
 const _xmlAttributeNodeType = 2;
 
-const evaluateXPath = function(path, content) {
+const parseXml = function(content) {
+  if (!content) return null;
   try {
-    const xmlDocument = new Dom({
-      errorHandler: {
-        warning: function() {},
-        error: function() {},
-        fatalError: function() {},
-      },
-    }).parseFromString(content, 'text/xml');
-
-    const nodes = xpath.select(path, xmlDocument);
-    if (!nodes || nodes.length === 0) {
-      return null;
+    const xmlDocument = new Dom().parseFromString(content, 'text/xml');
+    if (xmlDocument && xmlDocument.documentElement && xmlDocument.documentElement.nodeName !== 'parsererror') {
+      return xmlDocument;
     }
-
-    const node = nodes[0];
-    if (node.nodeType === _xmlAttributeNodeType) {
-      return node.value;
-    }
-
-    if (node.firstChild) {
-      return node.firstChild.data;
-    }
-
-    return node.nodeValue || '';
+    return null;
   } catch (e) {
     return null;
   }
 };
 
-const parseXml = function(content) {
+const getNodeText = function(node) {
+  if (!node) return null;
+  if (node.nodeType === _xmlAttributeNodeType) {
+    return node.value || node.nodeValue;
+  }
+  if (typeof node.textContent === 'string') {
+    return node.textContent;
+  }
+  if (node.firstChild) {
+    return node.firstChild.nodeValue || node.firstChild.data || '';
+  }
+  return node.nodeValue || '';
+};
+
+const evaluateXPath = function(pathStr, content) {
   try {
-    const xmlDocument = new Dom({
-      errorHandler: {
-        warning: function() {},
-        error: function(err) {
-          throw new Error(err);
-        },
-        fatalError: function(err) {
-          throw new Error(err);
-        },
-      },
-    }).parseFromString(content, 'text/xml');
-    return xmlDocument;
+    const xmlDocument = parseXml(content);
+    if (!xmlDocument) {
+      return null;
+    }
+
+    const nodes = select(pathStr, xmlDocument);
+    if (!nodes || nodes.length === 0) {
+      return null;
+    }
+
+    return getNodeText(nodes[0]);
   } catch (e) {
     return null;
   }

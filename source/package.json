@@ -21,7 +21,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "npx eslint .",
-    "test": "nohup node test/mock_target/app.js & npx cucumber-js test/ --tags @core",
+    "test": "npx cucumber-js test/ --tags @core",
     "ci": "npm run lint && npm run test"
   },
   "dependencies": {

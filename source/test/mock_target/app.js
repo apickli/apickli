@@ -5,6 +5,9 @@ const http = require('http');
 const https = require('https');
 const {URL} = require('url');
 
+let httpServer = null;
+let httpsServer = null;
+
 const handleHttpRequest = function(req, res) {
   const reqUrl = new URL(req.url, 'http://' + req.headers.host);
   const pathName = reqUrl.pathname;
@@ -62,7 +65,24 @@ const handleHttpRequest = function(req, res) {
       return;
     }
 
-    if (pathName === '/get' || pathName === '/post' || pathName === '/put' || pathName === '/delete' || pathName === '/patch') {
+    if (pathName === '/get') {
+      res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Server': 'apickli-mock-server',
+      });
+
+      const responsePayload = {
+        args: argsObject,
+        headers: reflectedHeaders,
+        origin: '127.0.0.1',
+        url: req.url,
+      };
+
+      res.end(JSON.stringify(responsePayload));
+      return;
+    }
+
+    if (pathName === '/post' || pathName === '/put' || pathName === '/delete' || pathName === '/patch') {
       res.writeHead(200, {
         'Content-Type': 'application/json',
         'Server': 'apickli-mock-server',
@@ -107,26 +127,36 @@ const handleHttpRequest = function(req, res) {
   });
 };
 
-// Local HTTP mock target for httpbin tests
-const httpServer = http.createServer(handleHttpRequest);
-httpServer.listen(3000, function() {
-  // HTTP server ready on port 3000
-});
+const startMockServers = function() {
+  try {
+    if (!httpServer) {
+      httpServer = http.createServer(handleHttpRequest);
+      httpServer.on('error', function() {});
+      httpServer.listen(3000, '127.0.0.1');
+    }
 
-// Mutual TLS HTTPS mock target
-const options = {
-  key: fs.readFileSync('test/mock_target/certs/server-key.pem'),
-  cert: fs.readFileSync('test/mock_target/certs/server-crt.pem'),
-  ca: fs.readFileSync('test/mock_target/certs/ca-crt.pem'),
-  requestCert: true,
-  rejectUnauthorized: false,
+    if (!httpsServer) {
+      const options = {
+        key: fs.readFileSync('test/mock_target/certs/server-key.pem'),
+        cert: fs.readFileSync('test/mock_target/certs/server-crt.pem'),
+        ca: fs.readFileSync('test/mock_target/certs/ca-crt.pem'),
+        requestCert: true,
+        rejectUnauthorized: false,
+      };
+      httpsServer = https.createServer(options, function(req, res) {
+        res.writeHead(200);
+        res.end('hello world\n');
+      });
+      httpsServer.on('error', function() {});
+      httpsServer.listen(5000, '127.0.0.1');
+    }
+  } catch (e) {
+    // ignore server listen error if port already bound
+  }
 };
 
-const httpsServer = https.createServer(options, function(req, res) {
-  res.writeHead(200);
-  res.end('hello world\n');
-});
+startMockServers();
 
-httpsServer.listen(5000, function() {
-  // HTTPS server ready on port 5000
-});
+module.exports = {
+  startMockServers,
+};
