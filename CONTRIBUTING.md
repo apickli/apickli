@@ -1,32 +1,58 @@
-#Contributing to Apickli
+# Contributing to Apickli
 
-_Thank you for considering contributing to apickli._
+*Thank you for considering contributing to apickli.*
 
-#### **Did you find a bug?**
+---
 
-* **Ensure the bug was not already reported** by searching on GitHub under [Issues](https://github.com/apickli/apickli/issues).
+## Reporting Issues
 
-* If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/apickli/apickli/issues/new). Be sure to include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the expected behavior that is not occurring.
+- **Check existing issues**: Ensure the bug or proposal was not already reported under [GitHub Issues](https://github.com/apickli/apickli/issues).
+- **Open a detailed issue**: If no existing issue covers your topic, [open a new issue](https://github.com/apickli/apickli/issues/new) including a clear title, reproduction steps, expected vs. actual behavior, and code samples.
 
-#### **Did you write a patch that fixes a bug?**
+---
 
-* Open a new GitHub pull request with the patch.
+## Submitting Pull Requests
 
-* Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
+1. Fork the repository and create your branch from `master`.
+2. Follow existing code style guidelines (`eslint-config-google`).
+3. Include tests covering any new functionality or bug fixes.
+4. Ensure all linters and tests pass cleanly before submitting your PR.
 
-* Before submitting, please read the guide below to know more about coding conventions and benchmarks.
+---
 
-### **Code Conventions**
-In lieu of a formal style guide, take care to maintain the existing coding style.
- Add unit tests for any new or changed functionality. Lint and test your code.
+## Development & Testing Commands
 
-To test the code run `gulp test`
+All standard commands can be executed from the repository root:
 
-To test that the console outputs correctly run `gulp console-test`.
- Some of these tests should fail, that is expected behavior.
- The failed tests are designed to show how the console will output failed tests.
+- **Install Dependencies**:
+  ```sh
+  npm install
+  ```
 
-To lint your code run `gulp jshint`
+- **Run Linter**:
+  ```sh
+  npm run lint
+  ```
+  *(Runs `npx eslint .` inside `./source`)*
 
-#
+- **Run Core Cucumber Tests**:
+  ```sh
+  npm run test
+  ```
+  *(Launches local mock HTTPS server and executes Cucumber BDD scenarios tagged `@core`)*
+
+- **Run Full CI Pipeline**:
+  ```sh
+  npm run ci
+  ```
+
+---
+
+## Code Style Conventions
+
+- Code style is governed by `eslint` extending `eslint-config-google`.
+- Use CommonJS modules (`'use strict';`, `require()`, `module.exports`).
+- Maintain single quotes, mandatory semicolons, and two-space indentation.
+- Preserve backward compatibility for public `Apickli` instance properties and Gherkin step expressions.
+
 Thank you for your contribution!

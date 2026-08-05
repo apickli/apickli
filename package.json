@@ -1,1 +1,19 @@
-{}
+{
+  "name": "apickli-workspace",
+  "version": "3.0.3",
+  "private": true,
+  "description": "REST API integration testing framework and utility library based on cucumber.js",
+  "workspaces": [
+    "source"
+  ],
+  "scripts": {
+    "lint": "npm run lint --prefix source",
+    "test": "npm run test --prefix source",
+    "ci": "npm run ci --prefix source"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apickli/apickli.git"
+  },
+  "license": "MIT"
+}

@@ -2,25 +2,30 @@
 name: apickli tests
 
 on:
-  # push or pull request events to the the master branch
   push:
-    branches: [ master ]
+    branches: [ master, main ]
   pull_request:
-    branches: [ master ]
-
-  # allow to run this workflow manually on GitHub from the Actions tab
+    branches: [ master, main ]
   workflow_dispatch:
 
 jobs:
   test:
-    timeout-minutes: 5
+    timeout-minutes: 10
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: run all tests
-        working-directory: source
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install dependencies & run CI pipeline
         run: |
-          npm install
           npm run ci
