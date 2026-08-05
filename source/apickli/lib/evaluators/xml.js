@@ -1,7 +1,7 @@
 'use strict';
 
 const Dom = require('@xmldom/xmldom').DOMParser;
-const xpath = require('@xmldom/xpath');
+const xpath = require('xpath');
 
 const _xmlAttributeNodeType = 2;
 

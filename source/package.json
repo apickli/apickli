@@ -22,19 +22,19 @@
   "scripts": {
     "lint": "npx eslint .",
     "test": "nohup node test/mock_target/app.js & npx cucumber-js test/ --tags @core",
-    "ci": "npm i && npm run lint && npm run test"
+    "ci": "npm run lint && npm run test"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
     "@xmldom/xmldom": "^0.9.0",
-    "@xmldom/xpath": "^0.1.0",
     "ajv": "^8.17.0",
     "ajv-formats": "^3.0.0",
     "axios": "^1.7.0",
     "axios-cookiejar-support": "^5.0.0",
     "jsonpath-plus": "^9.0.0",
     "prettyjson": "^1.2.0",
-    "tough-cookie": "^4.1.0"
+    "tough-cookie": "^4.1.0",
+    "xpath": "^0.34.0"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^11.0.0",

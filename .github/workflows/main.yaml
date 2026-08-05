@@ -28,4 +28,5 @@ jobs:
 
       - name: Install dependencies & run CI pipeline
         run: |
+          npm install
           npm run ci
