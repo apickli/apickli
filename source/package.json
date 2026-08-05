@@ -34,7 +34,7 @@
     "jsonpath-plus": "^9.0.0",
     "prettyjson": "^1.2.0",
     "tough-cookie": "^4.1.0",
-    "xpath": "^0.34.0"
+    "xpath": "0.x"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^11.0.0",
