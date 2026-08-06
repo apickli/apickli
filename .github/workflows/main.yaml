@@ -9,7 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  matrix-test:
+    name: test (${{ matrix.node-version }})
     timeout-minutes: 10
     runs-on: ubuntu-latest
     strategy:
@@ -30,3 +31,11 @@ jobs:
         run: |
           npm install
           npm run ci
+
+  test:
+    name: test
+    needs: matrix-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Status check reporter
+        run: echo "All Node.js matrix tests passed!"
