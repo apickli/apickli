@@ -1,74 +1,56 @@
 'use strict';
 
-const request = require('request');
-const {JSONPath: jsonPath} = require('jsonpath-plus');
-const select = require('xpath.js');
-const Dom = require('@xmldom/xmldom').DOMParser;
 const fs = require('fs');
 const path = require('path');
-const jsonSchemaValidator = require('is-my-json-valid');
-const spec = require('swagger-tools').specs.v2;
+
+const httpClient = require('./lib/http-client');
+const jsonEvaluator = require('./lib/evaluators/json');
+const xmlEvaluator = require('./lib/evaluators/xml');
+const openapiEvaluator = require('./lib/evaluators/openapi');
 
 let accessToken;
 const globalVariables = {};
-const _xmlAttributeNodeType = 2;
 
 const base64Encode = function(str) {
   return Buffer.from(str).toString('base64');
 };
 
 const getContentType = function(content) {
+  if (!content) return null;
   try {
     JSON.parse(content);
     return 'json';
   } catch (e) {
-    try {
-      new Dom().parseFromString(content, 'text/xml');
+    const xmlDoc = xmlEvaluator.parseXml(content);
+    if (xmlDoc) {
       return 'xml';
-    } catch (e) {
-      return null;
     }
+    return null;
   }
 };
 
-const evaluateJsonPath = function(path, content) {
-  const contentJson = JSON.parse(content);
-  const evalResult = jsonPath(path, contentJson);
-  return (evalResult.length > 0) ? evalResult[0] : null;
-};
-
-const evaluateXPath = function(path, content) {
-  const xmlDocument = new Dom().parseFromString(content, 'text/xml');
-  const node = select(xmlDocument, path)[0];
-  if (node.nodeType === _xmlAttributeNodeType) {
-    return node.value;
-  }
-
-  return node.firstChild.data; // element or comment
-};
-
-const evaluatePath = function(path, content) {
+const evaluatePath = function(pathStr, content) {
   const contentType = getContentType(content);
-
   switch (contentType) {
     case 'json':
-      return evaluateJsonPath(path, content);
+      return jsonEvaluator.evaluateJsonPath(pathStr, content);
     case 'xml':
-      return evaluateXPath(path, content);
+      return xmlEvaluator.evaluateXPath(pathStr, content);
     default:
       return null;
   }
 };
 
 const getAssertionResult = function(success, expected, actual, apickliInstance) {
+  const resp = apickliInstance.getResponseObject() || {};
   return {
     success,
     expected,
     actual,
     response: {
-      statusCode: apickliInstance.getResponseObject().statusCode,
-      headers: apickliInstance.getResponseObject().headers,
-      body: apickliInstance.getResponseObject().body,
+      statusCode: resp.statusCode,
+      headers: resp.headers,
+      body: resp.body,
     },
   };
 };
@@ -105,6 +87,10 @@ Apickli.prototype.addRequestHeader = function(name, value) {
 Apickli.prototype.removeRequestHeader = function(name) {
   name = this.replaceVariables(name);
   delete this.headers[name];
+};
+
+Apickli.prototype.addClientTLSConfiguration = function(configName, configuration) {
+  this.clientTLSConfig[configName] = configuration;
 };
 
 Apickli.prototype.setClientTLSConfiguration = function(configurationName, callback) {
@@ -187,32 +173,32 @@ Apickli.prototype.pipeFileContentsToRequestBody = function(file, callback) {
   });
 };
 
-Apickli.prototype.get = function(resource, callback) { // callback(error, response)
+Apickli.prototype.get = function(resource, callback) {
   resource = this.replaceVariables(resource);
   this.sendRequest('GET', resource, callback);
 };
 
-Apickli.prototype.post = function(resource, callback) { // callback(error, response)
+Apickli.prototype.post = function(resource, callback) {
   resource = this.replaceVariables(resource);
   this.sendRequest('POST', resource, callback);
 };
 
-Apickli.prototype.put = function(resource, callback) { // callback(error, response)
+Apickli.prototype.put = function(resource, callback) {
   resource = this.replaceVariables(resource);
   this.sendRequest('PUT', resource, callback);
 };
 
-Apickli.prototype.delete = function(resource, callback) { // callback(error, response)
+Apickli.prototype.delete = function(resource, callback) {
   resource = this.replaceVariables(resource);
   this.sendRequest('DELETE', resource, callback);
 };
 
-Apickli.prototype.patch = function(resource, callback) { // callback(error, response)
+Apickli.prototype.patch = function(resource, callback) {
   resource = this.replaceVariables(resource);
   this.sendRequest('PATCH', resource, callback);
 };
 
-Apickli.prototype.options = function(resource, callback) { // callback(error, response)
+Apickli.prototype.options = function(resource, callback) {
   resource = this.replaceVariables(resource);
   this.sendRequest('OPTIONS', resource, callback);
 };
@@ -232,15 +218,15 @@ Apickli.prototype.assertResponseCode = function(responseCode) {
   return getAssertionResult(success, responseCode, realResponseCode, this);
 };
 
-Apickli.prototype.assertResponseDoesNotContainHeader = function(header, callback) {
+Apickli.prototype.assertResponseDoesNotContainHeader = function(header) {
   header = this.replaceVariables(header);
-  const success = typeof this.getResponseObject().headers[header.toLowerCase()] == 'undefined';
+  const success = typeof this.getResponseObject().headers[header.toLowerCase()] === 'undefined';
   return getAssertionResult(success, true, false, this);
 };
 
-Apickli.prototype.assertResponseContainsHeader = function(header, callback) {
+Apickli.prototype.assertResponseContainsHeader = function(header) {
   header = this.replaceVariables(header);
-  const success = typeof this.getResponseObject().headers[header.toLowerCase()] != 'undefined';
+  const success = typeof this.getResponseObject().headers[header.toLowerCase()] !== 'undefined';
   return getAssertionResult(success, true, false, this);
 };
 
@@ -253,11 +239,11 @@ Apickli.prototype.assertHeaderValue = function(header, expression) {
   return getAssertionResult(success, expression, realHeaderValue, this);
 };
 
-Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(path, regexp) {
-  path = this.replaceVariables(path);
+Apickli.prototype.assertPathInResponseBodyMatchesExpression = function(pathStr, regexp) {
+  pathStr = this.replaceVariables(pathStr);
   regexp = this.replaceVariables(regexp);
   const regExpObject = new RegExp(regexp);
-  const evalValue = evaluatePath(path, this.getResponseObject().body);
+  const evalValue = evaluatePath(pathStr, this.getResponseObject().body);
   const success = regExpObject.test(evalValue);
   return getAssertionResult(success, regexp, evalValue, this);
 };
@@ -276,19 +262,19 @@ Apickli.prototype.assertResponseBodyContentType = function(contentType) {
   return getAssertionResult(success, contentType, realContentType, this);
 };
 
-Apickli.prototype.assertPathIsArray = function(path) {
-  path = this.replaceVariables(path);
-  const value = evaluatePath(path, this.getResponseObject().body);
+Apickli.prototype.assertPathIsArray = function(pathStr) {
+  pathStr = this.replaceVariables(pathStr);
+  const value = evaluatePath(pathStr, this.getResponseObject().body);
   const success = Array.isArray(value);
   return getAssertionResult(success, 'array', typeof value, this);
 };
 
-Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
-  path = this.replaceVariables(path);
+Apickli.prototype.assertPathIsArrayWithLength = function(pathStr, length) {
+  pathStr = this.replaceVariables(pathStr);
   length = this.replaceVariables(length);
   let success = false;
   let actual = '?';
-  const value = evaluatePath(path, this.getResponseObject().body);
+  const value = evaluatePath(pathStr, this.getResponseObject().body);
   if (Array.isArray(value)) {
     success = value.length.toString() === length;
     actual = value.length;
@@ -297,9 +283,9 @@ Apickli.prototype.assertPathIsArrayWithLength = function(path, length) {
   return getAssertionResult(success, length, actual, this);
 };
 
-Apickli.prototype.evaluatePathInResponseBody = function(path) {
-  path = this.replaceVariables(path);
-  return evaluatePath(path, this.getResponseObject().body);
+Apickli.prototype.evaluatePathInResponseBody = function(pathStr) {
+  pathStr = this.replaceVariables(pathStr);
+  return evaluatePath(pathStr, this.getResponseObject().body);
 };
 
 Apickli.prototype.setAccessToken = function(token) {
@@ -310,13 +296,13 @@ Apickli.prototype.unsetAccessToken = function() {
   accessToken = undefined;
 };
 
-Apickli.prototype.getAccessTokenFromResponseBodyPath = function(path) {
-  path = this.replaceVariables(path);
-  return evaluatePath(path, this.getResponseObject().body);
+Apickli.prototype.getAccessTokenFromResponseBodyPath = function(pathStr) {
+  pathStr = this.replaceVariables(pathStr);
+  return evaluatePath(pathStr, this.getResponseObject().body);
 };
 
-Apickli.prototype.setAccessTokenFromResponseBodyPath = function(path) {
-  this.setAccessToken(this.getAccessTokenFromResponseBodyPath(path));
+Apickli.prototype.setAccessTokenFromResponseBodyPath = function(pathStr) {
+  this.setAccessToken(this.getAccessTokenFromResponseBodyPath(pathStr));
 };
 
 Apickli.prototype.setBearerToken = function() {
@@ -333,31 +319,31 @@ Apickli.prototype.storeValueInScenarioScope = function(variableName, value) {
 };
 
 Apickli.prototype.storeValueOfHeaderInScenarioScope = function(header, variableName) {
-  header = this.replaceVariables(header); // only replace header. replacing variable name wouldn't make sense
+  header = this.replaceVariables(header);
   const value = this.getResponseObject().headers[header.toLowerCase()];
   this.scenarioVariables[variableName] = value;
 };
 
-Apickli.prototype.storeValueOfResponseBodyPathInScenarioScope = function(path, variableName) {
-  path = this.replaceVariables(path); // only replace path. replacing variable name wouldn't make sense
-  const value = evaluatePath(path, this.getResponseObject().body);
+Apickli.prototype.storeValueOfResponseBodyPathInScenarioScope = function(pathStr, variableName) {
+  pathStr = this.replaceVariables(pathStr);
+  const value = evaluatePath(pathStr, this.getResponseObject().body);
   this.scenarioVariables[variableName] = value;
 };
 
 Apickli.prototype.assertScenarioVariableValue = function(variable, value) {
-  value = this.replaceVariables(value); // only replace value. replacing variable name wouldn't make sense
+  value = this.replaceVariables(value);
   return (String(this.scenarioVariables[variable]) === value);
 };
 
 Apickli.prototype.storeValueOfHeaderInGlobalScope = function(headerName, variableName) {
-  headerName = this.replaceVariables(headerName); // only replace headerName. replacing variable name wouldn't make sense
+  headerName = this.replaceVariables(headerName);
   const value = this.getResponseObject().headers[headerName.toLowerCase()];
   this.setGlobalVariable(variableName, value);
 };
 
-Apickli.prototype.storeValueOfResponseBodyPathInGlobalScope = function(path, variableName) {
-  path = this.replaceVariables(path); // only replace path. replacing variable name wouldn't make sense
-  const value = evaluatePath(path, this.getResponseObject().body);
+Apickli.prototype.storeValueOfResponseBodyPathInGlobalScope = function(pathStr, variableName) {
+  pathStr = this.replaceVariables(pathStr);
+  const value = evaluatePath(pathStr, this.getResponseObject().body);
   this.setGlobalVariable(variableName, value);
 };
 
@@ -375,14 +361,15 @@ Apickli.prototype.validateResponseWithSchema = function(schemaFile, callback) {
 
   fs.readFile(path.join(this.fixturesDirectory, schemaFile), 'utf8', function(err, jsonSchemaString) {
     if (err) {
-      callback(err);
-    } else {
+      return callback(err);
+    }
+    try {
       const jsonSchema = JSON.parse(jsonSchemaString);
       const responseBody = JSON.parse(self.getResponseObject().body);
-
-      const validate = jsonSchemaValidator(jsonSchema, {verbose: true});
-      const success = validate(responseBody);
-      callback(getAssertionResult(success, validate.errors, null, self));
+      const result = jsonEvaluator.validateJsonSchema(jsonSchema, responseBody);
+      callback(getAssertionResult(result.valid, null, result.errors, self));
+    } catch (e) {
+      callback(getAssertionResult(false, null, e.message, self));
     }
   });
 };
@@ -393,40 +380,28 @@ Apickli.prototype.validateResponseWithSwaggerSpecDefinition = function(definitio
 
   fs.readFile(path.join(this.fixturesDirectory, swaggerSpecFile), 'utf8', function(err, swaggerSpecString) {
     if (err) {
-      callback(err);
-    } else {
+      return callback(getAssertionResult(false, null, err, self));
+    }
+    try {
       const swaggerObject = JSON.parse(swaggerSpecString);
       const responseBody = JSON.parse(self.getResponseObject().body);
 
-      spec.validateModel(swaggerObject, '#/definitions/' + definitionName, responseBody, function(err, result) {
-        if (err) {
-          callback(getAssertionResult(false, null, err, self));
-        } else if (result && result.errors) {
-          callback(getAssertionResult(false, null, result.errors, self));
+      openapiEvaluator.validateSwaggerSpecDefinition(swaggerObject, definitionName, responseBody, function(validationErr, res) {
+        if (validationErr) {
+          callback(getAssertionResult(false, null, validationErr.message, self));
+        } else if (res && !res.success) {
+          callback(getAssertionResult(false, null, res.errors, self));
         } else {
           callback(getAssertionResult(true, null, null, self));
         }
       });
+    } catch (e) {
+      callback(getAssertionResult(false, null, e.message, self));
     }
   });
 };
 
-exports.Apickli = Apickli;
-
-/**
- * Replaces variable identifiers in the resource string
- * with their value in scope if it exists
- * Returns the modified string
- * The variable identifiers must be delimited with backticks or variableChar character
- * offset defines the index of the char from which the varaibles are to be searched
- * It's optional.
- *
- * Credits: Based on contribution by PascalLeMerrer
- */
 Apickli.prototype.replaceVariables = function(resource, scope, variableChar, offset) {
-  // handling of nullish values for resource
-  // as cucumber-js passes undefined when a value in an example table is left empty
-  // see issue #184
   if (!resource) return resource;
 
   scope = scope || this.scenarioVariables;
@@ -448,45 +423,7 @@ Apickli.prototype.replaceVariables = function(resource, scope, variableChar, off
 };
 
 Apickli.prototype.sendRequest = function(method, resource, callback) {
-  const self = this;
-  const options = this.httpRequestOptions || {};
-  options.url = this.domain + resource;
-  options.method = method;
-  options.headers = this.headers;
-  options.qs = this.queryParameters;
-
-  if (this.requestBody.length > 0) {
-    options.body = this.requestBody;
-  } else if (Object.keys(this.formParameters).length > 0) {
-    options.form = this.formParameters;
-  }
-
-  const cookieJar = request.jar();
-  this.cookies.forEach(function(cookie) {
-    cookieJar.setCookie(request.cookie(cookie), self.domain);
-  });
-
-  options.jar = cookieJar;
-
-  if (this.selectedClientTLSConfig.length > 0) {
-    options.key = fs.readFileSync(this.clientTLSConfig[this.selectedClientTLSConfig].key);
-    options.cert = fs.readFileSync(this.clientTLSConfig[this.selectedClientTLSConfig].cert);
-    if (this.clientTLSConfig[this.selectedClientTLSConfig].ca) {
-      options.ca = fs.readFileSync(this.clientTLSConfig[this.selectedClientTLSConfig].ca);
-    }
-  }
-
-  if (method !== 'OPTIONS') {
-    options.followRedirect = false;
-  }
-
-  resource = this.replaceVariables(resource);
-  request(options, function(error, response) {
-    if (error) {
-      return callback(error);
-    }
-
-    self.httpResponse = response;
-    callback(null, response);
-  });
+  httpClient.sendRequest(this, method, resource, callback);
 };
+
+exports.Apickli = Apickli;

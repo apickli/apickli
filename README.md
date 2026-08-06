@@ -108,6 +108,7 @@ $ cucumber-js features/myapi.feature
 Cucumber.js default step timeout is 5000ms. Add the following to features/support/init.js in order to change it:
 
 ```js
+const {setDefaultTimeout} = require('@cucumber/cucumber');
 setDefaultTimeout(60 * 1000); // this is in ms
 ```
 
